@@ -12,7 +12,7 @@ class FileReader:
     
     def read_game_log(self):
         # returns the file name from the local file system when retrieved from the game
-        file = self.get_game_log('C:/Users/david/AppData/Local/Solecismic Software/Front Office Football Eight/leagues/SFL00004/lastboxlog.html')
+        file = self.get_game_log('resources/lastboxlog.html')
         return (file.name)
 
     def get_roster(self):
@@ -28,9 +28,10 @@ class FileReader:
         all_tables = pd.read_html(file, keep_default_na=False)
         return all_tables[index]
 
-    def get_player_pos(self, list):
+    def get_player_pos(self, list, index):
+        # returns the player position - will be used to confirm the last name on the roster
         pos = ''
-        player = list[1] # get the first player in the list to check if the player is on the roster
+        player = list[index] # get the first player in the list to check if the player is on the roster
         pos = player[0:2]
         print('position: ' + pos)
         if('(' in pos):
@@ -39,5 +40,10 @@ class FileReader:
             print('position: ' + pos)
         return pos
     
-    def get_player_name_from_play(self, play_result):
-        pass
+    def get_player_name_from_play(self):
+        play_result = self.get_play_result(1)
+        player = play_result.iat[1,0] # first player in the play result on the left hand side table
+        if player[0:2] == 'QB':
+            print("qb")
+        # player_pos = self.get_player_pos()
+        print ("player pos : " + "player name : ")
