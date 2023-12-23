@@ -17,6 +17,9 @@ class FileReader:
 
     def get_roster(self):
         # retrieves the roster from the game logs so that the stats can be compiled
+        # should read from player_record.csv and find the matching player and team ids from another file
+        # can match player id with the id in player_information.csv
+        # can match team id with the id in team_information.csv
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file)
         length = len(all_tables)-1
