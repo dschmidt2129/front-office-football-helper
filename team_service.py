@@ -1,12 +1,12 @@
 import pandas as pd
-
+from player_service import player_service as ps
 class team_service:
 
     def __init__(self):
         # no variables need initialized
         pass
 
-        # function to return the team id from the team_information.csv file 
+    # function to return the team id from the team_information.csv file 
     def get_team_info(self, team):
         # cleveland is team id 30
         # las vegas is team id 20
@@ -38,3 +38,7 @@ class team_service:
             case _:
                 print("No team passed!!")
                 return team_id
+            
+    def check_if_in_roster(self, player):   
+        #  function to check if the player is on the team
+        return

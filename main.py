@@ -3,7 +3,6 @@ from team_service import team_service
 
 front_office_service = front_office_football_service()
 
-# team_services = team_service()
-# (service.get_player_name_from_play())
-# team_services.get_team_info('Cleveland')
-print(front_office_service.get_roster())
+# print(front_office_service.get_roster())
+# this is a flask application - run the below command to start as a localhost
+    # flask --app flaskr run
