@@ -7,7 +7,7 @@ class team_service:
         pass
 
     # function to return the team id from the team_information.csv file 
-    def get_team_info(self, team):
+    def get_team_id(self, team):
         # cleveland is team id 30
         # las vegas is team id 20
         # miami is team id 14
