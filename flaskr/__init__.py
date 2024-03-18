@@ -4,6 +4,7 @@ from flask import Flask
 from flask import request
 from player_service import player_service as ps
 from team_service import team_service as ts
+from flaskr.team_routes import team_routes
 
 def create_app(test_config=None):
     # create and configure the app
@@ -33,10 +34,11 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
 
-    @app.route('/teamId')
-    def get_team_id():
-        team_service = ts()
-        team_info = team_service.get_team_id(request.args.get('teamName'))
-        return str(team_info)
+    # @app.route('/teamId')
+    # def get_team_id():
+    #     team_service = ts()
+    #     team_info = team_service.get_team_id(request.args.get('teamName'))
+    #     return str(team_info)
+    app.register_blueprint(team_routes)
     
     return app
