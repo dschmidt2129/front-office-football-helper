@@ -6,6 +6,10 @@ class player_service:
         # no variables initialized
         pass
 
+    def get_player_id(self, player_name, player_pos):
+        player_info = pd.read_csv("resources/player_information.csv")
+        
+
     def get_player_pos(self, list, index):
         # returns the player position - will be used to confirm the last name on the roster
         pos = ''
