@@ -16,7 +16,7 @@ class game_service:
         file = self.get_game_log('resources/lastboxlog.html')
         return (file.name)
     
-    def get_play_personnel(self,index):
+    def get_offensive_play_personnel(self,index):
         # returns the indexed play result from the game logs
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file, keep_default_na=False)
