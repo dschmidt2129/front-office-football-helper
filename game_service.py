@@ -21,12 +21,15 @@ class game_service:
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file, keep_default_na=False)
         print("number of tables: " + str(len(all_tables)))
-        # todo: need to find the text for the play result
         # the first play always starts at index 3
-        print(all_tables[1])
+        # print(all_tables[1])
         return all_tables[index]
 
-    def get_play_result(self, index):
+    def get_play_result(self,index):
         # returns the play result from the game logs
         file = self.get_game_log(self.read_game_log())
         # index 0 is a list of the all of the play results
+        all_tables = pd.read_html(file, keep_default_na=False)
+        plays = all_tables[0] # currently a dataframe with one column
+        print(plays.loc[index,0]) 
+        return plays.loc[index,0]
