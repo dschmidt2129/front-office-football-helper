@@ -22,7 +22,7 @@ class game_service:
         all_tables = pd.read_html(file, keep_default_na=False)
         # the first play always starts at index 3
         offensive_plays = all_tables[index].iloc[:,0:3]
-        print(offensive_plays)
+        # print(offensive_plays)
         return offensive_plays
     
     def get_defensive_play_personnel(self,index):
@@ -31,7 +31,7 @@ class game_service:
         all_tables = pd.read_html(file, keep_default_na=False)
         # the first play always starts at index 3
         defensive_plays = all_tables[index].iloc[:,3:6]
-        print(defensive_plays)
+        # print(defensive_plays)
         return defensive_plays
 
     def get_play_result(self,index):
@@ -42,5 +42,24 @@ class game_service:
         plays = all_tables[0] # currently a dataframe with one column
         play_result = plays.loc[index,0]
         play_result = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
-        print(play_result)
+        # print(play_result)
         return play_result
+
+    def get_player_performance_from_play(self, index, player_index, is_offense):
+        # todo: call this method to show the offensive and defensive player performances on two separate tabs or screens
+        # gets the player's performance and actions from the play +, -, etc...
+        play_result = self.get_play_result(index+1) # for whatever reason, the html table isn't indexed like an array or list when converted to a dataframe
+        print(play_result)
+        if(is_offense):
+            offensive_play_personnel = self.get_offensive_play_personnel(index)
+            # print(offensive_play_personnel)
+            # quarterback and offensive line are special cases where they don't have a play result and qb will return *** instead of +,-
+            player = offensive_play_personnel.iloc[player_index]
+            print(player)
+            return player
+        else:
+           defensive_play_personnel = self.get_defensive_play_personnel(index)
+        #    print(defensive_play_personnel)
+           player = defensive_play_personnel.iloc[player_index]
+           print(player)
+           return defensive_play_personnel
