@@ -17,13 +17,22 @@ class game_service:
         return (file.name)
     
     def get_offensive_play_personnel(self,index):
-        # returns the indexed play result from the game logs
+        # returns the offensive play personnel from the indexed play result from the game logs
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file, keep_default_na=False)
-        print("number of tables: " + str(len(all_tables)))
         # the first play always starts at index 3
-        # print(all_tables[1])
-        return all_tables[index]
+        offensive_plays = all_tables[index].iloc[:,0:3]
+        print(offensive_plays)
+        return offensive_plays
+    
+    def get_defensive_play_personnel(self,index):
+        # returns the defensive play personnel from the indexed play result from the game logs
+        file = self.get_game_log(self.read_game_log())
+        all_tables = pd.read_html(file, keep_default_na=False)
+        # the first play always starts at index 3
+        defensive_plays = all_tables[index].iloc[:,3:6]
+        print(defensive_plays)
+        return defensive_plays
 
     def get_play_result(self,index):
         # returns the play result from the game logs
@@ -31,5 +40,7 @@ class game_service:
         # index 0 is a list of the all of the play results
         all_tables = pd.read_html(file, keep_default_na=False)
         plays = all_tables[0] # currently a dataframe with one column
-        print(plays.loc[index,0]) 
-        return plays.loc[index,0]
+        play_result = plays.loc[index,0]
+        play_result = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
+        print(play_result)
+        return play_result
