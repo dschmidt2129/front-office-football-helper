@@ -40,7 +40,7 @@ class game_service:
         # index 0 is a list of the all of the play results
         all_tables = pd.read_html(file, keep_default_na=False)
         plays = all_tables[0] # currently a dataframe with one column
-        play_result = plays.loc[index+3,0]
+        play_result = plays.loc[index+3,0] # for whatever reason, the html table isn't indexed like an array or list when converted to a dataframe
         play_result = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
         # print(play_result)
         return play_result
@@ -48,7 +48,7 @@ class game_service:
     def get_player_performance_from_play(self, index, player_index, is_offense):
         # todo: call this method when determining if the player is on the active roster
         # gets the player's performance and actions from the play +, -, etc...
-        play_result = self.get_play_result(index) # for whatever reason, the html table isn't indexed like an array or list when converted to a dataframe
+        play_result = self.get_play_result(index) 
         print(play_result)
         if(is_offense):
             offensive_play_personnel = self.get_offensive_play_personnel(index)
