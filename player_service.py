@@ -21,11 +21,3 @@ class player_service:
             pos = player[0:5]
             print('position: ' + pos)
         return pos
-    
-    def get_player_name_from_play(self):
-        play_result = self.get_play_result(1)
-        player = play_result.iat[1,0] # first player in the play result on the left hand side table
-        if player[0:2] == 'QB':
-            print("qb")
-        # player_pos = self.get_player_pos()
-        print ("player pos : " + "player name : ")

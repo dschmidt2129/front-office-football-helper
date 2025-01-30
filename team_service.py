@@ -41,4 +41,7 @@ class team_service:
             
     def check_if_in_roster(self, player):   
         #  function to check if the player is on the team
+        # can use the player record csv column A for player id and column F for team id, 99 is a free agent
+        # marry that information with column A in player information csv to get the player name
+        # call this in game_service.get_player_performance_from_play to determine if you want the offense or defense play result
         return
