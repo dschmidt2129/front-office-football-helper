@@ -6,18 +6,23 @@ class player_service:
         # no variables initialized
         pass
 
-    def get_player_id(self, player_name, player_pos):
+    def get_player_id(self, player_name):
+        # returns the player id
+        print('Getting player info for : ' + player_name)
         player_info = pd.read_csv("resources/player_information.csv")
-        
+        player_first_name = player_name.split(' ')[0]
+        player_last_name = player_name.split(' ')[1]
+        player_info.set_index(['First_Name', 'Last_Name'], inplace=True)
+        player_info.sort_index(inplace=True) # was receiving  PerformanceWarning: indexing past lexsort depth may impact performance. this indicates that the index is not sorted.
+        player_id = player_info.loc[(player_first_name, player_last_name), player_info.columns[0]].item()
+        print('player id: ' + str(player_id))
+        return player_id
 
-    def get_player_pos(self, list, index):
-        # returns the player position - will be used to confirm the last name on the roster
-        pos = ''
-        player = list[index] # get the first player in the list to check if the player is on the roster
-        pos = player[0:2]
-        print('position: ' + pos)
-        if('(' in pos):
-            # handles the wide receiver specialized positions
-            pos = player[0:5]
-            print('position: ' + pos)
-        return pos
+    def get_player_team_id(self, player_id):
+        # returns the player's team id
+        player_record = pd.read_csv("resources/player_record.csv")
+        player_record.set_index('Player_ID', inplace=True)
+        player_record.sort_index(inplace=True) # was receiving  PerformanceWarning: indexing past lexsort depth may impact performance. this indicates that the index is not sorted.
+        player_team_id = player_record.loc[player_id, player_record.columns[4]].item()
+        print('player team id: ' + str(player_team_id))
+        return player_team_id

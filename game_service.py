@@ -1,9 +1,13 @@
 import pandas as pd
+from player_service import player_service as ps
+from team_service import team_service as ts
 
 class game_service:
 
     def __init__(self):
-        # no variables initialized
+        # initializing player_service and team_service
+        self.ps = ps()
+        self.ts = ts()
         pass
 
     def get_game_log(self, file_name):
@@ -45,21 +49,45 @@ class game_service:
         # print(play_result)
         return play_result
 
-    def get_player_performance_from_play(self, index, player_index, is_offense):
-        # todo: call this method when determining if the player is on the active roster
+    def get_player_performance_from_play(self, index, team_name):
+        # todo: iterate through the game log and get the player's performance and actions from the play +, -, etc... and write to csv 
         # gets the player's performance and actions from the play +, -, etc...
         play_result = self.get_play_result(index) 
+        play_result_arr = play_result.split(' ')
+        player_to_check_in_roster_first_name = (play_result_arr[3])
+        # print('Player First Name: ' + player_to_check_in_roster_first_name)
+        player_to_check_in_roster_last_name = (play_result_arr[4])
+        # print('Player Last Name: ' + player_to_check_in_roster_last_name)
+        player_name = player_to_check_in_roster_first_name + ' ' + player_to_check_in_roster_last_name
+        # print('Player Name: ' + player_name)
+        is_offense = self.ts.check_if_in_roster(player_name, team_name)
         print(play_result)
+        # print('Is Offense? : ' + str(is_offense))
+        player_index = 0
         if(is_offense):
             offensive_play_personnel = self.get_offensive_play_personnel(index)
             # print(offensive_play_personnel)
             # quarterback and offensive line are special cases where they don't have a play result and qb will return *** instead of +,-
-            player = offensive_play_personnel.iloc[player_index]
-            print(player)
-            return player
+            formation = offensive_play_personnel.iloc[0]
+            offensive_play_personnel.drop(index=0, inplace=True)
+            print('Formation : ' + formation)
+            for player in offensive_play_personnel[offensive_play_personnel.columns[0]]:
+                player = offensive_play_personnel.iloc[player_index]
+                player_index += 1
+                print(player)
+            # player = offensive_play_personnel.iloc[player_index]
+            # print(player)
+            return offensive_play_personnel
         else:
            defensive_play_personnel = self.get_defensive_play_personnel(index)
         #    print(defensive_play_personnel)
-           player = defensive_play_personnel.iloc[player_index]
-           print(player)
+           formation = defensive_play_personnel.iloc[0]
+           print('Formation : ' + formation)
+           defensive_play_personnel.drop(index=0, inplace=True)
+           for player in defensive_play_personnel[defensive_play_personnel.columns[0]]:
+               player = defensive_play_personnel.iloc[player_index]
+               print(player)
+               player_index += 1
+        #    player = defensive_play_personnel.iloc[player_index]
+        #    print(player)
            return defensive_play_personnel

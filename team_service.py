@@ -15,7 +15,7 @@ class team_service:
         # todo: update this file location to the game file location. 
         # todo: may need to have the users upload this file at each run? not sure how often this file changes
         team_info = pd.read_csv("resources/team_information.csv")
-        print(team_info)
+        # print(team_info)
         team_id = -1
         # switch statement to return team id
         match team:
@@ -39,9 +39,13 @@ class team_service:
                 print("No team passed!!")
                 return team_id
             
-    def check_if_in_roster(self, player):   
+    def check_if_in_roster(self, player_name, team_name):   
         #  function to check if the player is on the team
         # can use the player record csv column A for player id and column F for team id, 99 is a free agent
         # marry that information with column A in player information csv to get the player name
         # call this in game_service.get_player_performance_from_play to determine if you want the offense or defense play result
-        return
+        player_id = ps.get_player_id(self, player_name)
+        player_team_id = ps.get_player_team_id(self, player_id)
+        team_id = self.get_team_id(team_name)
+        print("Player in roster? : " + str(player_team_id == team_id))
+        return player_team_id == team_id
