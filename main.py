@@ -6,7 +6,9 @@ from player_service import player_service
 front_office_service = front_office_football_service()
 
 game_service = game_service()
-game_service.get_player_performance_from_play(1, 'Las Vegas')
+# game_service.get_player_performance_from_play(1, 'Las Vegas')
+front_office_football_service = front_office_football_service()
+front_office_football_service.write_gamelog_to_csv()
 # player_service = player_service()
 # player_service.get_player_team_id(player_service.get_player_id('Baker Mayfield'))
 # team_service = team_service()
