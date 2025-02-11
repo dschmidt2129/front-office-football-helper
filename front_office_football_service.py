@@ -11,9 +11,15 @@ class front_office_football_service:
         # write the game log to a csv file
         # get the game log
         play_results = self.gs.get_game_result()
-        play_counter = 0
-        for i in range(1, len(play_results)):
-            print(self.gs.get_player_performance_from_play(play_counter, 'Las Vegas'))
-            play_counter += 1
-        # player_performance = gs.get_player_performance_from_play(1, 'Las Vegas')
+        play_counter = 3
+        for play_result in play_results:
+            if('Final Score' in play_result):
+                break
+            try:
+                print(f"Processing play {play_counter}")
+                player_performance = self.gs.get_player_performance_from_play(play_counter, 'Las Vegas')
+                print(player_performance)
+                play_counter += 1
+            except IndexError as e:
+                print(f"IndexError: {e} at play {play_counter}")
         return

@@ -29,18 +29,16 @@ class game_service:
         # returns the offensive play personnel from the indexed play result from the game logs
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file, keep_default_na=False)
-        # the first play always starts at index 3
         offensive_plays = all_tables[index].iloc[:,0:3]
-        # print(offensive_plays)
+        print(f"Offensive plays at index {index}:")
         return offensive_plays
     
     def get_defensive_play_personnel(self,index):
         # returns the defensive play personnel from the indexed play result from the game logs
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file, keep_default_na=False)
-        # the first play always starts at index 3
         defensive_plays = all_tables[index].iloc[:,3:6]
-        # print(defensive_plays)
+        print(f"Defensive plays at index {index}:")
         return defensive_plays
 
     def get_play_result(self,index):
@@ -49,52 +47,77 @@ class game_service:
         # index 0 is a list of the all of the play results
         all_tables = pd.read_html(file, keep_default_na=False)
         plays = all_tables[0] # currently a dataframe with one column
-        play_result = plays.loc[index+3,0] # for whatever reason, the html table isn't indexed like an array or list when converted to a dataframe
+        play_result = plays.loc[index,0]
         play_result = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
-        # print(play_result)
+        print(f"Plays DataFrame at index {index}:")
+        if('Played in ' in play_result or
+           'won the toss and elected to' in play_result or
+           'Start of first quarter' in play_result):
+            return 'Played in location logs, skipping...'
+        elif('Play-Action' in play_result):
+            play_result = play_result.replace('Play-Action. ', '')
+            return play_result
+        elif('Final Score' in play_result):
+            return 'Final Score'
         return play_result
 
     def get_player_performance_from_play(self, index, team_name):
-        # todo: iterate through the game log and get the player's performance and actions from the play +, -, etc... and write/append to csv 
-        # todo: add logic to ignore kicker and punter plays
-        # todo: add logic to ignore kicker and punter plays
         # gets the player's performance and actions from the play +, -, etc...
+        index -= 3 # this is to account for the play result being 3 plays ahead of the play personnel
         play_result = self.get_play_result(index) 
+        match play_result:
+            case str() if 'kicked' in play_result:
+                return 'kickoff or field goal play, skipping...'
+            case str() if 'punted' in play_result:
+                return 'punt play, skipping...'
+            case str() if 'attempted' in play_result:
+                return 'attempted field goal or extra point play, skipping...'
+            case str() if 'PENALTY' in play_result:
+                return 'penalty play, skipping...'
+            case str() if 'quarter' in play_result:
+                return 'start of or end of quarter, skipping...'
+            case str() if 'End of' in play_result:
+                return 'end of game, skipping...'
+            case str() if 'two-minute' in play_result:
+                return 'two-minute warning, skipping...'
+            case str() if 'time out' in play_result:
+                return 'time out play, skipping...'
+            case str() if 'Extra point' in play_result:
+                return 'extra point play, skipping...'
+            case str() if 'Played in location' in play_result:
+                return 'Played in location logs, skipping...'
+            
         play_result_arr = play_result.split(' ')
         player_to_check_in_roster_first_name = (play_result_arr[3])
-        # print('Player First Name: ' + player_to_check_in_roster_first_name)
+
         player_to_check_in_roster_last_name = (play_result_arr[4])
-        # print('Player Last Name: ' + player_to_check_in_roster_last_name)
+
         player_name = player_to_check_in_roster_first_name + ' ' + player_to_check_in_roster_last_name
-        # print('Player Name: ' + player_name)
+
         is_offense = self.ts.check_if_in_roster(player_name, team_name)
         print(play_result)
-        # print('Is Offense? : ' + str(is_offense))
-        player_index = 0
+
         if(is_offense):
             offensive_play_personnel = self.get_offensive_play_personnel(index)
-            # print(offensive_play_personnel)
-            # quarterback and offensive line are special cases where they don't have a play result and qb will return *** instead of +,-
-            formation = offensive_play_personnel.iloc[0,1]
-            print('Formation : ' + formation)
-            offensive_play_personnel.drop(index=0, inplace=True)
-            for player in offensive_play_personnel[offensive_play_personnel.columns[0]]:
-                player = offensive_play_personnel.iloc[player_index]
-                print(player)
-                player_index += 1
-            # player = offensive_play_personnel.iloc[player_index]
-            # print(player)
-            return offensive_play_personnel
+            print(f"Offensive play personnel at index {index}:")
+            if offensive_play_personnel.shape[0] > 0:
+                formation = offensive_play_personnel.iloc[0,1]
+                formation = str(formation)
+                print('Formation : ' + formation)
+                offensive_play_personnel.drop(index=0, inplace=True)
+                return offensive_play_personnel
+            else:
+                print(f"No offensive play personnel found at index {index}")
+                return None
         else:
-           defensive_play_personnel = self.get_defensive_play_personnel(index)
-        #    print(defensive_play_personnel)
-           formation = defensive_play_personnel.iloc[0,1]
-           print('Formation : ' + formation)
-           defensive_play_personnel.drop(index=0, inplace=True)
-           for player in defensive_play_personnel[defensive_play_personnel.columns[0]]:
-               player = defensive_play_personnel.iloc[player_index]
-               print(player)
-               player_index += 1
-        #    player = defensive_play_personnel.iloc[player_index]
-        #    print(player)
-           return defensive_play_personnel
+            defensive_play_personnel = self.get_defensive_play_personnel(index)
+            print(f"Defensive play personnel at index {index}:")
+            if defensive_play_personnel.shape[0] > 0:
+                formation = defensive_play_personnel.iloc[0,1]
+                formation = str(formation)
+                print('Formation : ' + formation)
+                defensive_play_personnel.drop(index=0, inplace=True)
+                return defensive_play_personnel
+            else:
+                print(f"No defensive play personnel found at index {index}")
+                return None

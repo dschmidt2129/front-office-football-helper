@@ -15,7 +15,9 @@ class player_service:
         player_info.set_index(['First_Name', 'Last_Name'], inplace=True)
         player_info.sort_index(inplace=True) # was receiving  PerformanceWarning: indexing past lexsort depth may impact performance. this indicates that the index is not sorted.
         player_id = player_info.loc[(player_first_name, player_last_name), player_info.columns[0]].item()
-        print('player id: ' + str(player_id))
+        if player_id is None:
+            return
+        # print('player id: ' + str(player_id))
         return player_id
 
     def get_player_team_id(self, player_id):
@@ -24,5 +26,7 @@ class player_service:
         player_record.set_index('Player_ID', inplace=True)
         player_record.sort_index(inplace=True) # was receiving  PerformanceWarning: indexing past lexsort depth may impact performance. this indicates that the index is not sorted.
         player_team_id = player_record.loc[player_id, player_record.columns[4]].item()
-        print('player team id: ' + str(player_team_id))
+        if player_team_id is None:
+            return
+        # print('player team id: ' + str(player_team_id))
         return player_team_id
