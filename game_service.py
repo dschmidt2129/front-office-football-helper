@@ -19,6 +19,31 @@ class game_service:
         # returns the file name from the local file system when retrieved from the game
         file = self.get_game_log('resources/lastboxlog.html')
         return (file.name)
+        
+    def get_clean_game_result(self):
+        # remove the unwanted plays (special teams, timeouts, quarter end, etc...) from the game log
+        game_result = self.get_game_result()
+        game_result = game_result[0]
+        play_counter = 0
+        for game_index in game_result.loc[:,0]:
+            play_result = game_result.loc[play_counter,0]
+            play = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
+            if('kicked' in play or
+               'punted' in play or
+               'attempted' in play or
+               'Start of' in play or
+               'End of' in play or
+               'two-minute' in play or
+               'time out' in play or
+               'Extra point' in play or
+               'Played in' in play or
+               'won the toss' in play or
+               'Final Score' in play):
+                game_result.drop(index=play_counter, inplace=True)
+                print('removing unwanted play : {}'.format(play))
+            play_counter += 1
+        game_result.reset_index(drop=True, inplace=True) # reset the index after dropping the unwanted plays
+        return game_result
     
     def get_game_result(self):
         game_log = self.get_game_log(self.read_game_log())
@@ -27,65 +52,36 @@ class game_service:
     
     def get_offensive_play_personnel(self,index):
         # returns the offensive play personnel from the indexed play result from the game logs
+        index += 1
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file, keep_default_na=False)
         offensive_plays = all_tables[index].iloc[:,0:3]
-        print(f"Offensive plays at index {index}:")
+        # print(f"Offensive plays at index {index}:")
         return offensive_plays
     
     def get_defensive_play_personnel(self,index):
+        index += 1
         # returns the defensive play personnel from the indexed play result from the game logs
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file, keep_default_na=False)
         defensive_plays = all_tables[index].iloc[:,3:6]
-        print(f"Defensive plays at index {index}:")
+        # print(f"Defensive plays at index {index}:")
         return defensive_plays
 
     def get_play_result(self,index):
         # returns the play result from the game logs
-        file = self.get_game_log(self.read_game_log())
-        # index 0 is a list of the all of the play results
-        all_tables = pd.read_html(file, keep_default_na=False)
-        plays = all_tables[0] # currently a dataframe with one column
+        # todo: need to create a method that removes the play based on index and call it here
+        plays = self.get_clean_game_result()
         play_result = plays.loc[index,0]
         play_result = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
-        print(f"Plays DataFrame at index {index}:")
-        if('Played in ' in play_result or
-           'won the toss and elected to' in play_result or
-           'Start of first quarter' in play_result):
-            return 'Played in location logs, skipping...'
-        elif('Play-Action' in play_result):
+        if('Play-Action' in play_result):
             play_result = play_result.replace('Play-Action. ', '')
             return play_result
-        elif('Final Score' in play_result):
-            return 'Final Score'
         return play_result
 
     def get_player_performance_from_play(self, index, team_name):
         # gets the player's performance and actions from the play +, -, etc...
-        index -= 3 # this is to account for the play result being 3 plays ahead of the play personnel
         play_result = self.get_play_result(index) 
-        match play_result:
-            case str() if 'kicked' in play_result:
-                return 'kickoff or field goal play, skipping...'
-            case str() if 'punted' in play_result:
-                return 'punt play, skipping...'
-            case str() if 'attempted' in play_result:
-                return 'attempted field goal or extra point play, skipping...'
-            case str() if 'PENALTY' in play_result:
-                return 'penalty play, skipping...'
-            case str() if 'quarter' in play_result:
-                return 'start of or end of quarter, skipping...'
-            case str() if 'End of' in play_result:
-                return 'end of game, skipping...'
-            case str() if 'two-minute' in play_result:
-                return 'two-minute warning, skipping...'
-            case str() if 'time out' in play_result:
-                return 'time out play, skipping...'
-            case str() if 'Extra point' in play_result:
-                return 'extra point play, skipping...'
-            case str() if 'Played in location' in play_result:
-                return 'Played in location logs, skipping...'
             
         play_result_arr = play_result.split(' ')
         player_to_check_in_roster_first_name = (play_result_arr[3])

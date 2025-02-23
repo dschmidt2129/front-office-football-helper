@@ -6,6 +6,7 @@ from player_service import player_service
 front_office_service = front_office_football_service()
  # todo: need to update this program to include up to date roster and gamelog
 game_service = game_service()
+# game_service.get_clean_game_result()
 front_office_football_service = front_office_football_service()
 front_office_football_service.write_gamelog_to_csv()
 # player_service = player_service()
