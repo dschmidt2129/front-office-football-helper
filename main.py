@@ -8,7 +8,7 @@ front_office_service = front_office_football_service()
 game_service = game_service()
 # game_service.get_clean_game_result()
 front_office_football_service = front_office_football_service()
-front_office_football_service.write_gamelog_to_csv()
+front_office_football_service.iterate_through_gamelog()
 # player_service = player_service()
 # team_service = team_service()
 

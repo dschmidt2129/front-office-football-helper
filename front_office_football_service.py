@@ -4,19 +4,25 @@ class front_office_football_service:
     def __init__(self):
         self.gs = gs()
 
-    def write_gamelog_to_csv(self):
+    def iterate_through_gamelog(self):
         # write the game log to a csv file
         # get the game log
         play_results = self.gs.get_clean_game_result()
         # print(f'play results : {play_results}')
         play_counter = 0
-        for play_result in play_results:
+        # Iterate through all plays in the cleaned game log
+        while play_counter < len(play_results):
             try:
-                # this is not iterating through the entire game log
                 print(f"Processing play {play_counter}")
+                # Get player performance for the current play
                 player_performance = self.gs.get_player_performance_from_play(play_counter, 'Las Vegas')
                 print(player_performance)
-                play_counter += 1
+                play_counter += 1  # Move to the next play
             except IndexError as e:
                 print(f"IndexError: {e} at play {play_counter}")
+                play_counter += 1  # Skip the problematic play and continue
+            except Exception as e:
+                print(f"Unexpected error: {e} at play {play_counter}")
+                play_counter += 1  # Skip the problematic play and continue
+        print("Finished processing all plays.")
         return

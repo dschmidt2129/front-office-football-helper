@@ -8,7 +8,7 @@ class game_service:
         # initializing player_service and team_service
         self.ps = ps()
         self.ts = ts()
-        pass
+        self.cleaned_game_log = None  # Cache for the cleaned game log
 
     def get_game_log(self, file_name):
         # grabs the game log from the local game file system
@@ -20,8 +20,11 @@ class game_service:
         file = self.get_game_log('resources/lastboxlog.html')
         return (file.name)
         
-    def get_clean_game_result(self):
-        # remove the unwanted plays (special teams, timeouts, quarter end, etc...) from the game log
+    def get_clean_game_result(self): 
+        # Create a new play data set instead of continuously iterating through the game log
+        if self.cleaned_game_log is not None:
+            return self.cleaned_game_log  # Return cached cleaned game log if it exists
+
         game_result = self.get_game_result()
         game_result = game_result[0]
         play_counter = 0
@@ -43,6 +46,7 @@ class game_service:
                 print('removing unwanted play : {}'.format(play))
             play_counter += 1
         game_result.reset_index(drop=True, inplace=True) # reset the index after dropping the unwanted plays
+        self.cleaned_game_log = game_result  # Cache the cleaned game log
         return game_result
     
     def get_game_result(self):
@@ -70,14 +74,19 @@ class game_service:
 
     def get_play_result(self,index):
         # returns the play result from the game logs
-        # todo: need to create a method that removes the play based on index and call it here
-        plays = self.get_clean_game_result()
-        play_result = plays.loc[index,0]
-        play_result = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
-        if('Play-Action' in play_result):
-            play_result = play_result.replace('Play-Action. ', '')
+        # Retrieve the play result from the cached cleaned game log
+        if self.cleaned_game_log is None:
+            self.get_clean_game_result()  # Ensure the cleaned game log is initialized
+        try:
+        # print(f"Play result at index {index}:")
+            play_result = self.cleaned_game_log.loc[index,0]
+            play_result = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
+            if('Play-Action' in play_result):
+                play_result = play_result.replace('Play-Action. ', '')
             return play_result
-        return play_result
+        except KeyError:
+            print(f"Index {index} is out of bounds for the cleaned game log.")
+            return None
 
     def get_player_performance_from_play(self, index, team_name):
         # gets the player's performance and actions from the play +, -, etc...
