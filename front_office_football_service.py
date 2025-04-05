@@ -18,6 +18,7 @@ class front_office_football_service:
                 player_performance = self.gs.get_player_performance_from_play(play_counter, 'Las Vegas')
                 print(player_performance)
                 play_counter += 1  # Move to the next play
+            # todo: account for final score or end of the list
             except IndexError as e:
                 print(f"IndexError: {e} at play {play_counter}")
                 play_counter += 1  # Skip the problematic play and continue

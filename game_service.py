@@ -41,7 +41,9 @@ class game_service:
                'Extra point' in play or
                'Played in' in play or
                'won the toss' in play or
-               'Final Score' in play):
+               'Final Score' in play or
+               'False Start' in play or
+               'two-point conversion' in play): # todo: need to figure out what to do with two-point conversion
                 game_result.drop(index=play_counter, inplace=True)
                 print('removing unwanted play : {}'.format(play))
             play_counter += 1
@@ -55,22 +57,34 @@ class game_service:
         return all_tables
     
     def get_offensive_play_personnel(self,index):
-        # returns the offensive play personnel from the indexed play result from the game logs
-        index += 1
+        # Returns the offensive play personnel from the indexed play result from the game logs
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file, keep_default_na=False)
-        offensive_plays = all_tables[index].iloc[:,0:3]
-        # print(f"Offensive plays at index {index}:")
-        return offensive_plays
+
+        # Ensure the index matches the cleaned game log
+        try:
+            offensive_plays = all_tables[index + 1].iloc[:, 0:3]  # Adjust index to match personnel table
+            # print(f"Offensive plays at index {index + 1}:")
+            # print(offensive_plays)
+            return offensive_plays
+        except IndexError:
+            print(f"No offensive play personnel found for index {index + 1}")
+            return None
     
     def get_defensive_play_personnel(self,index):
-        index += 1
-        # returns the defensive play personnel from the indexed play result from the game logs
+        # Returns the defensive play personnel from the indexed play result from the game logs
         file = self.get_game_log(self.read_game_log())
         all_tables = pd.read_html(file, keep_default_na=False)
-        defensive_plays = all_tables[index].iloc[:,3:6]
-        # print(f"Defensive plays at index {index}:")
-        return defensive_plays
+
+        # Ensure the index matches the cleaned game log
+        try:
+            defensive_plays = all_tables[index + 1].iloc[:, 3:6]  # Adjust index to match personnel table
+            # print(f"Defensive plays at index {index + 1}:")
+            # print(defensive_plays)
+            return defensive_plays
+        except IndexError:
+            print(f"No defensive play personnel found for index {index + 1}")
+            return None
 
     def get_play_result(self,index):
         # returns the play result from the game logs
@@ -91,7 +105,9 @@ class game_service:
     def get_player_performance_from_play(self, index, team_name):
         # gets the player's performance and actions from the play +, -, etc...
         play_result = self.get_play_result(index) 
-            
+        if play_result is None:
+            print(f"Skipping play at index {index} due to missing play result.")
+            return None
         play_result_arr = play_result.split(' ')
         player_to_check_in_roster_first_name = (play_result_arr[3])
 
@@ -105,7 +121,7 @@ class game_service:
         if(is_offense):
             offensive_play_personnel = self.get_offensive_play_personnel(index)
             print(f"Offensive play personnel at index {index}:")
-            if offensive_play_personnel.shape[0] > 0:
+            if offensive_play_personnel is not None and offensive_play_personnel.shape[0] > 0:
                 formation = offensive_play_personnel.iloc[0,1]
                 formation = str(formation)
                 print('Formation : ' + formation)
@@ -117,7 +133,7 @@ class game_service:
         else:
             defensive_play_personnel = self.get_defensive_play_personnel(index)
             print(f"Defensive play personnel at index {index}:")
-            if defensive_play_personnel.shape[0] > 0:
+            if defensive_play_personnel is not None and defensive_play_personnel.shape[0] > 0:
                 formation = defensive_play_personnel.iloc[0,1]
                 formation = str(formation)
                 print('Formation : ' + formation)
