@@ -15,7 +15,7 @@ class front_office_football_service:
             try:
                 print(f"Processing play {play_counter}")
                 # Get player performance for the current play
-                player_performance = self.gs.get_player_performance_from_play(play_counter, 'Las Vegas')
+                player_performance = self.gs.get_player_performance_from_play(play_counter, 'Cleveland')
                 print(player_performance)
                 play_counter += 1  # Move to the next play
             # todo: account for final score or end of the list

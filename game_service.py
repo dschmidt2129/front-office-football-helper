@@ -1,4 +1,6 @@
 import pandas as pd
+import csv
+import os
 from player_service import player_service as ps
 from team_service import team_service as ts
 
@@ -43,6 +45,9 @@ class game_service:
                'won the toss' in play or
                'Final Score' in play or
                'False Start' in play or
+               'Informal' in play or
+               'dropped to one knee' in play or
+               # 'PENALTY' in play or  # to do:  is this what we want?  If we don't remove penalty plays then parsing becomes difficult for (at least) YAC identification
                'two-point conversion' in play): # todo: need to figure out what to do with two-point conversion
                 game_result.drop(index=play_counter, inplace=True)
                 print('removing unwanted play : {}'.format(play))
@@ -126,7 +131,9 @@ class game_service:
                 formation = str(formation)
                 print('Formation : ' + formation)
                 offensive_play_personnel.drop(index=0, inplace=True)
-                return offensive_play_personnel
+                if 'pass' in play_result:
+                    receivers_in_play = self.get_receivers(play_result, offensive_play_personnel)
+                    print(receivers_in_play)
             else:
                 print(f"No offensive play personnel found at index {index}")
                 return None
@@ -142,3 +149,79 @@ class game_service:
             else:
                 print(f"No defensive play personnel found at index {index}")
                 return None
+   
+    def get_receivers(self, play_result, offensive_play_personnel):
+        receivers = []
+        play_result_arr = play_result.split(' ')
+        if 'incomplete' in play_result:  # to do:  need to add case for intercetions
+            caught = 0
+            rec_yards = 0
+            intended_receiver_last_name = (play_result_arr[12])
+            intended_receiver_last_name = intended_receiver_last_name[:-1]
+            yards_after_catch = 0
+        elif 'completed' in play_result:
+            intended_receiver_last_name = (play_result_arr[10])
+            # caught = 1
+            # rec_yards = int(play_result_arr[12])
+            # yards_after_catch = 0
+            # if 'after the catch' in play_result:  # to do - resolve parsing YAC on plays where a penalty was called but not accepted
+            #     last_index = len(play_result_arr) - 1    
+            #     yards_after_catch = int(play_result_arr[last_index-5])
+        elif 'was blocked' in play_result:
+            caught = 0
+            rec_yards = 0
+            yards_after_catch = 0
+            intended_receiver_last_name = (play_result_arr[15])
+            intended_receiver_last_name = intended_receiver_last_name[:-1]
+        for i in range(1,6):
+            if ('Primary' in str(offensive_play_personnel.iloc[i, 1]) or
+                'Secondary' in str(offensive_play_personnel.iloc[i, 1]) or
+                'Outlet' in str(offensive_play_personnel.iloc[i, 1])
+            ):
+                receiver_name_and_position = str(offensive_play_personnel.iloc[i, 0])
+                position_and_name = receiver_name_and_position.split(' ', 1)
+                receiver_name = position_and_name[1]
+                position = position_and_name[0]
+                priority_plus_route = str(offensive_play_personnel.iloc[i, 1])
+                priority_plus_route_arr = priority_plus_route.split(',')
+                priority = priority_plus_route_arr[0]
+                route = priority_plus_route_arr[1]
+                route = route.lstrip()
+                if receiver_name.endswith(intended_receiver_last_name):
+                    targeted = 1
+                    if 'completed' in play_result:
+                        caught = 1
+                        rec_yards = int(play_result_arr[12])
+                        yards_after_catch = 0
+                        if 'after the catch' in play_result:  # to do - resolve parsing YAC on plays where a penalty was called but not accepted
+                            last_index = len(play_result_arr) - 1    
+                            yards_after_catch = int(play_result_arr[last_index-5])
+                else:
+                    targeted = 0
+                    caught = 0
+                    rec_yards = 0
+                    yards_after_catch = 0
+                new_rec_row = []
+                new_rec_row.append(receiver_name)
+                new_rec_row.append(position)
+                new_rec_row.append(priority)
+                new_rec_row.append(route)
+                new_rec_row.append(targeted)
+                new_rec_row.append(caught)
+                new_rec_row.append(rec_yards)
+                new_rec_row.append(yards_after_catch)
+                receivers.append(new_rec_row)
+        
+        csv_file = 'receivers_in_game.csv'
+        file_exists = os.path.isfile(csv_file)
+
+        try:
+            with open(csv_file, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                if not file_exists:
+                    writer.writerow(['Player Name','Position' ,'Route Prioity', 'Route', 'Targeted?', 'Caught?', 'Yards', 'YAC'])
+                writer.writerows(receivers)
+                print(f"Receiver data for this play appended to '{csv_file}'.")
+        except Exception as e:
+            print(f"Error writing to CSV file '{csv_file}': {e}")
+        return receivers
