@@ -152,8 +152,12 @@ class game_service:
    
     def get_receivers(self, play_result, offensive_play_personnel):
         receivers = []
+        PENALTY_find = play_result.find("PENALTY")
+        if(PENALTY_find != -1):
+            play_result = play_result[:PENALTY_find]
         play_result_arr = play_result.split(' ')
-        if 'incomplete' in play_result:  # to do:  need to add case for intercetions
+        passer = play_result_arr[4]
+        if 'incomplete' in play_result:
             caught = 0
             rec_yards = 0
             intended_receiver_last_name = (play_result_arr[12])
@@ -161,18 +165,17 @@ class game_service:
             yards_after_catch = 0
         elif 'completed' in play_result:
             intended_receiver_last_name = (play_result_arr[10])
-            # caught = 1
-            # rec_yards = int(play_result_arr[12])
-            # yards_after_catch = 0
-            # if 'after the catch' in play_result:  # to do - resolve parsing YAC on plays where a penalty was called but not accepted
-            #     last_index = len(play_result_arr) - 1    
-            #     yards_after_catch = int(play_result_arr[last_index-5])
         elif 'was blocked' in play_result:
             caught = 0
             rec_yards = 0
             yards_after_catch = 0
             intended_receiver_last_name = (play_result_arr[15])
             intended_receiver_last_name = intended_receiver_last_name[:-1]
+        elif 'intercepted' in play_result:
+            caught = 0
+            rec_yards = 0
+            yards_after_catch = 0
+            intended_receiver_last_name = (play_result_arr[11])
         for i in range(1,6):
             if ('Primary' in str(offensive_play_personnel.iloc[i, 1]) or
                 'Secondary' in str(offensive_play_personnel.iloc[i, 1]) or
@@ -210,6 +213,7 @@ class game_service:
                 new_rec_row.append(caught)
                 new_rec_row.append(rec_yards)
                 new_rec_row.append(yards_after_catch)
+                new_rec_row.append(passer)
                 receivers.append(new_rec_row)
         
         csv_file = 'receivers_in_game.csv'
@@ -219,7 +223,7 @@ class game_service:
             with open(csv_file, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 if not file_exists:
-                    writer.writerow(['Player Name','Position' ,'Route Prioity', 'Route', 'Targeted?', 'Caught?', 'Yards', 'YAC'])
+                    writer.writerow(['Player Name','Position' ,'Route Prioity', 'Route', 'Targeted?', 'Caught?', 'Yards', 'YAC', 'Passer'])
                 writer.writerows(receivers)
                 print(f"Receiver data for this play appended to '{csv_file}'.")
         except Exception as e:

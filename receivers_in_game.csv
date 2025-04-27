@@ -1,0 +1,353 @@
+Player Name,Position,Route Prioity,Route,Targeted?,Caught?,Yards,YAC,Passer
+J.Jones,X(SE),Outlet,8 Post (19-26),0,0,0,0,Raymond
+A.Hooper,TE,Outlet,4 Curl (9-12),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,S Screen (S),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+J.Shaw,TE,Secondary,5 Deep Out (13-18),1,1,14,0,Raymond
+J.Jones,X(SE),Outlet,F Flat (0-4),0,0,0,0,Raymond
+A.Hooper,TE,Primary,0 Dig (0-4),1,1,4,2,Raymond
+O.Beckham,Z(FL),Secondary,1 Out (5-8),0,0,0,0,Raymond
+J.Jones,X(SE),Primary,S Screen (S),1,1,-2,0,Raymond
+A.Hooper,TE,Outlet,1 Out (5-8),0,0,0,0,Raymond
+O.Beckham,Z(FL),Secondary,9 Fade (27-39),0,0,0,0,Raymond
+K.Hunt,RB,Outlet,1 Out (5-8),0,0,0,0,Raymond
+J.Shaw,TE,Outlet,2 Slant (5-8),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+O.Beckham,Z(FL),Secondary,5 Deep Out (13-18),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,F Flat (0-4),0,0,0,0,Raymond
+C.Kupp,SLOT,Primary,5 Deep Out (13-18),1,0,0,0,Raymond
+J.Jones,X(SE),Outlet,D Deep Fade (40+),0,0,0,0,Raymond
+A.Hooper,TE,Secondary,7 Corner (19-26),0,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,1 Out (5-8),0,0,0,0,Raymond
+N.Chubb,RB,Primary,1 Out (5-8),1,0,0,0,Raymond
+J.Shaw,TE,Outlet,F Flat (0-4),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,F Flat (0-4),0,0,0,0,Raymond
+C.Kupp,SLOT,Outlet,5 Deep Out (13-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,6 Deep In (13-18),1,0,0,0,Raymond
+K.Hunt,RB,Secondary,0 Dig (0-4),0,0,0,0,Raymond
+A.Janovich,FB,Outlet,4 Curl (9-12),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,S Screen (S),0,0,0,0,Raymond
+A.Hooper,TE,Outlet,1 Out (5-8),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,2 Slant (5-8),1,1,4,0,Raymond
+K.Hunt,RB,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+J.Shaw,TE,Secondary,1 Out (5-8),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,4 Curl (9-12),0,0,0,0,Raymond
+J.Jones,Z(FL),Primary,2 Slant (5-8),1,1,3,0,Raymond
+A.Janovich,FB,Secondary,F Flat (0-4),0,0,0,0,Raymond
+J.Jones,X(SE),Secondary,3 Comeback (9-12),1,0,0,0,Raymond
+A.Hooper,TE,Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,F Flat (0-4),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+J.Shaw,TE,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+J.Jones,X(SE),Secondary,1 Out (5-8),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,4 Curl (9-12),1,1,11,0,Raymond
+O.Beckham,Z(FL),Primary,2 Slant (5-8),0,0,0,0,Raymond
+K.Hunt,RB,Outlet,3 Comeback (9-12),0,0,0,0,Raymond
+C.Kupp,SLOT,Outlet,D Deep Fade (40+),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+L.McGregor,TE,Primary,0 Dig (0-4),1,1,3,0,Raymond
+O.Beckham,Z(FL),Outlet,4 Curl (9-12),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+C.Kupp,SLOT,Secondary,9 Fade (27-39),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,W Wheel (9-18),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Secondary,4 Curl (9-12),1,1,22,13,Raymond
+C.Kupp,SLOT,Outlet,1 Out (5-8),0,0,0,0,Raymond
+D.Peoples-Jones,SLOT,Primary,F Flat (0-4),0,0,0,0,Raymond
+J.Jones,X(SE),Primary,2 Slant (5-8),1,1,3,0,Raymond
+L.McGregor,TE,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,0 Dig (0-4),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,2 Slant (5-8),0,0,0,0,Raymond
+C.Kupp,SLOT,Secondary,S Screen (S),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,S Screen (S),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,4 Curl (9-12),0,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,7 Corner (19-26),0,0,0,0,Raymond
+K.Hunt,RB,Secondary,F Flat (0-4),0,0,0,0,Raymond
+C.Kupp,SLOT,Primary,W Wheel (9-18),1,1,17,6,Raymond
+J.Jones,X(SE),Outlet,8 Post (19-26),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,3 Comeback (9-12),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,3 Comeback (9-12),1,1,8,0,Raymond
+C.Kupp,SLOT,Secondary,4 Curl (9-12),0,0,0,0,Raymond
+J.Jones,X(SE),Secondary,5 Deep Out (13-18),0,0,0,0,Raymond
+A.Hooper,TE,Primary,4 Curl (9-12),1,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+K.Hunt,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+J.Shaw,TE,Outlet,7 Corner (19-26),0,0,0,0,Raymond
+A.Hooper,TE,Outlet,2 Slant (5-8),0,0,0,0,Raymond
+L.McGregor,TE,Primary,2 Slant (5-8),1,1,8,0,Raymond
+J.Shaw,TE,Outlet,S Screen (S),0,0,0,0,Raymond
+A.Janovich,FB,Secondary,2 Slant (5-8),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,0 Dig (0-4),0,0,0,0,Raymond
+A.Hooper,TE,Secondary,0 Dig (0-4),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,F Flat (0-4),1,1,2,0,Raymond
+N.Chubb,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+A.Janovich,FB,Outlet,S Screen (S),0,0,0,0,Raymond
+A.Hooper,TE,Outlet,1 Out (5-8),0,0,0,0,Raymond
+L.McGregor,TE,Secondary,1 Out (5-8),0,0,0,0,Raymond
+J.Jones,Z(FL),Outlet,F Flat (0-4),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+J.Shaw,TE,Primary,3 Comeback (9-12),1,0,0,0,Raymond
+J.Jones,X(SE),Outlet,1 Out (5-8),0,0,0,0,Raymond
+A.Hooper,TE,Secondary,1 Out (5-8),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,9 Fade (27-39),1,1,32,1,Raymond
+K.Hunt,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+A.Janovich,FB,Outlet,F Flat (0-4),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,D Deep Fade (40+),0,0,0,0,Raymond
+A.Hooper,TE,Secondary,7 Corner (19-26),1,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,1 Out (5-8),0,0,0,0,Raymond
+N.Chubb,RB,Primary,1 Out (5-8),0,0,0,0,Raymond
+J.Shaw,TE,Outlet,F Flat (0-4),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,W Wheel (9-18),0,0,0,0,Raymond
+L.McGregor,TE,Secondary,2 Slant (5-8),0,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,5 Deep Out (13-18),0,0,0,0,Raymond
+C.Kupp,SLOT,Primary,4 Curl (9-12),1,1,4,0,Raymond
+D.Peoples-Jones,SLOT,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,S Screen (S),0,0,0,0,Raymond
+A.Hooper,TE,Primary,S Screen (S),0,0,0,0,Raymond
+O.Beckham,Z(FL),Secondary,S Screen (S),1,1,12,7,Raymond
+J.Shaw,TE,Outlet,1 Out (5-8),0,0,0,0,Raymond
+J.Jones,X(SE),Secondary,1 Out (5-8),1,1,6,0,Raymond
+L.McGregor,TE,Outlet,4 Curl (9-12),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,2 Slant (5-8),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,3 Comeback (9-12),0,0,0,0,Raymond
+C.Kupp,SLOT,Outlet,D Deep Fade (40+),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,S Screen (S),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,4 Curl (9-12),0,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,7 Corner (19-26),0,0,0,0,Raymond
+K.Hunt,RB,Secondary,F Flat (0-4),0,0,0,0,Raymond
+C.Kupp,SLOT,Primary,W Wheel (9-18),1,1,11,0,Raymond
+J.Jones,X(SE),Outlet,W Wheel (9-18),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Secondary,4 Curl (9-12),0,0,0,0,Raymond
+C.Kupp,SLOT,Outlet,1 Out (5-8),0,0,0,0,Raymond
+D.Peoples-Jones,SLOT,Primary,F Flat (0-4),0,0,0,0,Raymond
+J.Jones,X(SE),Secondary,3 Comeback (9-12),0,0,0,0,Raymond
+A.Hooper,TE,Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,F Flat (0-4),1,1,2,0,Raymond
+N.Chubb,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+J.Shaw,TE,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+C.Kupp,SLOT,Primary,7 Corner (19-26),1,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,S Screen (S),0,0,0,0,Raymond
+K.Hunt,RB,Outlet,1 Out (5-8),0,0,0,0,Raymond
+A.Janovich,FB,Secondary,S Screen (S),0,0,0,0,Raymond
+J.Jones,X(SE),Secondary,1 Out (5-8),1,0,0,0,Raymond
+L.McGregor,TE,Outlet,W Wheel (9-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,3 Comeback (9-12),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,1 Out (5-8),0,0,0,0,Raymond
+C.Kupp,SLOT,Primary,S Screen (S),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,7 Corner (19-26),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,5 Deep Out (13-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,5 Deep Out (13-18),0,0,0,0,Raymond
+C.Kupp,SLOT,Secondary,2 Slant (5-8),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,W Wheel (9-18),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+O.Beckham,Z(FL),Secondary,2 Slant (5-8),0,0,0,0,Raymond
+K.Hunt,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+C.Kupp,SLOT,Primary,5 Deep Out (13-18),1,1,12,0,Raymond
+J.Jones,X(SE),Outlet,W Wheel (9-18),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Secondary,4 Curl (9-12),0,0,0,0,Raymond
+C.Kupp,SLOT,Outlet,1 Out (5-8),0,0,0,0,Raymond
+D.Peoples-Jones,SLOT,Primary,F Flat (0-4),1,1,3,0,Raymond
+J.Jones,X(SE),Secondary,3 Comeback (9-12),0,0,0,0,Raymond
+A.Hooper,TE,Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,F Flat (0-4),0,0,0,0,Raymond
+K.Hunt,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+J.Shaw,TE,Outlet,0 Dig (0-4),1,1,8,0,Raymond
+H.Ruggs,X(SE),Outlet,0 Dig (0-4),0,0,0,0,Winston
+D.Waller,TE,Secondary,0 Dig (0-4),1,1,25,18,Winston
+K.Doss,Z(FL),Primary,5 Deep Out (13-18),0,0,0,0,Winston
+H.Ruggs,X(SE),Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+D.Waller,TE,Outlet,6 Deep In (13-18),0,0,0,0,Winston
+K.Doss,Z(FL),Primary,D Deep Fade (40+),1,0,0,0,Winston
+C.Conley,SLOT,Secondary,0 Dig (0-4),0,0,0,0,Winston
+A.Brown,SLOT,Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,S Screen (S),1,1,13,10,Winston
+D.Waller,TE,Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,3 Comeback (9-12),0,0,0,0,Winston
+J.Jacobs,RB,Secondary,W Wheel (9-18),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,6 Deep In (13-18),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,4 Curl (9-12),1,1,9,0,Winston
+D.Waller,TE,Outlet,0 Dig (0-4),0,0,0,0,Winston
+K.Doss,Z(FL),Secondary,2 Slant (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,1 Out (5-8),1,0,0,0,Winston
+K.Doss,Z(FL),Outlet,2 Slant (5-8),0,0,0,0,Winston
+J.Jacobs,RB,Outlet,1 Out (5-8),0,0,0,0,Winston
+C.Conley,SLOT,Secondary,2 Slant (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Secondary,1 Out (5-8),1,1,12,3,Winston
+D.Waller,TE,Outlet,7 Corner (19-26),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,4 Curl (9-12),0,0,0,0,Winston
+C.Conley,SLOT,Primary,4 Curl (9-12),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,4 Curl (9-12),1,1,12,2,Winston
+D.Waller,TE,Secondary,S Screen (S),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+J.Jacobs,RB,Outlet,S Screen (S),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,1 Out (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,0 Dig (0-4),0,0,0,0,Winston
+K.Doss,Z(FL),Secondary,3 Comeback (9-12),0,0,0,0,Winston
+J.Jacobs,RB,Outlet,2 Slant (5-8),1,1,9,0,Winston
+C.Conley,SLOT,Outlet,1 Out (5-8),0,0,0,0,Winston
+F.Moreau,TE,Secondary,S Screen (S),0,0,0,0,Winston
+H.Ruggs,Z(FL),Primary,2 Slant (5-8),1,1,23,15,Winston
+J.Jacobs,RB,Outlet,2 Slant (5-8),0,0,0,0,Winston
+A.Ingold,FB,Outlet,0 Dig (0-4),0,0,0,0,Winston
+H.Ruggs,X(SE),Secondary,0 Dig (0-4),0,0,0,0,Winston
+D.Waller,TE,Primary,3 Comeback (9-12),1,1,30,17,Winston
+K.Doss,Z(FL),Outlet,7 Corner (19-26),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,4 Curl (9-12),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,1 Out (5-8),1,1,3,0,Winston
+D.Waller,TE,Outlet,0 Dig (0-4),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,9 Fade (27-39),0,0,0,0,Winston
+J.Jacobs,RB,Secondary,1 Out (5-8),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,9 Fade (27-39),0,0,0,0,Winston
+H.Ruggs,X(SE),Secondary,9 Fade (27-39),0,0,0,0,Winston
+D.Waller,TE,Outlet,2 Slant (5-8),0,0,0,0,Winston
+K.Doss,Z(FL),Primary,W Wheel (9-18),1,0,0,0,Winston
+J.Jacobs,RB,Outlet,S Screen (S),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,D Deep Fade (40+),0,0,0,0,Winston
+D.Waller,TE,Secondary,1 Out (5-8),0,0,0,0,Winston
+F.Moreau,TE,Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+H.Ruggs,Z(FL),Outlet,S Screen (S),0,0,0,0,Winston
+R.Verma,RB,Primary,S Screen (S),1,1,3,2,Winston
+T.Kelce,TE,Outlet,0 Dig (0-4),0,0,0,0,Winston
+H.Ruggs,X(SE),Outlet,W Wheel (9-18),0,0,0,0,Winston
+D.Waller,TE,Primary,F Flat (0-4),1,1,18,12,Winston
+K.Doss,Z(FL),Secondary,1 Out (5-8),0,0,0,0,Winston
+F.Moreau,TE,Outlet,2 Slant (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+D.Waller,TE,Outlet,6 Deep In (13-18),0,0,0,0,Winston
+K.Doss,Z(FL),Primary,D Deep Fade (40+),1,0,0,0,Winston
+C.Conley,SLOT,Secondary,0 Dig (0-4),0,0,0,0,Winston
+A.Brown,SLOT,Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+D.Waller,TE,Secondary,0 Dig (0-4),1,1,1,0,Winston
+F.Moreau,TE,Outlet,4 Curl (9-12),0,0,0,0,Winston
+H.Ruggs,Z(FL),Primary,1 Out (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Outlet,0 Dig (0-4),0,0,0,0,Winston
+D.Waller,TE,Secondary,0 Dig (0-4),1,1,25,18,Winston
+K.Doss,Z(FL),Primary,5 Deep Out (13-18),0,0,0,0,Winston
+H.Ruggs,X(SE),Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+D.Waller,TE,Outlet,6 Deep In (13-18),0,0,0,0,Winston
+K.Doss,Z(FL),Primary,D Deep Fade (40+),1,0,0,0,Winston
+C.Conley,SLOT,Secondary,0 Dig (0-4),0,0,0,0,Winston
+A.Brown,SLOT,Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,S Screen (S),1,1,13,10,Winston
+D.Waller,TE,Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,3 Comeback (9-12),0,0,0,0,Winston
+J.Jacobs,RB,Secondary,W Wheel (9-18),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,6 Deep In (13-18),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,4 Curl (9-12),1,1,9,0,Winston
+D.Waller,TE,Outlet,0 Dig (0-4),0,0,0,0,Winston
+K.Doss,Z(FL),Secondary,2 Slant (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,1 Out (5-8),1,0,0,0,Winston
+K.Doss,Z(FL),Outlet,2 Slant (5-8),0,0,0,0,Winston
+J.Jacobs,RB,Outlet,1 Out (5-8),0,0,0,0,Winston
+C.Conley,SLOT,Secondary,2 Slant (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Secondary,1 Out (5-8),1,1,12,3,Winston
+D.Waller,TE,Outlet,7 Corner (19-26),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,4 Curl (9-12),0,0,0,0,Winston
+C.Conley,SLOT,Primary,4 Curl (9-12),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,4 Curl (9-12),1,1,12,2,Winston
+D.Waller,TE,Secondary,S Screen (S),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+J.Jacobs,RB,Outlet,S Screen (S),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,1 Out (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,0 Dig (0-4),0,0,0,0,Winston
+K.Doss,Z(FL),Secondary,3 Comeback (9-12),0,0,0,0,Winston
+J.Jacobs,RB,Outlet,2 Slant (5-8),1,1,9,0,Winston
+C.Conley,SLOT,Outlet,1 Out (5-8),0,0,0,0,Winston
+F.Moreau,TE,Secondary,S Screen (S),0,0,0,0,Winston
+H.Ruggs,Z(FL),Primary,2 Slant (5-8),1,1,23,15,Winston
+J.Jacobs,RB,Outlet,2 Slant (5-8),0,0,0,0,Winston
+A.Ingold,FB,Outlet,0 Dig (0-4),0,0,0,0,Winston
+H.Ruggs,X(SE),Secondary,0 Dig (0-4),0,0,0,0,Winston
+D.Waller,TE,Primary,3 Comeback (9-12),1,1,30,17,Winston
+K.Doss,Z(FL),Outlet,7 Corner (19-26),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,4 Curl (9-12),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,1 Out (5-8),1,1,3,0,Winston
+D.Waller,TE,Outlet,0 Dig (0-4),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,9 Fade (27-39),0,0,0,0,Winston
+J.Jacobs,RB,Secondary,1 Out (5-8),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,9 Fade (27-39),0,0,0,0,Winston
+H.Ruggs,X(SE),Secondary,9 Fade (27-39),0,0,0,0,Winston
+D.Waller,TE,Outlet,2 Slant (5-8),0,0,0,0,Winston
+K.Doss,Z(FL),Primary,W Wheel (9-18),1,0,0,0,Winston
+J.Jacobs,RB,Outlet,S Screen (S),0,0,0,0,Winston
+C.Conley,SLOT,Outlet,D Deep Fade (40+),0,0,0,0,Winston
+D.Waller,TE,Secondary,1 Out (5-8),0,0,0,0,Winston
+F.Moreau,TE,Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+H.Ruggs,Z(FL),Outlet,S Screen (S),0,0,0,0,Winston
+R.Verma,RB,Primary,S Screen (S),1,1,3,2,Winston
+T.Kelce,TE,Outlet,0 Dig (0-4),0,0,0,0,Winston
+H.Ruggs,X(SE),Outlet,W Wheel (9-18),0,0,0,0,Winston
+D.Waller,TE,Primary,F Flat (0-4),1,1,18,12,Winston
+K.Doss,Z(FL),Secondary,1 Out (5-8),0,0,0,0,Winston
+F.Moreau,TE,Outlet,2 Slant (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+D.Waller,TE,Outlet,6 Deep In (13-18),0,0,0,0,Winston
+K.Doss,Z(FL),Primary,D Deep Fade (40+),1,0,0,0,Winston
+C.Conley,SLOT,Secondary,0 Dig (0-4),0,0,0,0,Winston
+A.Brown,SLOT,Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+D.Waller,TE,Secondary,0 Dig (0-4),1,1,1,0,Winston
+F.Moreau,TE,Outlet,4 Curl (9-12),0,0,0,0,Winston
+H.Ruggs,Z(FL),Primary,1 Out (5-8),0,0,0,0,Winston
+H.Ruggs,X(SE),Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+D.Waller,TE,Outlet,W Wheel (9-18),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,D Deep Fade (40+),0,0,0,0,Winston
+R.Verma,RB,Secondary,2 Slant (5-8),0,0,0,0,Winston
+C.Conley,SLOT,Primary,2 Slant (5-8),0,0,0,0,Winston
+D.Waller,TE,Outlet,W Wheel (9-18),0,0,0,0,Winston
+F.Moreau,TE,Secondary,2 Slant (5-8),0,0,0,0,Winston
+H.Ruggs,Z(FL),Outlet,5 Deep Out (13-18),0,0,0,0,Winston
+J.Jacobs,RB,Primary,W Wheel (9-18),1,1,10,0,Winston
+T.Kelce,TE,Outlet,8 Post (19-26),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,S Screen (S),0,0,0,0,Winston
+D.Waller,TE,Outlet,4 Curl (9-12),0,0,0,0,Winston
+K.Doss,Z(FL),Outlet,S Screen (S),0,0,0,0,Winston
+R.Verma,RB,Outlet,F Flat (0-4),0,0,0,0,Winston
+F.Moreau,TE,Secondary,2 Slant (5-8),1,1,10,0,Winston
+H.Ruggs,X(SE),Secondary,1 Out (5-8),0,0,0,0,Winston
+D.Waller,TE,Outlet,2 Slant (5-8),0,0,0,0,Winston
+K.Doss,Z(FL),Primary,6 Deep In (13-18),1,0,0,0,Winston
+C.Conley,SLOT,Outlet,4 Curl (9-12),0,0,0,0,Winston
+H.Ruggs,X(SE),Outlet,0 Dig (0-4),0,0,0,0,Winston
+D.Waller,TE,Secondary,0 Dig (0-4),1,1,3,0,Winston
+K.Doss,Z(FL),Primary,5 Deep Out (13-18),0,0,0,0,Winston
+H.Ruggs,X(SE),Primary,S Screen (S),1,1,3,0,Winston
+D.Waller,TE,Outlet,7 Corner (19-26),0,0,0,0,Winston
+K.Doss,Z(FL),Secondary,6 Deep In (13-18),0,0,0,0,Winston
+F.Moreau,TE,Outlet,1 Out (5-8),0,0,0,0,Winston
+J.Jones,X(SE),Outlet,8 Post (19-26),0,0,0,0,Raymond
+A.Hooper,TE,Outlet,4 Curl (9-12),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,S Screen (S),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+J.Shaw,TE,Secondary,5 Deep Out (13-18),1,1,14,0,Raymond
+J.Jones,X(SE),Outlet,F Flat (0-4),0,0,0,0,Raymond
+A.Hooper,TE,Primary,0 Dig (0-4),1,1,4,2,Raymond
+O.Beckham,Z(FL),Secondary,1 Out (5-8),0,0,0,0,Raymond
+J.Jones,X(SE),Primary,S Screen (S),1,1,-2,0,Raymond
+A.Hooper,TE,Outlet,1 Out (5-8),0,0,0,0,Raymond
+O.Beckham,Z(FL),Secondary,9 Fade (27-39),0,0,0,0,Raymond
+K.Hunt,RB,Outlet,1 Out (5-8),0,0,0,0,Raymond
+J.Shaw,TE,Outlet,2 Slant (5-8),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,6 Deep In (13-18),0,0,0,0,Raymond
+L.McGregor,TE,Outlet,0 Dig (0-4),0,0,0,0,Raymond
+O.Beckham,Z(FL),Secondary,5 Deep Out (13-18),0,0,0,0,Raymond
+N.Chubb,RB,Outlet,F Flat (0-4),0,0,0,0,Raymond
+C.Kupp,SLOT,Primary,5 Deep Out (13-18),1,0,0,0,Raymond
+J.Jones,X(SE),Outlet,D Deep Fade (40+),0,0,0,0,Raymond
+A.Hooper,TE,Secondary,7 Corner (19-26),0,0,0,0,Raymond
+O.Beckham,Z(FL),Outlet,1 Out (5-8),0,0,0,0,Raymond
+N.Chubb,RB,Primary,1 Out (5-8),1,0,0,0,Raymond
+J.Shaw,TE,Outlet,F Flat (0-4),0,0,0,0,Raymond
+A.Hooper,TE,Outlet,1 Out (5-8),0,0,0,0,Raymond
+L.McGregor,TE,Secondary,1 Out (5-8),1,1,12,5,Raymond
+J.Jones,Z(FL),Outlet,F Flat (0-4),0,0,0,0,Raymond
+K.Hunt,RB,Outlet,S Screen (S),0,0,0,0,Raymond
+J.Shaw,TE,Primary,3 Comeback (9-12),0,0,0,0,Raymond
+J.Jones,X(SE),Outlet,F Flat (0-4),0,0,0,0,Raymond
+C.Kupp,SLOT,Outlet,5 Deep Out (13-18),0,0,0,0,Raymond
+O.Beckham,Z(FL),Primary,6 Deep In (13-18),1,0,0,0,Raymond
+K.Hunt,RB,Secondary,0 Dig (0-4),0,0,0,0,Raymond
+A.Janovich,FB,Outlet,4 Curl (9-12),0,0,0,0,Raymond
