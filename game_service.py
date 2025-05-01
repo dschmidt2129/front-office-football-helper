@@ -6,10 +6,10 @@ from team_service import team_service as ts
 
 class game_service:
 
-    def __init__(self):
+    def __init__(self, path, output_widget):
         # initializing player_service and team_service
-        self.ps = ps()
-        self.ts = ts()
+        self.ps = ps(path)
+        self.ts = ts(path)
         self.cleaned_game_log = None  # Cache for the cleaned game log
 
     def get_game_log(self, file_name):
@@ -17,22 +17,23 @@ class game_service:
         file = open(file_name)
         return file
     
-    def read_game_log(self):
+    def read_game_log(self, path):
         # returns the file name from the local file system when retrieved from the game
-        file = self.get_game_log('resources/lastboxlog.html')
+        file = self.get_game_log(path + '/leagues/SFL00004/lastboxlog.html')
         return (file.name)
         
-    def get_clean_game_result(self): 
+    def get_clean_game_result(self, path, output_widget): 
         # Create a new play data set instead of continuously iterating through the game log
         if self.cleaned_game_log is not None:
             return self.cleaned_game_log  # Return cached cleaned game log if it exists
 
-        game_result = self.get_game_result()
+        game_result = self.get_game_result(path, output_widget)
         game_result = game_result[0]
         play_counter = 0
         for game_index in game_result.loc[:,0]:
             play_result = game_result.loc[play_counter,0]
             play = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
+            play_arr = play.split(' ')
             if('kicked' in play or
                'punted' in play or
                'attempted' in play or
@@ -47,23 +48,24 @@ class game_service:
                'False Start' in play or
                'Informal' in play or
                'dropped to one knee' in play or
-               # 'PENALTY' in play or  # to do:  is this what we want?  If we don't remove penalty plays then parsing becomes difficult for (at least) YAC identification
-               'two-point conversion' in play): # todo: need to figure out what to do with two-point conversion
+               'two-point conversion' in play or # todo: need to figure out what to do with two-point conversion
+               play_arr[3] == 'PENALTY:'):
                 game_result.drop(index=play_counter, inplace=True)
-                print('removing unwanted play : {}'.format(play))
+                output_text = 'removing unwanted play : {}'.format(play)
+                output_widget.append(output_text)
             play_counter += 1
         game_result.reset_index(drop=True, inplace=True) # reset the index after dropping the unwanted plays
         self.cleaned_game_log = game_result  # Cache the cleaned game log
         return game_result
     
-    def get_game_result(self):
-        game_log = self.get_game_log(self.read_game_log())
+    def get_game_result(self, path, output_widget):
+        game_log = self.get_game_log(self.read_game_log(path))
         all_tables = pd.read_html(game_log, keep_default_na=False)
         return all_tables
     
-    def get_offensive_play_personnel(self,index):
+    def get_offensive_play_personnel(self,index, path):
         # Returns the offensive play personnel from the indexed play result from the game logs
-        file = self.get_game_log(self.read_game_log())
+        file = self.get_game_log(self.read_game_log(path))
         all_tables = pd.read_html(file, keep_default_na=False)
 
         # Ensure the index matches the cleaned game log
@@ -76,9 +78,9 @@ class game_service:
             print(f"No offensive play personnel found for index {index + 1}")
             return None
     
-    def get_defensive_play_personnel(self,index):
+    def get_defensive_play_personnel(self,index, path):
         # Returns the defensive play personnel from the indexed play result from the game logs
-        file = self.get_game_log(self.read_game_log())
+        file = self.get_game_log(self.read_game_log(path))
         all_tables = pd.read_html(file, keep_default_na=False)
 
         # Ensure the index matches the cleaned game log
@@ -91,11 +93,11 @@ class game_service:
             print(f"No defensive play personnel found for index {index + 1}")
             return None
 
-    def get_play_result(self,index):
+    def get_play_result(self,index, path, output_widget):
         # returns the play result from the game logs
         # Retrieve the play result from the cached cleaned game log
         if self.cleaned_game_log is None:
-            self.get_clean_game_result()  # Ensure the cleaned game log is initialized
+            self.get_clean_game_result(path, output_widget)  # Ensure the cleaned game log is initialized
         try:
         # print(f"Play result at index {index}:")
             play_result = self.cleaned_game_log.loc[index,0]
@@ -107,11 +109,12 @@ class game_service:
             print(f"Index {index} is out of bounds for the cleaned game log.")
             return None
 
-    def get_player_performance_from_play(self, index, team_name):
+    def get_player_performance_from_play(self, index, team_name, path, output_widget):
         # gets the player's performance and actions from the play +, -, etc...
-        play_result = self.get_play_result(index) 
+        play_result = self.get_play_result(index, path, output_widget) 
         if play_result is None:
-            print(f"Skipping play at index {index} due to missing play result.")
+            output_text = f"Skipping play at index {index} due to missing play result."
+            output_widget.append(output_text)
             return None
         play_result_arr = play_result.split(' ')
         player_to_check_in_roster_first_name = (play_result_arr[3])
@@ -120,47 +123,61 @@ class game_service:
 
         player_name = player_to_check_in_roster_first_name + ' ' + player_to_check_in_roster_last_name
 
-        is_offense = self.ts.check_if_in_roster(player_name, team_name)
-        print(play_result)
+        is_offense = self.ts.check_if_in_roster(player_name, team_name, path)
+        output_text = str(play_result)
+        output_widget.append(output_text)
 
         if(is_offense):
-            offensive_play_personnel = self.get_offensive_play_personnel(index)
-            print(f"Offensive play personnel at index {index}:")
+            offensive_play_personnel = self.get_offensive_play_personnel(index, path)
+            output_text = f"Offensive play personnel at index {index}:"
+            output_widget.append(output_text)
             if offensive_play_personnel is not None and offensive_play_personnel.shape[0] > 0:
                 formation = offensive_play_personnel.iloc[0,1]
                 formation = str(formation)
-                print('Formation : ' + formation)
+                output_text = 'Formation : ' + formation
+                output_widget.append(output_text)
                 offensive_play_personnel.drop(index=0, inplace=True)
                 if 'pass' in play_result:
-                    receivers_in_play = self.get_receivers(play_result, offensive_play_personnel)
-                    print(receivers_in_play)
+                    receivers_in_play = self.get_receivers(play_result, offensive_play_personnel, output_widget)
+                    output_text = str(receivers_in_play)
+                    output_widget.append(output_text)
             else:
-                print(f"No offensive play personnel found at index {index}")
+                output_text = f"No offensive play personnel found at index {index}"
+                output_widget.append(output_text)
                 return None
         else:
-            defensive_play_personnel = self.get_defensive_play_personnel(index)
-            print(f"Defensive play personnel at index {index}:")
+            defensive_play_personnel = self.get_defensive_play_personnel(index, path)
+            output_text = f"Defensive play personnel at index {index}:"
+            output_widget.append(output_text)
             if defensive_play_personnel is not None and defensive_play_personnel.shape[0] > 0:
                 formation = defensive_play_personnel.iloc[0,1]
                 formation = str(formation)
-                print('Formation : ' + formation)
+                output_text = 'Formation : ' + formation
+                output_widget.append(output_text)
                 defensive_play_personnel.drop(index=0, inplace=True)
                 return defensive_play_personnel
             else:
-                print(f"No defensive play personnel found at index {index}")
+                output_text = f"No defensive play personnel found at index {index}"
+                output_widget.append(output_text)
                 return None
    
-    def get_receivers(self, play_result, offensive_play_personnel):
+    def get_receivers(self, play_result, offensive_play_personnel, output_widget):
         receivers = []
         PENALTY_find = play_result.find("PENALTY")
         if(PENALTY_find != -1):
             play_result = play_result[:PENALTY_find]
         play_result_arr = play_result.split(' ')
         passer = play_result_arr[4]
-        if 'incomplete' in play_result:
+        if 'fell incomplete' in play_result:
             caught = 0
             rec_yards = 0
             intended_receiver_last_name = (play_result_arr[12])
+            intended_receiver_last_name = intended_receiver_last_name[:-1]
+            yards_after_catch = 0
+        elif 'was thrown incomplete' in play_result:
+            caught = 0
+            rec_yards = 0
+            intended_receiver_last_name = (play_result_arr[13])
             intended_receiver_last_name = intended_receiver_last_name[:-1]
             yards_after_catch = 0
         elif 'completed' in play_result:
@@ -170,6 +187,12 @@ class game_service:
             rec_yards = 0
             yards_after_catch = 0
             intended_receiver_last_name = (play_result_arr[15])
+            intended_receiver_last_name = intended_receiver_last_name[:-1]
+        elif 'was dropped by' in play_result:
+            caught = 0
+            rec_yards = 0
+            yards_after_catch = 0
+            intended_receiver_last_name = (play_result_arr[11])
             intended_receiver_last_name = intended_receiver_last_name[:-1]
         elif 'intercepted' in play_result:
             caught = 0
@@ -196,9 +219,10 @@ class game_service:
                         caught = 1
                         rec_yards = int(play_result_arr[12])
                         yards_after_catch = 0
-                        if 'after the catch' in play_result:  # to do - resolve parsing YAC on plays where a penalty was called but not accepted
-                            last_index = len(play_result_arr) - 1    
-                            yards_after_catch = int(play_result_arr[last_index-5])
+                        if 'after the catch' in play_result:
+                            words = play_result.split()
+                            index_after = words.index("after")
+                            yards_after_catch = int(words[index_after - 2])
                 else:
                     targeted = 0
                     caught = 0
@@ -225,7 +249,9 @@ class game_service:
                 if not file_exists:
                     writer.writerow(['Player Name','Position' ,'Route Prioity', 'Route', 'Targeted?', 'Caught?', 'Yards', 'YAC', 'Passer'])
                 writer.writerows(receivers)
-                print(f"Receiver data for this play appended to '{csv_file}'.")
+                output_text = f"Receiver data for this play appended to '{csv_file}'."
+                output_widget.append(output_text)
         except Exception as e:
-            print(f"Error writing to CSV file '{csv_file}': {e}")
+            output_text = f"Error writing to CSV file '{csv_file}': {e}"
+            output_widget.append(output_text)
         return receivers
