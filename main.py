@@ -2,7 +2,7 @@
 import os
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QTextEdit, QComboBox, QPushButton, QHBoxLayout, QVBoxLayout, QLineEdit, QFileDialog, QSpacerItem, QSizePolicy
     
-# Classes
+# todo: refactor this into separate files for more modularity
 class FOF8FolderSelector(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -104,6 +104,13 @@ class Home(QWidget):
     # Process Game Button Click
     def process_game_click(self):
         path = self.folder_selector.get_selected_path()
+        print(f"Path from selector: {path}")
+        if not os.path.exists(path):
+            print("Invalid path selected")
+            self.output_box.setText("Invalid path selected. Please select a valid FOF8 installation folder.")
+            self.output_box.update()
+            return
+        print("Processing game files...")
         team_combo_index = self.select_team.currentIndex()
         team_combo_text = self.select_team.currentText()
         
@@ -115,6 +122,8 @@ class Home(QWidget):
         front_office_football_service.iterate_through_gamelog(path, self.select_team, team_combo_index, team_combo_text, self.output_box)
     
     def clear_log_click(self):
+        """Clears the output box."""
+        print("Clearing log...")
         self.output_box.clear()
     
     def print_selected_path(self):
