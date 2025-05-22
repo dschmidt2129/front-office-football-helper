@@ -141,6 +141,7 @@ class game_service:
                     receivers_in_play = self.get_receivers(play_result, offensive_play_personnel, output_widget)
                     output_text = str(receivers_in_play)
                     output_widget.append(output_text)
+                return offensive_play_personnel
             else:
                 output_text = f"No offensive play personnel found at index {index}"
                 output_widget.append(output_text)
@@ -155,6 +156,14 @@ class game_service:
                 output_text = 'Formation : ' + formation
                 output_widget.append(output_text)
                 defensive_play_personnel.drop(index=0, inplace=True)
+                if ('fell incomplete' in play_result or
+                    'completed' in play_result or
+                    'intercepted' in play_result
+                    ):
+                    offensive_play_personnel = self.get_offensive_play_personnel(index, path)
+                    pass_defenders_in_play = self.get_pass_defenders(play_result, defensive_play_personnel, output_widget, offensive_play_personnel)
+                    output_text = str(pass_defenders_in_play)
+                    output_widget.append(output_text)
                 return defensive_play_personnel
             else:
                 output_text = f"No defensive play personnel found at index {index}"
@@ -255,3 +264,683 @@ class game_service:
             output_text = f"Error writing to CSV file '{csv_file}': {e}"
             output_widget.append(output_text)
         return receivers
+    
+    def get_pass_defenders(self, play_result, defensive_play_personnel, output_widget, offensive_play_personnel):
+        pass_defenders = []
+        PENALTY_find = play_result.find("PENALTY")
+        if(PENALTY_find != -1):
+            play_result = play_result[:PENALTY_find]
+        play_result_arr = play_result.split(' ')
+        off_formation = offensive_play_personnel.iloc[0,1]
+        off_formation = str(off_formation)
+        def_formation = defensive_play_personnel.iloc[0,1]
+        def_formation = str(def_formation)
+        Num_TE = 0
+        Num_Slot = 0
+        prim_assigned = ''
+        prim_coverage_type = ''
+        prim_defender = [0]
+        doub_assigned = ''
+        doub_coverage_type = ''
+        doub_defender = [0]
+        if 'fell incomplete' in play_result:
+            intended_receiver_last_name = (play_result_arr[12])
+            intended_receiver_last_name = intended_receiver_last_name[:-1]            
+        elif 'completed' in play_result:
+            intended_receiver_last_name = (play_result_arr[10])
+        elif 'intercepted' in play_result:
+            intended_receiver_last_name = (play_result_arr[11])
+        for i in range(1,6):
+            if ('Primary' in str(offensive_play_personnel.iloc[i, 1]) or
+                'Secondary' in str(offensive_play_personnel.iloc[i, 1]) or
+                'Outlet' in str(offensive_play_personnel.iloc[i, 1])
+            ):
+                receiver_name_and_position = str(offensive_play_personnel.iloc[i, 0])
+                position_and_name = receiver_name_and_position.split(' ', 1)
+                receiver_name = position_and_name[1]
+                position = position_and_name[0]
+                if position == 'SLOT':
+                    Num_Slot += 1
+                    if Num_Slot == 1:
+                        position = 'R'
+                    elif Num_Slot == 2:
+                        position = 'S'
+                if position == 'TE':
+                    Num_TE += 1
+                    if Num_TE == 1:
+                        position = 'Y'
+                    elif Num_TE == 2:
+                        position = 'T'
+                    elif Num_TE == 3:
+                        position = 'U'
+                if receiver_name.endswith(intended_receiver_last_name):
+                    priority_plus_route = str(offensive_play_personnel.iloc[i, 1])
+                    priority_plus_route_arr = priority_plus_route.split(',')
+                    # priority = priority_plus_route_arr[0]
+                    route = priority_plus_route_arr[1]
+                    route = route.lstrip()
+                    
+                    if (position == 'X(SE)' or (position == 'Z(FL)' and '131' in off_formation)):
+                        if ('Man to Man' in def_formation or
+                            'Cover-2' in def_formation or
+                            'Cover-1' in def_formation or
+                            'Cover-3 Cloud' in def_formation or
+                            'Press-2' in def_formation or
+                            'Press-1' in def_formation or
+                            'Tampa-2' in def_formation
+                            ):
+                            prim_assigned = 'LCB'
+                            prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                            prim_coverage_type = prim_defender[1]  #  Should be either Man-to-Man or Bump and Run for LCB in these coverages
+                                
+                        elif ('Cover-3 Sky' in def_formation):
+                            if route == 'S Screen (S)':
+                                prim_assigned = 'LCB'
+                                prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                prim_coverage_type = prim_defender[1]
+                            elif route == 'F Flat (0-4)':
+                                prim_assigned = 'WLB'
+                                prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                prim_coverage_type = prim_defender[1]
+                            elif route == '0 Dig (0-4)':
+                                if ('43' in def_formation):
+                                    prim_assigned = 'MLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif ('34' in def_formation):
+                                    if ('005' in off_formation or '104' in off_formation or '014' in off_formation):
+                                        prim_assigned = 'SS'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                                    elif('023' in off_formation or '113' in off_formation or '203' in off_formation):
+                                        prim_assigned = 'SILB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                                    else:
+                                        prim_assigned = 'WILB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                            elif route == '1 Out (5-8)':
+                                prim_assigned = 'WLB'
+                                prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                prim_coverage_type = prim_defender[1]
+                            elif route == '2 Slant (5-8)':
+                                if ('43' in def_formation):
+                                    prim_assigned = 'MLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif ('34' in def_formation):
+                                    if ('005' in off_formation or '104' in off_formation or '014' in off_formation):
+                                        prim_assigned = 'SS'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                                    elif('023' in off_formation or '113' in off_formation or '203' in off_formation):
+                                        prim_assigned = 'SILB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                                    else:
+                                        prim_assigned = 'WILB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                            elif route == '3 Comeback (9-12)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'WLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                else:
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == '4 Curl (9-12)':
+                                if ('43' in def_formation):
+                                    prim_assigned = 'MLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif ('34' in def_formation):
+                                    if ('005' in off_formation or '104' in off_formation or '014' in off_formation):
+                                        prim_assigned = 'SS'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                                    elif('023' in off_formation or '113' in off_formation or '203' in off_formation):
+                                        prim_assigned = 'SILB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                                    else:
+                                        prim_assigned = 'WILB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                            elif route == '5 Deep Out (13-18)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Nickel Personnel' in def_formation):
+                                    prim_assigned = 'NB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Dime Personnel' in def_formation):
+                                    prim_assigned = 'DB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == '6 Deep In (13-18)':
+                                prim_assigned = 'FS'
+                                prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                prim_coverage_type = prim_defender[1]
+                            elif route == '7 Corner (19-26)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Nickel Personnel' in def_formation):
+                                    prim_assigned = 'NB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Dime Personnel' in def_formation):
+                                    prim_assigned = 'DB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == '8 Post (19-26)':
+                                prim_assigned = 'FS'
+                                prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                prim_coverage_type = prim_defender[1]
+                            elif route == '9 Fade (27-39)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Nickel Personnel' in def_formation):
+                                    prim_assigned = 'NB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Dime Personnel' in def_formation):
+                                    prim_assigned = 'DB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == 'W Wheel (9-18)':
+                                prim_assigned = 'LCB'
+                                prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                prim_coverage_type = prim_defender[1]
+                            elif route == 'D Deep Fade (40+)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Nickel Personnel' in def_formation):
+                                    prim_assigned = 'NB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Dime Personnel' in def_formation):
+                                    prim_assigned = 'DB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                    
+                        elif ('Cover-4' in def_formation):
+                            if route == 'S Screen (S)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'WLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                else:
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == 'F Flat (0-4)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'WLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                else:
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == '0 Dig (0-4)':
+                                if ('43' in def_formation):
+                                    prim_assigned = 'MLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif ('34' in def_formation):
+                                    if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                        prim_assigned = 'SILB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                                    elif('Dime Personnel' in def_formation):
+                                        prim_assigned = 'SLB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                            elif route == '1 Out (5-8)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'WLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                else:
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == '2 Slant (5-8)':
+                                if ('43' in def_formation):
+                                    prim_assigned = 'MLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif ('34' in def_formation):
+                                    if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                        prim_assigned = 'SILB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                                    elif('Dime Personnel' in def_formation):
+                                        prim_assigned = 'SLB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                            elif route == '3 Comeback (9-12)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'WLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                else:
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == '4 Curl (9-12)':
+                                if ('43' in def_formation):
+                                    prim_assigned = 'MLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif ('34' in def_formation):
+                                    if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                        prim_assigned = 'SILB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                                    elif('Dime Personnel' in def_formation):
+                                        prim_assigned = 'SLB'
+                                        prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                        prim_coverage_type = prim_defender[1]
+                            elif route == '5 Deep Out (13-18)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
+                                    prim_assigned = 'NB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == '6 Deep In (13-18)':
+                                prim_assigned = 'FS'
+                                prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                prim_coverage_type = prim_defender[1]
+                            elif route == '7 Corner (19-26)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
+                                    prim_assigned = 'NB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == '8 Post (19-26)':
+                                prim_assigned = 'FS'
+                                prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                prim_coverage_type = prim_defender[1]
+                            elif route == '9 Fade (27-39)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
+                                    prim_assigned = 'NB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == 'W Wheel (9-18)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'WLB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                else:
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                            elif route == 'D Deep Fade (40+)':
+                                if ('Regular' in def_formation):
+                                    prim_assigned = 'LCB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                                elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
+                                    prim_assigned = 'NB'
+                                    prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                                    prim_coverage_type = prim_defender[1]
+                               
+                    elif position == 'Z(FL)':
+                        # if ('Man to Man' in def_formation or
+                        #     'Cover-2' in def_formation or
+                        #     'Cover-1' in def_formation or
+                        #     'Cover-3 Cloud' in def_formation or
+                        #     'Press-2' in def_formation or
+                        #     'Press-1' in def_formation or
+                        #     'Tampa-2' in def_formation
+                        #     ):
+                        #     prim_assigned = 'LCB'
+                        #     prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #     prim_coverage_type = prim_defender[1]  #  Should be either Man-to-Man or Bump and Run for LCB in these coverages
+                                
+                        # elif ('Cover-3 Sky' in def_formation):
+                        #     if route == 'S Screen (S)':
+                        #         prim_assigned = 'LCB'
+                        #         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #         prim_coverage_type = prim_defender[1]
+                        #     elif route == 'F Flat (0-4)':
+                        #         prim_assigned = 'WLB'
+                        #         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #         prim_coverage_type = prim_defender[1]
+                        #     elif route == '0 Dig (0-4)':
+                        #         if ('43' in def_formation):
+                        #             prim_assigned = 'MLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif ('34' in def_formation):
+                        #             if ('005' in off_formation or '104' in off_formation or '014' in off_formation):
+                        #                 prim_assigned = 'SS'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #             elif('023' in off_formation or '113' in off_formation or '203' in off_formation):
+                        #                 prim_assigned = 'SILB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #             else:
+                        #                 prim_assigned = 'WILB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #     elif route == '1 Out (5-8)':
+                        #         prim_assigned = 'WLB'
+                        #         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #         prim_coverage_type = prim_defender[1]
+                        #     elif route == '2 Slant (5-8)':
+                        #         if ('43' in def_formation):
+                        #             prim_assigned = 'MLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif ('34' in def_formation):
+                        #             if ('005' in off_formation or '104' in off_formation or '014' in off_formation):
+                        #                 prim_assigned = 'SS'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #             elif('023' in off_formation or '113' in off_formation or '203' in off_formation):
+                        #                 prim_assigned = 'SILB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #             else:
+                        #                 prim_assigned = 'WILB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #     elif route == '3 Comeback (9-12)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'WLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         else:
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == '4 Curl (9-12)':
+                        #         if ('43' in def_formation):
+                        #             prim_assigned = 'MLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif ('34' in def_formation):
+                        #             if ('005' in off_formation or '104' in off_formation or '014' in off_formation):
+                        #                 prim_assigned = 'SS'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #             elif('023' in off_formation or '113' in off_formation or '203' in off_formation):
+                        #                 prim_assigned = 'SILB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #             else:
+                        #                 prim_assigned = 'WILB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #     elif route == '5 Deep Out (13-18)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Nickel Personnel' in def_formation):
+                        #             prim_assigned = 'NB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Dime Personnel' in def_formation):
+                        #             prim_assigned = 'DB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == '6 Deep In (13-18)':
+                        #         prim_assigned = 'FS'
+                        #         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #         prim_coverage_type = prim_defender[1]
+                        #     elif route == '7 Corner (19-26)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Nickel Personnel' in def_formation):
+                        #             prim_assigned = 'NB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Dime Personnel' in def_formation):
+                        #             prim_assigned = 'DB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == '8 Post (19-26)':
+                        #         prim_assigned = 'FS'
+                        #         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #         prim_coverage_type = prim_defender[1]
+                        #     elif route == '9 Fade (27-39)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Nickel Personnel' in def_formation):
+                        #             prim_assigned = 'NB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Dime Personnel' in def_formation):
+                        #             prim_assigned = 'DB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == 'W Wheel (9-18)':
+                        #         prim_assigned = 'LCB'
+                        #         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #         prim_coverage_type = prim_defender[1]
+                        #     elif route == 'D Deep Fade (40+)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Nickel Personnel' in def_formation):
+                        #             prim_assigned = 'NB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Dime Personnel' in def_formation):
+                        #             prim_assigned = 'DB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                                    
+                        # elif ('Cover-4' in def_formation):
+                        #     if route == 'S Screen (S)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'WLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         else:
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == 'F Flat (0-4)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'WLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         else:
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == '0 Dig (0-4)':
+                        #         if ('43' in def_formation):
+                        #             prim_assigned = 'MLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif ('34' in def_formation):
+                        #             if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                        #                 prim_assigned = 'SILB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #             elif('Dime Personnel' in def_formation):
+                        #                 prim_assigned = 'SLB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #     elif route == '1 Out (5-8)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'WLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         else:
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == '2 Slant (5-8)':
+                        #         if ('43' in def_formation):
+                        #             prim_assigned = 'MLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif ('34' in def_formation):
+                        #             if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                        #                 prim_assigned = 'SILB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #             elif('Dime Personnel' in def_formation):
+                        #                 prim_assigned = 'SLB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #     elif route == '3 Comeback (9-12)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'WLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         else:
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == '4 Curl (9-12)':
+                        #         if ('43' in def_formation):
+                        #             prim_assigned = 'MLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif ('34' in def_formation):
+                        #             if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                        #                 prim_assigned = 'SILB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #             elif('Dime Personnel' in def_formation):
+                        #                 prim_assigned = 'SLB'
+                        #                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #                 prim_coverage_type = prim_defender[1]
+                        #     elif route == '5 Deep Out (13-18)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
+                        #             prim_assigned = 'NB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == '6 Deep In (13-18)':
+                        #         prim_assigned = 'FS'
+                        #         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #         prim_coverage_type = prim_defender[1]
+                        #     elif route == '7 Corner (19-26)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
+                        #             prim_assigned = 'NB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == '8 Post (19-26)':
+                        #         prim_assigned = 'FS'
+                        #         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #         prim_coverage_type = prim_defender[1]
+                        #     elif route == '9 Fade (27-39)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
+                        #             prim_assigned = 'NB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == 'W Wheel (9-18)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'WLB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         else:
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #     elif route == 'D Deep Fade (40+)':
+                        #         if ('Regular' in def_formation):
+                        #             prim_assigned = 'LCB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                        #         elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
+                        #             prim_assigned = 'NB'
+                        #             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
+                        #             prim_coverage_type = prim_defender[1]
+                    
+                    # elif position == 'R':
+                    
+                    # elif position == 'S':
+                    
+                    # elif position == 'Y':
+                    
+                    # elif position == 'T':
+                    
+                    # elif position == 'U':
+                    
+                    # elif position == 'RB':
+                    
+                    # elif position == 'FB':
+                    
+                    if 'completed' in play_result:
+                        caught = 1
+                        rec_yards = int(play_result_arr[12])
+                        yards_after_catch = 0
+                        if 'after the catch' in play_result:
+                            words = play_result.split()
+                            index_after = words.index("after")
+                            yards_after_catch = int(words[index_after - 2])
+   
+    #             new_rec_row = []
+    #             new_rec_row.append(receiver_name)
+    #             new_rec_row.append(position)
+    #             new_rec_row.append(priority)
+    #             new_rec_row.append(route)
+    #             new_rec_row.append(targeted)
+    #             new_rec_row.append(caught)
+    #             new_rec_row.append(rec_yards)
+    #             new_rec_row.append(yards_after_catch)
+    #             new_rec_row.append(passer)
+    #             receivers.append(new_rec_row)
+        
+    #     csv_file = 'receivers_in_game.csv'
+    #     file_exists = os.path.isfile(csv_file)
+
+    #     try:
+    #         with open(csv_file, 'a', newline='') as csvfile:
+    #             writer = csv.writer(csvfile)
+    #             if not file_exists:
+    #                 writer.writerow(['Player Name','Position' ,'Route Prioity', 'Route', 'Targeted?', 'Caught?', 'Yards', 'YAC', 'Passer'])
+    #             writer.writerows(receivers)
+    #             output_text = f"Receiver data for this play appended to '{csv_file}'."
+    #             output_widget.append(output_text)
+    #     except Exception as e:
+    #         output_text = f"Error writing to CSV file '{csv_file}': {e}"
+    #         output_widget.append(output_text)
+    #     return receivers
