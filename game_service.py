@@ -321,7 +321,6 @@ class game_service:
                     route = route.lstrip()
                     
                     if (position == 'X(SE)' or (position == 'Z(FL)' and '131' in off_formation)):
-                        print("primary defender logic for X receiver or Z receiver in 131 formation")
                         if ('Man to Man' in def_formation or
                             'Cover-2' in def_formation or
                             'Cover-1' in def_formation or
@@ -330,53 +329,35 @@ class game_service:
                             'Press-1' in def_formation or
                             'Tampa-2' in def_formation
                             ):
-                            # cannot print defensive coverage because there isn't a set variable
                             prim_assigned = 'LCB'
-                            print("primary defender assigned is LCB")
                             prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
                             prim_coverage_type = prim_defender[1]  #  Should be either Man-to-Man or Bump and Run for LCB in these coverages
                                 
                         elif ('Cover-3 Sky' in def_formation):
-                            print("defensive coverage is Cover-3 Sky")
                             if route == 'S Screen (S)':
                                 prim_assigned = 'LCB'
-                                print("primary defender assigned is LCB")
-                                print ("route is S Screen")
                                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
                                 prim_coverage_type = prim_defender[1]
                             elif route == 'F Flat (0-4)':
                                 prim_assigned = 'WLB'
-                                print("primary defender assigned is WLB")
-                                print ("route is F Flat")
                                 prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
                                 prim_coverage_type = prim_defender[1]
                             elif route == '0 Dig (0-4)':
                                 if ('43' in def_formation):
-                                    print("defensive formation is 43 and offensive formation is {}", off_formation)
                                     prim_assigned = 'MLB'
-                                    print("primary defender assigned is MLB")
-                                    print ("route is 0 Dig")
                                     prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
                                     prim_coverage_type = prim_defender[1]
                                 elif ('34' in def_formation):
                                     if ('005' in off_formation or '104' in off_formation or '014' in off_formation):
-                                        print("defensive formation is 34 and offensive formation is {}", off_formation)
                                         prim_assigned = 'SS'
-                                        print("primary defender assigned is SS")
-                                        print ("route is 0 Dig")
                                         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
                                         prim_coverage_type = prim_defender[1]
                                     elif('023' in off_formation or '113' in off_formation or '203' in off_formation):
-                                        print("defensive formation is 34 and offensive formation is {}", off_formation)
                                         prim_assigned = 'SILB'
-                                        print("primary defender assigned is SILB")
-                                        print ("route is 0 Dig")
                                         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
                                         prim_coverage_type = prim_defender[1]
                                     else:
                                         prim_assigned = 'WILB'
-                                        print("primary defender assigned is WILB")
-                                        print ("route is 0 Dig")
                                         prim_defender = [sublist for sublist in defensive_play_personnel if sublist and 'LCB' in sublist[0]]
                                         prim_coverage_type = prim_defender[1]
                             elif route == '1 Out (5-8)':
@@ -627,7 +608,6 @@ class game_service:
                                     prim_coverage_type = prim_defender[1]
                                
                     elif position == 'Z(FL)':
-                        pass
                         # if ('Man to Man' in def_formation or
                         #     'Cover-2' in def_formation or
                         #     'Cover-1' in def_formation or
@@ -928,10 +908,10 @@ class game_service:
                     
                     # elif position == 'FB':
                     
-                    if 'completed' in play_result:
-                        caught = 1
-                        rec_yards = int(play_result_arr[12])
-                        yards_after_catch = 0
+                        if 'completed' in play_result:
+                            caught = 1
+                            rec_yards = int(play_result_arr[12])
+                            yards_after_catch = 0
                         if 'after the catch' in play_result:
                             words = play_result.split()
                             index_after = words.index("after")
