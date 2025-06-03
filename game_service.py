@@ -908,10 +908,10 @@ class game_service:
                     
                     # elif position == 'FB':
                     
-                        if 'completed' in play_result:
-                            caught = 1
-                            rec_yards = int(play_result_arr[12])
-                            yards_after_catch = 0
+                    if 'completed' in play_result:
+                        caught = 1
+                        rec_yards = int(play_result_arr[12])
+                        yards_after_catch = 0
                         if 'after the catch' in play_result:
                             words = play_result.split()
                             index_after = words.index("after")
