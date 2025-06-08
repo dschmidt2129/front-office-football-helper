@@ -520,6 +520,8 @@ class game_service:
                                 case 'W Wheel (9-18)':
                                     if ('Regular' in def_formation):
                                         prim_assigned = 'WLB'
+                                    elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
+                                        prim_assigned = 'LCB'
                                 case 'D Deep Fade (40+)':
                                     if ('Regular' in def_formation):
                                         prim_assigned = 'LCB'
@@ -857,274 +859,278 @@ class game_service:
                                  else:
                                      prim_assigned = 'None'
                           elif ('Cover-3 Cloud' in def_formation):
-                                 if route == 'S Screen (S)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'WLB'
-                                     elif ('Nickel' in def_formation):
-                                         prim_assigned = 'WLB'
-                                     elif ('Dime' in def_formation):
-                                         prim_assigned = 'NB'
-                                 elif route == 'F Flat (0-4)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'WLB'
-                                     elif ('Nickel' in def_formation):
-                                         prim_assigned = 'WLB'
-                                     elif ('Dime' in def_formation):
-                                         prim_assigned = 'NB'                               
-                                 elif route == '0 Dig (0-4)':                                     
-                                     if ('43' in def_formation):
-                                         prim_assigned = 'MLB'                                    
-                                     elif ('34' in def_formation):
-                                         if ('Dime' in def_formation):
-                                             prim_assigned = 'WLB'                            
-                                         elif ('Nickel' in def_formation):
-                                             prim_assigned = 'SILB'
-                                         elif ('Regular' in def_formation):
-                                             prim_assigned = 'WILB'
-                                 elif route == '1 Out (5-8)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'WLB'
-                                     elif ('Nickel' in def_formation):
-                                         prim_assigned = 'WLB'
-                                     elif ('Dime' in def_formation):
-                                         prim_assigned = 'NB'                                 
-                                 elif route == '2 Slant (5-8)':
-                                     if ('43' in def_formation):
-                                         prim_assigned = 'MLB'                                    
-                                     elif ('34' in def_formation):
-                                         if ('Dime' in def_formation):
-                                             prim_assigned = 'WLB'                            
-                                         elif ('Nickel' in def_formation):
-                                             prim_assigned = 'SILB'
-                                         elif ('Regular' in def_formation):
-                                             prim_assigned = 'WILB'                                         
-                                 elif route == '3 Comeback (9-12)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'WLB'
-                                     elif ('Nickel' in def_formation):
-                                         prim_assigned = 'WLB'
-                                     elif ('Dime' in def_formation):
-                                         if('43' in def_formation):
-                                             prim_assigned = 'DB'
-                                         elif ('34'in def_formation):
-                                             prim_assigned = 'WLB'                                   
-                                 elif route == '4 Curl (9-12)':
-                                     if ('43' in def_formation):
-                                         prim_assigned = 'MLB'                                    
-                                     elif ('34' in def_formation):
-                                         if ('Dime' in def_formation):
-                                             prim_assigned = 'WLB'                            
-                                         elif ('Nickel' in def_formation):
-                                             prim_assigned = 'SILB'
-                                         elif ('Regular' in def_formation):
-                                             prim_assigned = 'WILB'                                       
-                                 elif route == '5 Deep Out (13-18)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'FS'                                    
-                                     elif('Nickel Personnel' in def_formation):
-                                         prim_assigned = 'NB'                                    
-                                     elif('Dime Personnel' in def_formation):
-                                         prim_assigned = 'DB'                               
-                                 elif route == '6 Deep In (13-18)':
-                                     prim_assigned = 'FS'                                
-                                 elif route == '7 Corner (19-26)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'FS'                                    
-                                     elif('Nickel Personnel' in def_formation):
-                                         prim_assigned = 'NB'                                    
-                                     elif('Dime Personnel' in def_formation):
-                                         prim_assigned = 'DB'                                          
-                                 elif route == '8 Post (19-26)':
-                                     prim_assigned = 'FS'
-                                 elif route == '9 Fade (27-39)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'FS'                                    
-                                     elif('Nickel Personnel' in def_formation):
-                                         prim_assigned = 'NB'                                    
-                                     elif('Dime Personnel' in def_formation):
-                                         prim_assigned = 'DB'                                    
-                                 elif route == 'W Wheel (9-18)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'FS'                                    
-                                     elif('Nickel Personnel' in def_formation):
-                                         prim_assigned = 'NB'                                    
-                                     elif('Dime Personnel' in def_formation):
-                                         prim_assigned = 'DB'                              
-                                 elif route == 'D Deep Fade (40+)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'FS'                                    
-                                     elif('Nickel Personnel' in def_formation):
-                                         prim_assigned = 'NB'                                    
-                                     elif('Dime Personnel' in def_formation):
-                                         prim_assigned = 'DB'  
+                                 match route:
+                                    case 'S Screen (S)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        elif ('Nickel Personnel' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        elif ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'NB'
+                                    case 'F Flat (0-4)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        elif ('Nickel Personnel' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        elif ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'NB'
+                                    case '0 Dig (0-4)':
+                                        if ('43' in def_formation):
+                                            prim_assigned = 'MLB'                                    
+                                        elif ('34' in def_formation):
+                                            if ('Dime' in def_formation):
+                                                prim_assigned = 'WLB'                            
+                                            elif ('Nickel' in def_formation):
+                                                prim_assigned = 'SILB'
+                                            elif ('Regular' in def_formation):
+                                                prim_assigned = 'WILB'
+                                    case '1 Out (5-8)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        elif ('Nickel Personnel' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        elif ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'NB'
+                                    case '2 Slant (5-8)':
+                                        if ('43' in def_formation):
+                                            prim_assigned = 'MLB'
+                                        elif ('34' in def_formation):
+                                            if ('Dime Personnel' in def_formation):
+                                                prim_assigned = 'WLB'                            
+                                            elif ('Nickel Personnels' in def_formation):
+                                                prim_assigned = 'SILB'
+                                            elif ('Regular' in def_formation):
+                                                prim_assigned = 'WILB'
+                                    case '3 Comeback (9-12)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        elif ('Nickel Personnel' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        elif ('Dime Personnel' in def_formation):
+                                            if('43' in def_formation):
+                                                prim_assigned = 'DB'
+                                            elif ('34'in def_formation):
+                                                prim_assigned = 'WLB'
+                                    case '4 Curl (9-12)':
+                                        if ('43' in def_formation):
+                                            prim_assigned = 'MLB'                                    
+                                        elif ('34' in def_formation):
+                                            if ('Dime' in def_formation):
+                                                prim_assigned = 'WLB'                            
+                                            elif ('Nickel' in def_formation):
+                                                prim_assigned = 'SILB'
+                                            elif ('Regular' in def_formation):
+                                                prim_assigned = 'WILB'
+                                    case '5 Deep Out (13-18)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'FS'
+                                        elif ('Nickel Personnel' in def_formation):
+                                            prim_assigned = 'NB'
+                                        elif ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'DB'
+                                    case '6 Deep In (13-18)':
+                                        prim_assigned = 'FS'
+                                    case '7 Corner (19-26)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'FS'
+                                        elif ('Nickel Personnel' in def_formation):
+                                            prim_assigned = 'NB'
+                                        elif ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'DB'
+                                    case '8 Post (19-26)':
+                                        prim_assigned = 'FS'
+                                    case '9 Fade (27-39)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'FS'
+                                        elif ('Nickel Personnel' in def_formation):
+                                            prim_assigned = 'NB'
+                                        elif ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'DB'
+                                    case 'W Wheel (9-18)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'FS'
+                                        elif ('Nickel Personnel' in def_formation):
+                                            prim_assigned = 'NB'
+                                        elif ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'DB'
+                                    case 'D Deep Fade (40+)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'FS'
+                                        elif ('Nickel Personnel' in def_formation):
+                                            prim_assigned = 'NB'
+                                        elif ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'DB'
                           elif ('Cover-3 Sky' in def_formation):
-                                 if route == 'S Screen (S)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'WLB'
-                                      else:
-                                          prim_assigned = 'LCB'
-                                 elif route == 'F Flat (0-4)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'WLB'
-                                      else:
-                                          prim_assigned = 'LCB'                                
-                                 elif route == '0 Dig (0-4)':
-                                      if ('43' in def_formation):
-                                          if ('Dime' in def_formation):
+                                 match route:
+                                    case 'S Screen (S)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        else:
+                                            prim_assigned = 'LCB'
+                                    case 'F Flat (0-4)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        else:
+                                            prim_assigned = 'LCB'
+                                    case '0 Dig (0-4)':
+                                        if ('43' in def_formation):
+                                          if ('Dime Personnel' in def_formation):
                                               prim_assigned = 'MLB'                                        
-                                          elif('Nickel' in def_formation):
+                                          elif('Nickel Personnel' in def_formation):
                                               prim_assigned = 'WLB'                                        
                                           else:
                                               prim_assigned = 'MLB'                                    
-                                      elif ('34' in def_formation):
-                                          if ('Dime' in def_formation):
+                                        elif ('34' in def_formation):
+                                          if ('Dime Personnel' in def_formation):
                                               prim_assigned = 'WLB'                                        
-                                          elif('Nickel' in def_formation):
-                                              prim_assigned = 'WLB'                                        
-                                          else:
-                                              prim_assigned = 'WILB'                                        
-                                 elif route == '1 Out (5-8)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'WLB'
-                                      else:
-                                          prim_assigned = 'LCB'                                
-                                 elif route == '2 Slant (5-8)':
-                                      if ('43' in def_formation):
-                                          if ('Dime' in def_formation):
-                                              prim_assigned = 'MLB'                                        
-                                          elif('Nickel' in def_formation):
+                                          elif('Nickel Personnel' in def_formation):
                                               prim_assigned = 'WLB'                                        
                                           else:
-                                              prim_assigned = 'MLB'                                    
-                                      elif ('34' in def_formation):
-                                          if ('Dime' in def_formation):
-                                              prim_assigned = 'WLB'                                        
-                                          elif('Nickel' in def_formation):
-                                              prim_assigned = 'WLB'                                        
-                                          else:
-                                              prim_assigned = 'WILB'                                        
-                                 elif route == '3 Comeback (9-12)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'WLB'                                    
-                                      else:
-                                          prim_assigned = 'LCB'                                    
-                                 elif route == '4 Curl (9-12)':
-                                      if ('43' in def_formation):
-                                          if ('Dime' in def_formation):
-                                              prim_assigned = 'MLB'                                        
-                                          elif('Nickel' in def_formation):
-                                              prim_assigned = 'WLB'                                        
-                                          else:
-                                              prim_assigned = 'MLB'                                    
-                                      elif ('34' in def_formation):
-                                          if ('Dime' in def_formation):
-                                              prim_assigned = 'WLB'                                        
-                                          elif('Nickel' in def_formation):
-                                              prim_assigned = 'WLB'                                        
-                                          else:
-                                              prim_assigned = 'WILB'                                        
-                                 elif route == '5 Deep Out (13-18)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'LCB'                                    
-                                      else:
-                                          prim_assigned = 'NB'
-                                 elif route == '6 Deep In (13-18)':
-                                      prim_assigned = 'FS'                                
-                                 elif route == '7 Corner (19-26)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'LCB'                                    
-                                      else:
-                                          prim_assigned = 'NB'                                    
-                                 elif route == '8 Post (19-26)':
-                                      prim_assigned = 'FS'                               
-                                 elif route == '9 Fade (27-39)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'LCB'                                    
-                                      else:
-                                          prim_assigned = 'NB'                                   
-                                 elif route == 'W Wheel (9-18)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'LCB'                                    
-                                      else:
-                                          prim_assigned = 'NB'                                
-                                 elif route == 'D Deep Fade (40+)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'LCB'                                    
-                                      else:
-                                          prim_assigned = 'NB'                                                                        
+                                              prim_assigned = 'WILB'
+                                    case '1 Out (5-8)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'WLB'
+                                        else:
+                                            prim_assigned = 'LCB'
+                                    case '2 Slant (5-8)':
+                                        if ('43' in def_formation):
+                                            if ('Dime Personnel' in def_formation):
+                                                prim_assigned = 'MLB'                                        
+                                            elif('Nickel Personnel' in def_formation):
+                                                prim_assigned = 'WLB'                                        
+                                            else:
+                                                prim_assigned = 'MLB'
+                                        elif ('34' in def_formation):
+                                            if ('Dime Personnel' in def_formation):
+                                                prim_assigned = 'WLB'                                        
+                                            elif('Nickel Personnel' in def_formation):
+                                                prim_assigned = 'WLB'                                        
+                                            else:
+                                                prim_assigned = 'WILB'
+                                    case '3 Comeback (9-12)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'WLB'                                    
+                                        else:
+                                            prim_assigned = 'LCB'
+                                    case '4 Curl (9-12)':
+                                        if ('43' in def_formation):
+                                            if ('Dime Personnel' in def_formation):
+                                                prim_assigned = 'MLB'                                        
+                                            elif('Nickel Personnel' in def_formation):
+                                                prim_assigned = 'WLB'                                        
+                                            else:
+                                                prim_assigned = 'MLB'
+                                        elif ('34' in def_formation):
+                                            if ('Dime Personnel' in def_formation):
+                                                prim_assigned = 'WLB'                                        
+                                            elif('Nickel Personnel' in def_formation):
+                                                prim_assigned = 'WLB'                                        
+                                            else:
+                                                prim_assigned = 'WILB'
+                                    case '5 Deep Out (13-18)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'LCB'
+                                        else:
+                                            prim_assigned = 'NB'
+                                    case '6 Deep In (13-18)':
+                                        prim_assigned = 'FS'
+                                    case '7 Corner (19-26)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'LCB'
+                                        else:
+                                            prim_assigned = 'NB'
+                                    case '8 Post (19-26)':
+                                        prim_assigned = 'FS'
+                                    case '9 Fade (27-39)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'LCB'
+                                        else:
+                                            prim_assigned = 'NB'
+                                    case 'W Wheel (9-18)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'LCB'
+                                        else:
+                                            prim_assigned = 'NB'
+                                    case 'D Deep Fade (40+)':
+                                        if ('Regular' in def_formation):
+                                            prim_assigned = 'LCB'
+                                        else:
+                                            prim_assigned = 'NB'                                                                      
                           elif ('Cover-4' in def_formation):
-                              if route == 'S Screen (S)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'WLB'                                    
-                                  else:
-                                      prim_assigned = 'LCB'
-                              elif route == 'F Flat (0-4)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'WLB'
-                                  else:
-                                      prim_assigned = 'LCB'
-                              elif route == '0 Dig (0-4)':
-                                  if ('43' in def_formation):
-                                      prim_assigned = 'MLB'
-                                  elif ('34' in def_formation):
-                                      if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
-                                          prim_assigned = 'SILB'
-                                      elif('Dime Personnel' in def_formation):
-                                          prim_assigned = 'SLB'
-                              elif route == '1 Out (5-8)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'WLB'
-                                  else:
-                                      prim_assigned = 'LCB'
-                              elif route == '2 Slant (5-8)':
-                                  if ('43' in def_formation):
-                                      prim_assigned = 'MLB'
-                                  elif ('34' in def_formation):
-                                      if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
-                                          prim_assigned = 'SILB'
-                                      elif('Dime Personnel' in def_formation):
-                                          prim_assigned = 'SLB'
-                              elif route == '3 Comeback (9-12)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'WLB'
-                                  else:
-                                      prim_assigned = 'LCB'
-                              elif route == '4 Curl (9-12)':
-                                  if ('43' in def_formation):
-                                      prim_assigned = 'MLB'
-                                  elif ('34' in def_formation):
-                                      if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
-                                          prim_assigned = 'SILB'
-                                      elif('Dime Personnel' in def_formation):
-                                          prim_assigned = 'SLB'
-                              elif route == '5 Deep Out (13-18)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'LCB'
-                                  elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
-                                      prim_assigned = 'NB'
-                              elif route == '6 Deep In (13-18)':
-                                  prim_assigned = 'FS'
-                              elif route == '7 Corner (19-26)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'LCB'
-                                  elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
-                                      prim_assigned = 'NB'
-                              elif route == '8 Post (19-26)':
-                                  prim_assigned = 'FS'
-                              elif route == '9 Fade (27-39)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'LCB'
-                                  elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
-                                      prim_assigned = 'NB'
-                              elif route == 'W Wheel (9-18)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'WLB'
-                                      prim_assigned = 'LCB'
-                              elif route == 'D Deep Fade (40+)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'LCB'
-                                  elif('Nickel Personnel' in def_formation or'Dime Personnel' in def_formation):
-                                      prim_assigned = 'NB'                             
+                              match route:
+                                case 'S Screen (S)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'WLB'
+                                    else:
+                                        prim_assigned = 'LCB'
+                                case 'F Flat (0-4)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'WLB'
+                                    else:
+                                        prim_assigned = 'LCB'
+                                case '0 Dig (0-4)':
+                                    if ('43' in def_formation):
+                                        prim_assigned = 'MLB'
+                                    elif ('34' in def_formation):
+                                        if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                            prim_assigned = 'SILB'
+                                        elif('Dime Personnel' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case '1 Out (5-8)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'WLB'
+                                    else:
+                                        prim_assigned = 'LCB'
+                                case '2 Slant (5-8)':
+                                    if ('43' in def_formation):
+                                        prim_assigned = 'MLB'
+                                    elif ('34' in def_formation):
+                                        if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                            prim_assigned = 'SILB'
+                                        elif('Dime Personnel' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case '3 Comeback (9-12)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'WLB'
+                                    else:
+                                        prim_assigned = 'LCB'
+                                case '4 Curl (9-12)':
+                                    if ('43' in def_formation):
+                                        prim_assigned = 'MLB'
+                                    elif ('34' in def_formation):
+                                        if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                            prim_assigned = 'SILB'
+                                        elif('Dime Personnel' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case '5 Deep Out (13-18)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'LCB'
+                                    elif ('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                        prim_assigned = 'NB'
+                                case '6 Deep In (13-18)':
+                                    prim_assigned = 'FS'
+                                case '7 Corner (19-26)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'LCB'
+                                    elif ('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                        prim_assigned = 'NB'
+                                case '8 Post (19-26)':
+                                    prim_assigned = 'FS'
+                                case '9 Fade (27-39)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'LCB'
+                                    elif ('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                        prim_assigned = 'NB'
+                                case 'W Wheel (9-18)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'WLB'
+                                    elif ('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                        prim_assigned = 'LCB'
+                                case 'D Deep Fade (40+)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'LCB'
+                                    elif ('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                        prim_assigned = 'NB'                           
                     
                     elif (position == 'R' and '005' in off_formation or
                           position == 'R' and '014t' in off_formation or
@@ -1144,306 +1150,291 @@ class game_service:
                             elif (position == 'S'):
                                 prim_assigned = 'DB'
                         elif ('Cover-3 Cloud' in def_formation):
-                             if route == 'S Screen (S)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SLB'
-                                 elif ('Nickel' in def_formation or 'Dime' in def_formation):
-                                     prim_assigned = 'RCB'
-                             elif route == 'F Flat (0-4)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SLB'
-                                 elif ('Nickel' in def_formation or 'Dime' in def_formation):
-                                     prim_assigned = 'RCB'                               
-                             elif route == '0 Dig (0-4)':
-                                if ('Regular' in def_formation):
+                             match route:
+                                case 'S Screen (S)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'WLB'
+                                    elif ('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                        prim_assigned = 'NB'
+                                case 'F Flat (0-4)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    elif ('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                        prim_assigned = 'RCB'    
+                                case '0 Dig (0-4)':
+                                    if ('43' in def_formation):
+                                        prim_assigned = 'MLB'                                    
+                                    elif ('34' in def_formation):
+                                        if ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'NB'                                        
+                                        else:
+                                            prim_assigned = 'SILB'
+                                case '1 Out (5-8)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    elif ('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                case '2 Slant (5-8)':
                                     if ('43' in def_formation):
                                         prim_assigned = 'MLB'
                                     elif ('34' in def_formation):
-                                        prim_assigned = 'SILB'
-                                if ('43' in def_formation):
-                                    prim_assigned = 'MLB'                                    
-                                elif ('34' in def_formation):
-                                    if ('Dime' in def_formation):
-                                        prim_assigned = 'NB'                            
+                                        if('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                            prim_assigned = 'SLB'
+                                        else:
+                                            prim_assigned = 'SILB'
+                                case '3 Comeback (9-12)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    elif ('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                        prim_assigned = 'RCB'                                       
+                                case '4 Curl (9-12)':
+                                    if ('43' in def_formation):
+                                        prim_assigned = 'MLB'
+                                    elif ('34' in def_formation):
+                                        if('Nickel Personnel' in def_formation or 'Dime Personnel' in def_formation):
+                                            prim_assigned = 'SLB'
+                                        else:
+                                            prim_assigned = 'SILB'
+                                case '5 Deep Out (13-18)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
                                     else:
-                                        prim_assigned = 'SILB'                                         
-                             elif route == '1 Out (5-8)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SLB'
-                                 elif ('Nickel' in def_formation or 'Dime' in def_formation):
-                                     prim_assigned = 'RCB'                                  
-                             elif route == '2 Slant (5-8)':                                 
-                                 if ('43' in def_formation):
-                                     prim_assigned = 'MLB'                                    
-                                 elif ('34' in def_formation):
-                                     if ('Nickel' in def_formation or 'Dime' in def_formation):
-                                         prim_assigned = 'SLB'                            
-                                     else:
-                                         prim_assigned = 'SILB'                                         
-                             elif route == '3 Comeback (9-12)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SLB'
-                                 elif ('Nickel' in def_formation or 'Dime' in def_formation):
-                                     prim_assigned = 'RCB'                                   
-                             elif route == '4 Curl (9-12)':
-                                 if ('43' in def_formation):
-                                     prim_assigned = 'MLB'                                    
-                                 elif ('34' in def_formation):
-                                     if ('Nickel' in def_formation or 'Dime' in def_formation):
-                                         prim_assigned = 'SLB'                            
-                                     else:
-                                         prim_assigned = 'SILB'                                         
-                             elif route == '5 Deep Out (13-18)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 else:
-                                     prim_assigned = 'SS'
-                             elif route == '6 Deep In (13-18)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SS'                                    
-                                 else:
-                                     prim_assigned = 'FS'                               
-                             elif route == '7 Corner (19-26)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 else:
-                                     prim_assigned = 'SS'                                          
-                             elif route == '8 Post (19-26)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SS'                                    
-                                 else:
-                                     prim_assigned = 'FS'
-                             elif route == '9 Fade (27-39)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 else:
-                                     prim_assigned = 'SS'                                    
-                             elif route == 'W Wheel (9-18)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 else:
-                                     prim_assigned = 'SS'                               
-                             elif route == 'D Deep Fade (40+)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 else:
-                                     prim_assigned = 'SS'    
+                                        prim_assigned = 'SS'
+                                case '6 Deep In (13-18)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SS'
+                                    else:
+                                        prim_assigned = 'FS'
+                                case '7 Corner (19-26)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    else:
+                                        prim_assigned = 'SS'
+                                case '8 Post (19-26)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SS'
+                                    else:
+                                        prim_assigned = 'FS'
+                                case '9 Fade (27-39)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    else:
+                                        prim_assigned = 'SS'
+                                case 'W Wheel (9-18)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    else:
+                                        prim_assigned = 'SS'                                   
+                                case 'D Deep Fade (40+)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    else:
+                                        prim_assigned = 'SS'                                 
                         elif ('Cover-3 Sky' in def_formation):
-                             if route == 'S Screen (S)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SLB'
-                                 elif('Nickel' in def_formation):
-                                     if ('43' in def_formation):
-                                         prim_assigned = 'SS'
-                                     else:
-                                         prim_assigned = 'SLB'
-                                 elif('Dime' in def_formation):
-                                     prim_assigned = 'RCB'
-                             elif route == 'F Flat (0-4)':
-                                 if route == 'S Screen (S)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'SLB'
-                                     elif('Nickel' in def_formation):
-                                         if ('43' in def_formation):
-                                             prim_assigned = 'SS'
-                                         else:
-                                             prim_assigned = 'SLB'
-                                     elif('Dime' in def_formation):
-                                         prim_assigned = 'RCB'                              
-                             elif route == '0 Dig (0-4)':
-                                  if ('43' in def_formation):
-                                      prim_assigned = 'MLB'                                    
-                                  elif ('34' in def_formation):
-                                      if ('Dime' in def_formation):
-                                          prim_assigned = 'SS'                                        
-                                      else:
-                                          prim_assigned = 'SILB'                                        
-                             elif route == '1 Out (5-8)':
-                                 if route == 'S Screen (S)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'SLB'
-                                     elif('Nickel' in def_formation):
-                                         if ('43' in def_formation):
-                                             prim_assigned = 'SS'
-                                         else:
-                                             prim_assigned = 'SLB'
-                                     elif('Dime' in def_formation):
-                                         prim_assigned = 'RCB'                         
-                             elif route == '2 Slant (5-8)':
-                                  if route == 'S Screen (S)':
-                                      if ('Regular' in def_formation):
-                                          prim_assigned = 'SS'
-                                      elif('Nickel' in def_formation):
-                                          if ('43' in def_formation):
-                                              prim_assigned = 'MLB'
-                                          else:
-                                              prim_assigned = 'SS'
-                                      elif('Dime' in def_formation):
-                                          if ('43' in def_formation):
-                                              prim_assigned = 'SS'
-                                          else:
-                                              prim_assigned = 'SLB'
-                             elif route == '3 Comeback (9-12)':
-                                 if route == 'S Screen (S)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'SLB'
-                                     elif('Nickel' in def_formation):
-                                         if ('43' in def_formation):
-                                             prim_assigned = 'SS'
-                                         else:
-                                             prim_assigned = 'SLB'
-                                     elif('Dime' in def_formation):
-                                         prim_assigned = 'RCB'                                    
-                             elif route == '4 Curl (9-12)':
-                                 if route == 'S Screen (S)':
-                                     if ('Regular' in def_formation):
-                                         prim_assigned = 'SS'
-                                     elif('Nickel' in def_formation):
-                                         if ('43' in def_formation):
-                                             prim_assigned = 'MLB'
-                                         else:
-                                             prim_assigned = 'SS'
-                                     elif('Dime' in def_formation):
-                                         if ('43' in def_formation):
-                                             prim_assigned = 'SS'
-                                         else:
-                                             prim_assigned = 'SLB'                                        
-                             elif route == '5 Deep Out (13-18)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Nickel Personnel' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Dime Personnel' in def_formation):
-                                     prim_assigned = 'DB'                                   
-                             elif route == '6 Deep In (13-18)':
-                                 prim_assigned = 'FS'
-                             elif route == '7 Corner (19-26)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Nickel Personnel' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Dime Personnel' in def_formation):
-                                     prim_assigned = 'DB'                                    
-                             elif route == '8 Post (19-26)':
-                                 prim_assigned = 'FS'
-                             elif route == '9 Fade (27-39)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Nickel Personnel' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Dime Personnel' in def_formation):
-                                     prim_assigned = 'DB'                                   
-                             elif route == 'W Wheel (9-18)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Nickel Personnel' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Dime Personnel' in def_formation):
-                                     prim_assigned = 'DB'                             
-                             elif route == 'D Deep Fade (40+)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Nickel Personnel' in def_formation):
-                                     prim_assigned = 'RCB'                                    
-                                 elif('Dime Personnel' in def_formation):
-                                     prim_assigned = 'DB'                                                                        
+                            match route:
+                                case 'S Screen (S)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'WLB'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        if('43' in def_formation):
+                                            prim_assigned = 'SS'
+                                        else:
+                                            prim_assigned = 'SLB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                case 'F Flat (0-4)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        if('43' in def_formation):
+                                            prim_assigned = 'SS'
+                                        else:
+                                            prim_assigned = 'SLB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                case '0 Dig (0-4)':
+                                    if ('43' in def_formation):
+                                        prim_assigned = 'MLB'                                    
+                                    elif ('34' in def_formation):
+                                        if ('Dime Personnel' in def_formation):
+                                            prim_assigned = 'SS'                                        
+                                        else:
+                                            prim_assigned = 'SILB'
+                                case '1 Out (5-8)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        if('43' in def_formation):
+                                            prim_assigned = 'SS'
+                                        else:
+                                            prim_assigned = 'SLB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                case '2 Slant (5-8)':
+                                    if('Regular' in def_formation):
+                                        prim_assigned = 'SS'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        if('43' in def_formation):
+                                            prim_assigned = 'MLB'
+                                        else:
+                                            prim_assigned = 'SS'
+                                    elif ('Dime Personnel' in def_formation):
+                                        if('43' in def_formation):
+                                            prim_assigned = 'SS'
+                                        else:
+                                            prim_assigned = 'SLB'
+                                case '3 Comeback (9-12)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        if('43' in def_formation):
+                                            prim_assigned = 'SS'
+                                        else:
+                                            prim_assigned = 'SLB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                case '4 Curl (9-12)':
+                                    if('Regular' in def_formation):
+                                        prim_assigned = 'SS'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        if('43' in def_formation):
+                                            prim_assigned = 'MLB'
+                                        else:
+                                            prim_assigned = 'SS'
+                                    elif ('Dime Personnel' in def_formation):
+                                        if('43' in def_formation):
+                                            prim_assigned = 'SS'
+                                        else:
+                                            prim_assigned = 'SLB'
+                                case '5 Deep Out (13-18)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'DB'
+                                case '6 Deep In (13-18)':
+                                    prim_assigned = 'FS'
+                                case '7 Corner (19-26)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'DB'
+                                case '8 Post (19-26)':
+                                    prim_assigned = 'FS'                                 
+                                case '9 Fade (27-39)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'DB'
+                                case 'W Wheel (9-18)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'DB'                                  
+                                case 'D Deep Fade (40+)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Nickel Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'DB'                                                                                               
                         elif ('Cover-4' in def_formation):
-                             if route == 'S Screen (S)':
-                                  if ('Regular' in def_formation):
-                                      prim_assigned = 'SLB'                                    
-                                  else:
-                                      if ('43' in def_formation):
-                                          prim_assigned = 'MLB'
-                                      elif ('34' in def_formation):
-                                          prim_assigned = 'SLB'
-                             elif route == 'F Flat (0-4)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SLB'                                    
-                                 else:
-                                     if ('43' in def_formation):
+                             match route:
+                                case 'S Screen (S)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    else:
+                                        if ('43' in def_formation):
+                                            prim_assigned = 'MLB'
+                                        elif ('34' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case 'F Flat (0-4)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    else:
+                                        if ('43' in def_formation):
+                                            prim_assigned = 'MLB'
+                                        elif ('34' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case '0 Dig (0-4)':
+                                    if ('43' in def_formation):
+                                        prim_assigned = 'MLB'
+                                    elif ('34' in def_formation):
+                                        if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                            prim_assigned = 'SILB'
+                                        elif('Dime Personnel' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case '1 Out (5-8)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    else:
+                                        if ('43' in def_formation):
+                                            prim_assigned = 'MLB'
+                                        elif ('34' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case '2 Slant (5-8)':
+                                    if ('43' in def_formation):
+                                        prim_assigned = 'MLB'
+                                    elif ('34' in def_formation):
+                                        if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                            prim_assigned = 'SILB'
+                                        elif('Dime Personnel' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case '3 Comeback (9-12)':
+                                    if ('Regular' in def_formation):
+                                        prim_assigned = 'SLB'
+                                    else:
+                                        if ('43' in def_formation):
+                                            prim_assigned = 'MLB'
+                                        elif ('34' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case '4 Curl (9-12)':
+                                    if ('43' in def_formation):
+                                        prim_assigned = 'MLB'
+                                    elif ('34' in def_formation):
+                                        if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                            prim_assigned = 'SILB'
+                                        elif('Dime Personnel' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case '5 Deep Out (13-18)':
+                                    if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'DB'
+                                case '6 Deep In (13-18)':
+                                    prim_assigned = 'SS'
+                                case '7 Corner (19-26)':
+                                    if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'DB'
+                                case '8 Post (19-26)':
+                                    prim_assigned = 'SS'
+                                case '9 Fade (27-39)':
+                                    if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'DB'
+                                case 'W Wheel (9-18)':
+                                    if('43' in def_formation):
                                          prim_assigned = 'MLB'
-                                     elif ('34' in def_formation):
-                                         prim_assigned = 'SLB'
-                             elif route == '0 Dig (0-4)':
-                                 if ('43' in def_formation):
-                                     prim_assigned = 'MLB'
-                                 elif ('34' in def_formation):
-                                     if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
-                                         prim_assigned = 'SILB'
-                                     elif('Dime Personnel' in def_formation):
-                                         prim_assigned = 'SLB'
-                             elif route == '1 Out (5-8)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SLB'                                    
-                                 else:
-                                     if ('43' in def_formation):
-                                         prim_assigned = 'MLB'
-                                     elif ('34' in def_formation):
-                                         prim_assigned = 'SLB'
-                             elif route == '2 Slant (5-8)':
-                                 if ('43' in def_formation):
-                                     prim_assigned = 'MLB'
-                                 elif ('34' in def_formation):
-                                     if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
-                                         prim_assigned = 'SILB'
-                                     elif('Dime Personnel' in def_formation):
-                                         prim_assigned = 'SLB'
-                             elif route == '3 Comeback (9-12)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'SLB'                                    
-                                 else:
-                                     if ('43' in def_formation):
-                                         prim_assigned = 'MLB'
-                                     elif ('34' in def_formation):
-                                         prim_assigned = 'SLB'
-                             elif route == '4 Curl (9-12)':
-                                 if ('43' in def_formation):
-                                     prim_assigned = 'MLB'
-                                 elif ('34' in def_formation):
-                                     if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
-                                         prim_assigned = 'SILB'
-                                     elif('Dime Personnel' in def_formation):
-                                         prim_assigned = 'SLB'
-                             elif route == '5 Deep Out (13-18)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'
-                                 elif('Nickel Personnel' in def_formation):
-                                     prim_assigned = 'RCB'
-                                 elif ('Dime Personnel' in def_formation):
-                                     prim_assigned = 'DB'
-                             elif route == '6 Deep In (13-18)':
-                                 prim_assigned = 'SS'
-                             elif route == '7 Corner (19-26)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'
-                                 elif('Nickel Personnel' in def_formation):
-                                     prim_assigned = 'RCB'
-                                 elif ('Dime Personnel' in def_formation):
-                                     prim_assigned = 'DB'
-                             elif route == '8 Post (19-26)':
-                                 prim_assigned = 'SS'
-                             elif route == '9 Fade (27-39)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'
-                                 elif('Nickel Personnel' in def_formation):
-                                     prim_assigned = 'RCB'
-                                 elif ('Dime Personnel' in def_formation):
-                                     prim_assigned = 'DB'
-                             elif route == 'W Wheel (9-18)':
-                                 if ('43' in def_formation):
-                                     prim_assigned = 'MLB'
-                                 elif ('34' in def_formation):
-                                     if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
-                                         prim_assigned = 'SILB'
-                                     elif('Dime Personnel' in def_formation):
-                                         prim_assigned = 'SLB'
-                             elif route == 'D Deep Fade (40+)':
-                                 if ('Regular' in def_formation):
-                                     prim_assigned = 'RCB'
-                                 elif('Nickel Personnel' in def_formation):
-                                     prim_assigned = 'RCB'
-                                 elif ('Dime Personnel' in def_formation):
-                                     prim_assigned = 'DB'                                
+                                    elif ('34' in def_formation):
+                                        if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                            prim_assigned = 'SILB'
+                                        elif('Dime Personnel' in def_formation):
+                                            prim_assigned = 'SLB'
+                                case 'D Deep Fade (40+)':
+                                    if ('Regular' in def_formation or 'Nickel Personnel' in def_formation):
+                                        prim_assigned = 'RCB'
+                                    elif ('Dime Personnel' in def_formation):
+                                        prim_assigned = 'DB'                                
                     
                     elif ((position == 'Y' and '014t' in off_formation) or 
                           (position == 'T' and '023' in off_formation) or
