@@ -316,7 +316,6 @@ class game_service:
                 position_and_name = receiver_name_and_position.split(' ', 1)
                 receiver_name = position_and_name[1]
                 position = position_and_name[0]
-                # todo: convert if statements to match cases for better speed and readability
                 match position:
                     case 'SLOT':
                         Num_Slot += 1
@@ -2592,7 +2591,31 @@ class game_service:
                                         prim_assigned = 'WLB'                                    
                     
                     print("Assigned defender is", prim_assigned)
-                    prim_defender = defensive_play_personnel[defensive_play_personnel['Position'].str.startswith(str(prim_assigned))]
+                    # prim_defender = defensive_play_personnel[defensive_play_personnel['Position_Player'].str.startswith(str(prim_assigned))]
+                    if prim_assigned:
+                        prim_defender_df = defensive_play_personnel[defensive_play_personnel['Position'].str.startswith(str(prim_assigned))]
+                        if not prim_defender_df.empty:
+                            prim_def_name = prim_defender_df['Player'].iloc[0]
+                            prim_coverage_type = prim_defender_df['Assignment'].iloc[0]
+                            result = {
+                                "assigned_position": prim_assigned,
+                                "defender_name": prim_def_name,
+                                "coverage_type": prim_coverage_type,
+                                "receiver_position": position,
+                                "route": route,
+                                "def_formation": def_formation,
+                                "off_formation": off_formation
+                            }
+                            pass_defenders.append(result)
+                            output_widget.append(
+                                f"Primary defender: {prim_def_name} ({prim_assigned}), Coverage: {prim_coverage_type}, "
+                                f"Receiver: {position}, Route: {route}, Def: {def_formation}, Off: {off_formation}"
+                            )
+                        else:
+                            output_widget.append(f"No defender found for assigned position {prim_assigned}")
+                    print("Primary defender is", prim_defender)
+                    pass_defenders.append(prim_defender)
+                    print('Pass Defenders Array', pass_defenders)
                     prim_def_name = prim_defender['Player'].iloc[0]
                     prim_coverage_type = prim_defender['Assignment'].iloc[0]
                     print(prim_def_name, "was in", prim_coverage_type, "coverage")
