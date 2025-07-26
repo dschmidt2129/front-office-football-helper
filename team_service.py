@@ -35,6 +35,9 @@ class team_service:
                 team_id = team_info.iat[11,0]
                 # print('Indianapolis team id: ' + str(team_id))
                 return team_id
+            case 'Philadelphia':
+                team_id = team_info.iat[21,0]
+                return team_id
             case _:
                 print("No team passed!!")
                 return team_id
