@@ -266,6 +266,7 @@ class game_service:
         return receivers
     
     def get_pass_defenders_from_play(self, formation, play_result, defensive_play_personnel, output_widget, offensive_play_personnel):     
+        pass_def = []
         pass_defenders = []
         PENALTY_find = play_result.find("PENALTY")
         if(PENALTY_find != -1):
@@ -896,7 +897,7 @@ class game_service:
                                         elif ('34' in def_formation):
                                             if ('Dime Personnel' in def_formation):
                                                 prim_assigned = 'WLB'                            
-                                            elif ('Nickel Personnels' in def_formation):
+                                            elif ('Nickel Personnel' in def_formation):
                                                 prim_assigned = 'SILB'
                                             elif ('Regular' in def_formation):
                                                 prim_assigned = 'WILB'
@@ -1437,7 +1438,7 @@ class game_service:
                     
                     elif ((position == 'Y' and '014t' in off_formation) or 
                           (position == 'T' and '023' in off_formation) or
-                          (position == 'T' and '122' in off_formation)
+                          (position == 'T' and '122' in off_formation) or
                           (position == 'T' and '131' in off_formation)
                           ):
                         if ('Man to Man' in def_formation or
@@ -2150,12 +2151,12 @@ class game_service:
                             else:
                                 match route:
                                     case 'S Screen (S)':    
-                                        if ('Regular'in def_formation):
+                                        if ('Regular' in def_formation):
                                             prim_assigned = 'SLB'
                                         else:
                                             prim_assigned = 'RCB'
                                     case 'F Flat (0-4)':
-                                        if ('Regular'in def_formation):
+                                        if ('Regular' in def_formation):
                                             prim_assigned = 'SLB'
                                         else:
                                             prim_assigned = 'RCB'                               
@@ -2613,11 +2614,11 @@ class game_service:
                             )
                         else:
                             output_widget.append(f"No defender found for assigned position {prim_assigned}")
-                    print("Primary defender is", prim_defender)
-                    pass_defenders.append(prim_defender)
+                    print("Primary defender is", prim_def_name)
+                    pass_defenders.append(prim_defender_df)
                     print('Pass Defenders Array', pass_defenders)
-                    prim_def_name = prim_defender['Player'].iloc[0]
-                    prim_coverage_type = prim_defender['Assignment'].iloc[0]
+                    prim_def_name = prim_defender_df['Player'].iloc[0]
+                    prim_coverage_type = prim_defender_df['Assignment'].iloc[0]
                     print(prim_def_name, "was in", prim_coverage_type, "coverage")
                     
                     print("Receiver was", position)
@@ -2633,31 +2634,35 @@ class game_service:
                             words = play_result.split()
                             index_after = words.index("after")
                             yards_after_catch = int(words[index_after - 2])
+                    else:
+                        caught = 0
+                        rec_yards = 0
+                        yards_after_catch = 0
    
-    #             new_rec_row = []
-    #             new_rec_row.append(receiver_name)
-    #             new_rec_row.append(position)
-    #             new_rec_row.append(priority)
-    #             new_rec_row.append(route)
-    #             new_rec_row.append(targeted)
-    #             new_rec_row.append(caught)
-    #             new_rec_row.append(rec_yards)
-    #             new_rec_row.append(yards_after_catch)
-    #             new_rec_row.append(passer)
-    #             receivers.append(new_rec_row)
+                    new_pass_def_row = []
+                    new_pass_def_row.append(prim_def_name)
+                    new_pass_def_row.append(prim_assigned)             
+                    new_pass_def_row.append(position)
+                    new_pass_def_row.append(route)
+                    new_pass_def_row.append(prim_coverage_type)
+                    new_pass_def_row.append(def_formation)
+                    new_pass_def_row.append(caught)
+                    new_pass_def_row.append(rec_yards)
+                    new_pass_def_row.append(yards_after_catch)
+                    pass_def.append(new_pass_def_row)
         
-    #     csv_file = 'receivers_in_game.csv'
-    #     file_exists = os.path.isfile(csv_file)
-
-    #     try:
-    #         with open(csv_file, 'a', newline='') as csvfile:
-    #             writer = csv.writer(csvfile)
-    #             if not file_exists:
-    #                 writer.writerow(['Player Name','Position' ,'Route Prioity', 'Route', 'Targeted?', 'Caught?', 'Yards', 'YAC', 'Passer'])
-    #             writer.writerows(receivers)
-    #             output_text = f"Receiver data for this play appended to '{csv_file}'."
-    #             output_widget.append(output_text)
-    #     except Exception as e:
-    #         output_text = f"Error writing to CSV file '{csv_file}': {e}"
-    #         output_widget.append(output_text)
-        return pass_defenders
+                    csv_file = 'pass_def_in_game.csv'
+                    file_exists = os.path.isfile(csv_file)
+            
+                    try:
+                        with open(csv_file, 'a', newline='') as csvfile:
+                            writer = csv.writer(csvfile)
+                            if not file_exists:
+                                writer.writerow(['Player Name','Position' ,'Receiver', 'Route', 'Coverage', 'Formation', 'Caught?', 'Yards', 'YAC'])
+                            writer.writerows(pass_def)
+                            output_text = f"Pass defender data for this play appended to '{csv_file}'."
+                            output_widget.append(output_text)
+                    except Exception as e:
+                        output_text = f"Error writing to CSV file '{csv_file}': {e}"
+                        output_widget.append(output_text)
+                    return pass_defenders
