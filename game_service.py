@@ -296,11 +296,10 @@ class game_service:
         Num_Slot = 0
         prim_assigned = ''
         prim_coverage_type = ''
-        prim_defender = ''
         prim_def_name = ''
         doub_assigned = ''
         doub_coverage_type = ''
-        doub_defender = ''
+        doub_def_name = ''
         if 'fell incomplete' in play_result:
             intended_receiver_last_name = (play_result_arr[12])
             intended_receiver_last_name = intended_receiver_last_name[:-1]            
@@ -355,7 +354,103 @@ class game_service:
                             'Press-1' in def_formation or
                             'Tampa-2' in def_formation
                             ):
-                            prim_assigned = 'LCB'  
+                            prim_assigned = 'LCB'
+                            if 'Cover-3 Cloud' in def_formation:
+                                match route:
+                                    case 'S Screen (S)':
+                                        if ('Regular' in def_formation):
+                                            doub_assigned = 'WLB'
+                                        else:
+                                            doub_assigned = 'LCB'
+                                    case 'F Flat (0-4)':
+                                        if ('Regular' in def_formation):
+                                            doub_assigned = 'WLB'
+                                        else:
+                                            doub_assigned = 'LCB'
+                                    case '0 Dig (0-4)':
+                                        if ('43' in def_formation):
+                                            if ('Dime' in def_formation):
+                                                doub_assigned = 'MLB'                                        
+                                            elif('Nickel' in def_formation):
+                                                doub_assigned = 'WLB'                                        
+                                            else:
+                                                doub_assigned = 'MLB'                                    
+                                        elif ('34' in def_formation):
+                                            if ('Dime' in def_formation):
+                                                doub_assigned = 'WLB'                                        
+                                            elif('Nickel' in def_formation):
+                                                doub_assigned = 'WLB'                                        
+                                            else:
+                                                doub_assigned = 'WILB'
+                                    case '1 Out (5-8)':
+                                        if ('Regular' in def_formation):
+                                            doub_assigned = 'WLB'
+                                        else:
+                                            doub_assigned = 'LCB'
+                                    case '2 Slant (5-8)':
+                                        if ('43' in def_formation):
+                                            if ('Dime' in def_formation):
+                                                doub_assigned = 'MLB'                                        
+                                            elif('Nickel' in def_formation):
+                                                doub_assigned = 'WLB'                                        
+                                            else:
+                                                doub_assigned = 'MLB'                                    
+                                        elif ('34' in def_formation):
+                                            if ('Dime' in def_formation):
+                                                doub_assigned = 'WLB'                                        
+                                            elif('Nickel' in def_formation):
+                                                doub_assigned = 'WLB'                                        
+                                            else:
+                                                doub_assigned = 'WILB'
+                                    case '3 Comeback (9-12)':
+                                        if ('Regular' in def_formation):
+                                            doub_assigned = 'WLB'                                    
+                                        else:
+                                            doub_assigned = 'LCB'
+                                    case '4 Curl (9-12)':
+                                        if ('43' in def_formation):
+                                            if ('Dime' in def_formation):
+                                                doub_assigned = 'MLB'                                        
+                                            elif('Nickel' in def_formation):
+                                                doub_assigned = 'WLB'                                        
+                                            else:
+                                                doub_assigned = 'MLB'
+                                        elif ('34' in def_formation):
+                                            if ('Dime' in def_formation):
+                                                doub_assigned = 'WLB'                                        
+                                            elif('Nickel' in def_formation):
+                                                doub_assigned = 'WLB'                                        
+                                            else:
+                                                doub_assigned = 'WILB'
+                                    case '5 Deep Out (13-18)':
+                                        if ('Regular' in def_formation):
+                                            doub_assigned = 'LCB'
+                                        else:
+                                            doub_assigned = 'NB'
+                                    case '6 Deep In (13-18)':
+                                        doub_assigned = 'FS'
+                                    case '7 Corner (19-26)':
+                                        if ('Regular' in def_formation):
+                                            doub_assigned = 'LCB'
+                                        else:
+                                            doub_assigned = 'NB'
+                                    case '8 Post (19-26)':
+                                        doub_assigned = 'FS'
+                                    case '9 Fade (27-39)':
+                                        if ('Regular' in def_formation):
+                                            doub_assigned = 'LCB'
+                                        else:
+                                            doub_assigned = 'NB'
+                                    case 'W Wheel (9-18)':
+                                        if ('Regular' in def_formation):
+                                            doub_assigned = 'LCB'
+                                        else:
+                                            doub_assigned = 'NB'
+                                    case 'D Deep Fade (40+)':
+                                        if ('Regular' in def_formation):
+                                            doub_assigned = 'LCB'
+                                        else:
+                                            doub_assigned = 'NB'   
                         elif ('Cover-3 Sky' in def_formation):
                             match route:
                                 case 'S Screen (S)':
@@ -837,9 +932,9 @@ class game_service:
                                     elif('Dime Personnel' in def_formation):
                                         prim_assigned = 'DB'
                                         
-                    elif (position == 'R' and '014' in off_formation or
+                    elif (position == 'R' and '014 ' in off_formation or
                           position == 'R' and '023' in off_formation or
-                          position == 'R' and '113' in off_formation or
+                          position == 'R' and '113 ' in off_formation or
                           position == 'V'
                           ):
                           if ('Man to Man' in def_formation or
@@ -1747,8 +1842,8 @@ class game_service:
                                 case 'D Deep Fade (40+)':
                                     prim_assigned = 'FS'
                     
-                    elif ((position == 'Y' and '014' in off_formation) or
-                          (position == 'Y' and '113' in off_formation) or
+                    elif ((position == 'Y' and '014 ' in off_formation) or
+                          (position == 'Y' and '113 ' in off_formation) or
                           (position == 'Y' and '122' in off_formation) or
                           (position == 'Y' and '221' in off_formation) or
                           (position == 'Y' and '113t' in off_formation) or
@@ -2089,9 +2184,9 @@ class game_service:
                                 match route:
                                     case 'S Screen (S)':
                                         if ('Dime Personnel'in def_formation):
-                                            prim_assigned = 'WLB'
-                                        else:
                                             prim_assigned = 'NB'
+                                        else:
+                                            prim_assigned = 'WLB'
                                     case 'F Flat (0-4)':
                                         if route == 'S Screen (S)':
                                             if ('Dime Personnel'in def_formation):
@@ -2591,13 +2686,99 @@ class game_service:
                                     else:
                                         prim_assigned = 'WLB'                                    
                     
-                    print("Assigned defender is", prim_assigned)
+                    # Check for explicit double coverage assignments in the defensive playcall
+                    # case=False makes the search case-insensitive, and na=False handles potential missing values.
+                    double_assignment_mask = defensive_play_personnel['Assignment'].str.contains('Double', case=False, na=False)
+
+                    # Check if any matches were found
+                    if double_assignment_mask.any():
+                        # Filter the DataFrame to get the row with the double assignment
+                        doubled_row = defensive_play_personnel[double_assignment_mask]
+                        doub_assigned = doubled_row['Position'].iloc[0]
+                    
+                        # Extract the offensive position that is being doubled
+                        doub_position = doubled_row['Assignment'].str.split(' ', n=1).str[1].iloc[0]
+                        # Assume that doubled Slot is always R and that doubled TE is always Y
+                        if doub_position == 'SLOT':
+                            doub_position = 'R'
+                        if doub_position == 'TE':
+                            doub_position = 'Y'
+                        if doub_position != position:
+                            doub_assigned = ''
+                            doub_def_name = ''
+                            doub_coverage_type = ''
+                        else:
+                            doub_defender_df = defensive_play_personnel[defensive_play_personnel['Position'].str.startswith(str(doub_assigned))]
+                            doub_def_name = doub_defender_df['Player'].iloc[0]
+                            # Assume all assigned double coverages are M2M.  Might consider changing this to match Bump and Run in those defensive calls.
+                            doub_coverage_type = 'Man-to-Man'
+                                        
+                    if doub_assigned == '':
+                        # Check for implicit zone double coverages (deep zones).
+                        if (route == '6 Deep In (13-18)' or
+                            route == '8 Post (19-26)'):       
+                            if ('Cover-1' in def_formation or                              
+                                'Press-1' in def_formation):
+                                doub_assigned = 'FS'
+                                doub_coverage_type = 'Deep Zone'
+                                doub_defender_df = defensive_play_personnel[defensive_play_personnel['Position'].str.startswith(str(doub_assigned))]
+                                doub_def_name = doub_defender_df['Player'].iloc[0]
+                            if ('Tampa-2' in def_formation):
+                                doub_assigned = 'MLB'
+                                doub_coverage_type = 'Deep Zone'
+                                doub_defender_df = defensive_play_personnel[defensive_play_personnel['Position'].str.startswith(str(doub_assigned))]
+                                doub_def_name = doub_defender_df['Player'].iloc[0]
+                        
+                        if (route == '5 Deep Out (13-18)' or
+                            route == '7 Corner (19-26)' or
+                            route == '9 Fade (27-39)' or
+                            route == 'D Deep Fade (40+)'):
+                            if ('Cover-2' in def_formation or
+                                'Press-2' in def_formation or
+                                'Tampa-2' in def_formation
+                                ):
+                                if (position == 'X(SE)' or
+                                    (position == 'Z(FL)' and '131' in off_formation) or
+                                    (position == 'T' and '221' in off_formation) or
+                                    (position == 'T' and '230' in off_formation) or
+                                    (position == 'T' and '023' in off_formation) or
+                                    (position == 'T' and '122' in off_formation) or
+                                    (position == 'T' and '131' in off_formation) or
+                                    (position == 'V') or
+                                    (position == 'R' and '014 ' in off_formation) or
+                                    (position == 'R' and '113 ' in off_formation) or
+                                    (position == 'R' and '104' in off_formation) or
+                                    (position == 'Y' and '014t' in off_formation)
+                                    ):
+                                    doub_assigned = 'FS'
+                                    doub_coverage_type = 'Deep Zone'
+                                    doub_defender_df = defensive_play_personnel[defensive_play_personnel['Position'].str.startswith(str(doub_assigned))]
+                                    doub_def_name = doub_defender_df['Player'].iloc[0]
+                                else:
+                                    doub_assigned = 'SS'
+                                    doub_coverage_type = 'Deep Zone'
+                                    doub_defender_df = defensive_play_personnel[defensive_play_personnel['Position'].str.startswith(str(doub_assigned))]
+                                    doub_def_name = doub_defender_df['Player'].iloc[0]
+                    
+                    # print("Assigned defender is", prim_assigned)
                     # prim_defender = defensive_play_personnel[defensive_play_personnel['Position_Player'].str.startswith(str(prim_assigned))]
                     if prim_assigned:
                         prim_defender_df = defensive_play_personnel[defensive_play_personnel['Position'].str.startswith(str(prim_assigned))]
                         if not prim_defender_df.empty:
                             prim_def_name = prim_defender_df['Player'].iloc[0]
                             prim_coverage_type = prim_defender_df['Assignment'].iloc[0]
+                            # Check if primary coverage blitzed or is in double coverage instead, and replace with double coverage assignment as needed
+                            if prim_coverage_type == 'Blitz Passer':
+                                if doub_assigned != '':
+                                    prim_assigned = doub_assigned
+                                    prim_def_name = doub_def_name
+                                    prim_coverage_type = doub_coverage_type
+                                    doub_assigned = ''
+                                    doub_def_name = ''
+                                    doub_coverage_type = ''
+                                else:
+                                    prim_assigned = ''
+                                    prim_def_name = ''
                             result = {
                                 "assigned_position": prim_assigned,
                                 "defender_name": prim_def_name,
@@ -2617,14 +2798,14 @@ class game_service:
                     print("Primary defender is", prim_def_name)
                     pass_defenders.append(prim_defender_df)
                     print('Pass Defenders Array', pass_defenders)
-                    prim_def_name = prim_defender_df['Player'].iloc[0]
-                    prim_coverage_type = prim_defender_df['Assignment'].iloc[0]
-                    print(prim_def_name, "was in", prim_coverage_type, "coverage")
+                    # prim_def_name = prim_defender_df['Player'].iloc[0]
+                    # prim_coverage_type = prim_defender_df['Assignment'].iloc[0]
+                    # print(prim_def_name, "was in", prim_coverage_type, "coverage")
                     
                     print("Receiver was", position)
-                    print("Route was", route)
-                    print("Defensive formation was", def_formation)
-                    print("Offensive formation was", off_formation)
+                    # print("Route was", route)
+                    # print("Defensive formation was", def_formation)
+                    # print("Offensive formation was", off_formation)
                     
                     if 'completed' in play_result:
                         caught = 1
@@ -2649,6 +2830,9 @@ class game_service:
                     new_pass_def_row.append(caught)
                     new_pass_def_row.append(rec_yards)
                     new_pass_def_row.append(yards_after_catch)
+                    new_pass_def_row.append(doub_assigned)
+                    new_pass_def_row.append(doub_def_name)
+                    new_pass_def_row.append(doub_coverage_type)
                     pass_def.append(new_pass_def_row)
         
                     csv_file = 'pass_def_in_game.csv'
@@ -2658,7 +2842,7 @@ class game_service:
                         with open(csv_file, 'a', newline='') as csvfile:
                             writer = csv.writer(csvfile)
                             if not file_exists:
-                                writer.writerow(['Player Name','Position' ,'Receiver', 'Route', 'Coverage', 'Formation', 'Caught?', 'Yards', 'YAC'])
+                                writer.writerow(['Player Name','Position' ,'Receiver', 'Route', 'Coverage', 'Formation', 'Caught?', 'Yards', 'YAC', 'DC Position', 'DC Player Name', 'DC Coverage'])
                             writer.writerows(pass_def)
                             output_text = f"Pass defender data for this play appended to '{csv_file}'."
                             output_widget.append(output_text)
