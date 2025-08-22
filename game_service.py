@@ -2795,6 +2795,8 @@ class game_service:
                             )
                         else:
                             output_widget.append(f"No defender found for assigned position {prim_assigned}")
+                    else:
+                        output_widget.append(f"No primary defender found for assigned position {prim_assigned}")
                     print("Primary defender is", prim_def_name)
                     pass_defenders.append(prim_defender_df)
                     print('Pass Defenders Array', pass_defenders)
