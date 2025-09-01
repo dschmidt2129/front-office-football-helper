@@ -12,8 +12,7 @@ class team_service:
         # las vegas is team id 20
         # miami is team id 14
         # indianapolis is team id 11
-        # todo: update this file location to the game file location. 
-        # todo: may need to have the users upload this file at each run? not sure how often this file changes
+        # philadelphia is team id 21
         team_info = pd.read_csv(path + "/leaguedata/SFL00004/team_information.csv")
         # print(team_info)
         team_id = -1

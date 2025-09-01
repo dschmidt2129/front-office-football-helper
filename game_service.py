@@ -3,6 +3,7 @@ import csv
 import os
 from player_service import player_service as ps
 from team_service import team_service as ts
+from PyQt5.QtWidgets import QApplication # this should allow the application to update real time
 
 class game_service:
 
@@ -53,6 +54,7 @@ class game_service:
                 game_result.drop(index=play_counter, inplace=True)
                 output_text = 'removing unwanted play : {}'.format(play)
                 output_widget.append(output_text)
+                QApplication.processEvents() # this should allow the application to update real time
             play_counter += 1
         game_result.reset_index(drop=True, inplace=True) # reset the index after dropping the unwanted plays
         self.cleaned_game_log = game_result  # Cache the cleaned game log
@@ -115,6 +117,7 @@ class game_service:
         if play_result is None:
             output_text = f"Skipping play at index {index} due to missing play result."
             output_widget.append(output_text)
+            QApplication.processEvents() # this should allow the application to update real time
             return None
         play_result_arr = play_result.split(' ')
         player_to_check_in_roster_first_name = (play_result_arr[3])
@@ -131,30 +134,36 @@ class game_service:
             offensive_play_personnel = self.get_offensive_play_personnel(index, path)
             output_text = f"Offensive play personnel at index {index}:"
             output_widget.append(output_text)
+            QApplication.processEvents() # this should allow the application to update real time
             if offensive_play_personnel is not None and offensive_play_personnel.shape[0] > 0:
                 formation = offensive_play_personnel.iloc[0,1]
                 formation = str(formation)
                 output_text = 'Formation : ' + formation
                 output_widget.append(output_text)
+                QApplication.processEvents() # this should allow the application to update real time
                 offensive_play_personnel.drop(index=0, inplace=True)
                 if 'pass' in play_result:
                     receivers_in_play = self.get_receivers_from_play(play_result, offensive_play_personnel, output_widget)
                     output_text = str(receivers_in_play)
                     output_widget.append(output_text)
+                    QApplication.processEvents() # this should allow the application to update real time
                 return offensive_play_personnel
             else:
                 output_text = f"No offensive play personnel found at index {index}"
                 output_widget.append(output_text)
+                QApplication.processEvents() # this should allow the application to update real time
                 return None
         else:          
             defensive_play_personnel = self.get_defensive_play_personnel(index, path)
             output_text = f"Defensive play personnel at index {index}:"
             output_widget.append(output_text)
+            QApplication.processEvents() # this should allow the application to update real time
             if defensive_play_personnel is not None and defensive_play_personnel.shape[0] > 0:
                 formation = defensive_play_personnel.iloc[0,1]
                 formation = str(formation)
                 output_text = 'Formation : ' + formation
                 output_widget.append(output_text)
+                QApplication.processEvents() # this should allow the application to update real time
                 defensive_play_personnel.drop(index=0, inplace=True)
                 if ('fell incomplete' in play_result or
                     'completed' in play_result or
@@ -164,10 +173,12 @@ class game_service:
                     pass_defenders_in_play = self.get_pass_defenders_from_play(formation, play_result, defensive_play_personnel, output_widget, offensive_play_personnel)
                     output_text = str(pass_defenders_in_play)
                     output_widget.append(output_text)
+                    QApplication.processEvents() # this should allow the application to update real time
                 return defensive_play_personnel
             else:
                 output_text = f"No defensive play personnel found at index {index}"
                 output_widget.append(output_text)
+                QApplication.processEvents() # this should allow the application to update real time
                 return None
    
     def get_receivers_from_play(self, play_result, offensive_play_personnel, output_widget):
@@ -260,9 +271,11 @@ class game_service:
                 writer.writerows(receivers)
                 output_text = f"Receiver data for this play appended to '{csv_file}'."
                 output_widget.append(output_text)
+                QApplication.processEvents() # this should allow the application to update real time
         except Exception as e:
             output_text = f"Error writing to CSV file '{csv_file}': {e}"
             output_widget.append(output_text)
+            QApplication.processEvents() # this should allow the application to update real time
         return receivers
     
     def get_pass_defenders_from_play(self, formation, play_result, defensive_play_personnel, output_widget, offensive_play_personnel):     
@@ -2793,12 +2806,16 @@ class game_service:
                                 f"Primary defender: {prim_def_name} ({prim_assigned}), Coverage: {prim_coverage_type}, "
                                 f"Receiver: {position}, Route: {route}, Def: {def_formation}, Off: {off_formation}"
                             )
+                            QApplication.processEvents() # this should allow the application to update real time
                         else:
                             output_widget.append(f"No defender found for assigned position {prim_assigned}")
+                            QApplication.processEvents() # this should allow the application to update real time
                     else:
                         output_widget.append(f"No primary defender found for assigned position {prim_assigned}")
+                        QApplication.processEvents() # this should allow the application to update real time
                     print("Primary defender is", prim_def_name)
                     pass_defenders.append(prim_defender_df)
+                    QApplication.processEvents() # this should allow the application to update real time
                     print('Pass Defenders Array', pass_defenders)
                     # prim_def_name = prim_defender_df['Player'].iloc[0]
                     # prim_coverage_type = prim_defender_df['Assignment'].iloc[0]
@@ -2848,7 +2865,9 @@ class game_service:
                             writer.writerows(pass_def)
                             output_text = f"Pass defender data for this play appended to '{csv_file}'."
                             output_widget.append(output_text)
+                            QApplication.processEvents() # this should allow the application to update real time
                     except Exception as e:
                         output_text = f"Error writing to CSV file '{csv_file}': {e}"
                         output_widget.append(output_text)
+                        QApplication.processEvents() # this should allow the application to update real time
                     return pass_defenders
