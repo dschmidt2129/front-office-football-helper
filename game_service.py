@@ -4,6 +4,10 @@ import os
 from player_service import player_service as ps
 from team_service import team_service as ts
 from PyQt5.QtWidgets import QApplication # this should allow the application to update real time
+from coverage_assignments import (
+    ManCoverageAssignment, Tampa2CoverageAssignment, Cover1Assignment,
+    Cover2Assignment, Cover3Assignment, Cover4Assignment, BumpAndRunAssignment
+)
 
 class game_service:
 
@@ -278,6 +282,25 @@ class game_service:
             QApplication.processEvents() # this should allow the application to update real time
         return receivers
     
+    def get_coverage_assignment(self, route, position, off_formation, def_formation):
+        # Dispatcher for coverage assignment classes
+        if any(x in def_formation for x in ['Man to Man', 'Cover-1', 'Press-1']):
+            return ManCoverageAssignment(route, position, off_formation, def_formation).assign()
+        elif 'Tampa-2' in def_formation:
+            return Tampa2CoverageAssignment(route, position, off_formation, def_formation).assign()
+        elif 'Cover-1' in def_formation:
+            return Cover1Assignment(route, position, off_formation, def_formation).assign()
+        elif 'Cover-2' in def_formation or 'Press-2' in def_formation:
+            return Cover2Assignment(route, position, off_formation, def_formation).assign()
+        elif 'Cover-3' in def_formation:
+            return Cover3Assignment(route, position, off_formation, def_formation).assign()
+        elif 'Cover-4' in def_formation:
+            return Cover4Assignment(route, position, off_formation, def_formation).assign()
+        elif 'Bump and Run' in def_formation:
+            return BumpAndRunAssignment(route, position, off_formation, def_formation).assign()
+        else:
+            return None
+    
     def get_pass_defenders_from_play(self, formation, play_result, defensive_play_personnel, output_widget, offensive_play_personnel):     
         pass_def = []
         pass_defenders = []
@@ -359,7 +382,7 @@ class game_service:
                         (position == 'T' and '221' in off_formation) or
                         (position == 'T' and '230' in off_formation)
                         ):
-                        if ('Man to Man' in def_formation or
+                        if ('Man to Man' in def_formation or # moved to coverage_assignment.py
                             'Cover-2' in def_formation or
                             'Cover-1' in def_formation or
                             'Cover-3 Cloud' in def_formation or
@@ -637,7 +660,7 @@ class game_service:
                                         prim_assigned = 'NB'
                     
                     elif (position == 'Z(FL)' or position == 'U'):
-                        if ('Man to Man' in def_formation or
+                        if ('Man to Man' in def_formation or # moved to coverage_assignment.py
                             'Cover-2' in def_formation or
                             'Cover-1' in def_formation or                            
                             'Press-2' in def_formation or
@@ -1246,7 +1269,7 @@ class game_service:
                           position == 'R' and '203' in off_formation or
                           position == 'S'
                           ):
-                        if ('Man to Man' in def_formation or
+                        if ('Man to Man' in def_formation or # moved to coverage_assignments.py
                             'Cover-2' in def_formation or
                             'Cover-1' in def_formation or                            
                             'Press-2' in def_formation or
@@ -1549,7 +1572,7 @@ class game_service:
                           (position == 'T' and '122' in off_formation) or
                           (position == 'T' and '131' in off_formation)
                           ):
-                        if ('Man to Man' in def_formation or
+                        if ('Man to Man' in def_formation or # moved to coverage_assignments.py
                             'Cover-2' in def_formation or
                             'Cover-1' in def_formation or                              
                             'Press-2' in def_formation or
@@ -1865,7 +1888,7 @@ class game_service:
                           (position == 'Y' and '230' in off_formation) or
                           (position == 'Y' and '023' in off_formation)
                           ):
-                        if ('Man to Man' in def_formation or
+                        if ('Man to Man' in def_formation or # moved to coverage_assignments.py
                             'Cover-2' in def_formation or
                             'Cover-1' in def_formation or                              
                             'Press-2' in def_formation or
@@ -2182,7 +2205,7 @@ class game_service:
                             'Press-1' in def_formation or
                             'Tampa-2' in def_formation
                             ):                            
-                            if ('43' in def_formation):
+                            if ('43' in def_formation): # moved to coverage_assignments.py
                                 if 'Tampa-2' in def_formation:
                                     prim_assigned = ''
                                 else:
@@ -2640,7 +2663,7 @@ class game_service:
                                                 prim_assigned = 'SLB'
                         
                     elif position == 'FB':
-                        if ('Man to Man' in def_formation or
+                        if ('Man to Man' in def_formation or # moved to coverage_assignments.py
                             'Cover-2' in def_formation or
                             'Cover-1' in def_formation or                              
                             'Press-2' in def_formation or
