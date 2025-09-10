@@ -79,8 +79,84 @@ class ManCoverageAssignment(CoverageAssignments):
 
 class Tampa2CoverageAssignment(CoverageAssignments):
     # sub class of coverage assignments for tampa 2 coverage
+    # todo: this logic needs to be updated to be route based instead of formation based
     def assign(self):
-        pass
+        if (position == 'X(SE)' or
+            (position == 'Z(FL)' and '131' in off_formation) or
+            (position == 'T' and '221' in off_formation) or
+            (position == 'T' and '230' in off_formation)
+            ):
+            return 'LCB'
+        elif (position == 'Z(FL)' or position == 'U'):
+            if ('Man to Man' in def_formation or # moved to coverage_assignment.py
+                'Cover-2' in def_formation or
+                'Cover-1' in def_formation or                            
+                'Press-2' in def_formation or
+                'Press-1' in def_formation or
+                'Tampa-2' in def_formation
+                ):
+                return 'RCB'
+        elif (position == 'R' and '014 ' in off_formation or
+                position == 'R' and '023' in off_formation or
+                position == 'R' and '113 ' in off_formation or
+                position == 'V'
+                ):
+            if (position == 'V'):
+                return 'None'
+            else:
+                return 'NB'
+        elif (position == 'R' and '005' in off_formation or
+                position == 'R' and '014t' in off_formation or
+                position == 'R' and '113t' in off_formation or
+                position == 'R' and '203' in off_formation or
+                position == 'S'
+                ):
+                if (position == 'R'):
+                    return 'NB' 
+                else:
+                    return 'DB'
+        elif ((position == 'Y' and '014t' in off_formation) or 
+            (position == 'T' and '023' in off_formation) or
+            (position == 'T' and '122' in off_formation) or
+            (position == 'T' and '131' in off_formation)
+            ):
+            # todo: this logic needs to be fixed
+            return 'WLB'
+        elif ((position == 'Y' and '014 ' in off_formation) or
+                (position == 'Y' and '113 ' in off_formation) or
+                (position == 'Y' and '122' in off_formation) or
+                (position == 'Y' and '221' in off_formation) or
+                (position == 'Y' and '113t' in off_formation) or
+                (position == 'Y' and '131' in off_formation) or
+                (position == 'Y' and '212' in off_formation) or
+                (position == 'Y' and '230' in off_formation) or
+                (position == 'Y' and '023' in off_formation)
+                ):
+                    if('Regular' in self.def_formation or 'Nickel' in self.def_formation):
+                        if ('43' in def_formation):
+                            return 'SLB'
+                        elif ('34' in def_formation):
+                            return 'SILB'
+                    else:
+                        if '43' in def_formation:
+                            return 'SLB'
+                        else:
+                            return 'SLB'
+        elif position == 'RB':
+            if '43' in self.def_formation:
+                return ''
+            else:
+                if 'Weak' in self.off_formation:
+                    return 'WILB'
+                else:
+                    return 'SILB'
+        elif position == 'FB':
+            # todo: this needs to account for nickel and dime
+            return 'SLB'
+        
+        
+        
+        
 
 class Cover1Assignment(CoverageAssignments):
     # sub class of coverage assignments for cover 1 coverage
