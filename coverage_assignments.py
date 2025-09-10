@@ -81,68 +81,68 @@ class Tampa2CoverageAssignment(CoverageAssignments):
     # sub class of coverage assignments for tampa 2 coverage
     # todo: this logic needs to be updated to be route based instead of formation based
     def assign(self):
-        if (position == 'X(SE)' or
-            (position == 'Z(FL)' and '131' in off_formation) or
-            (position == 'T' and '221' in off_formation) or
-            (position == 'T' and '230' in off_formation)
+        if (self.position == 'X(SE)' or
+            (self.position == 'Z(FL)' and '131' in self.off_formation) or
+            (self.position == 'T' and '221' in self.off_formation) or
+            (self.position == 'T' and '230' in self.off_formation)
             ):
             return 'LCB'
-        elif (position == 'Z(FL)' or position == 'U'):
-            if ('Man to Man' in def_formation or # moved to coverage_assignment.py
-                'Cover-2' in def_formation or
-                'Cover-1' in def_formation or                            
-                'Press-2' in def_formation or
-                'Press-1' in def_formation or
-                'Tampa-2' in def_formation
+        elif (self.position == 'Z(FL)' or self.position == 'U'):
+            if ('Man to Man' in self.def_formation or
+                'Cover-2' in self.def_formation or
+                'Cover-1' in self.def_formation or                            
+                'Press-2' in self.def_formation or
+                'Press-1' in self.def_formation or
+                'Tampa-2' in self.def_formation
                 ):
                 return 'RCB'
-        elif (position == 'R' and '014 ' in off_formation or
-                position == 'R' and '023' in off_formation or
-                position == 'R' and '113 ' in off_formation or
-                position == 'V'
+        elif (self.position == 'R' and '014 ' in self.off_formation or
+                self.position == 'R' and '023' in self.off_formation or
+                self.position == 'R' and '113 ' in self.off_formation or
+                self.position == 'V'
                 ):
-            if (position == 'V'):
+            if self.position == 'V':
                 return 'None'
             else:
                 return 'NB'
-        elif (position == 'R' and '005' in off_formation or
-                position == 'R' and '014t' in off_formation or
-                position == 'R' and '113t' in off_formation or
-                position == 'R' and '203' in off_formation or
-                position == 'S'
+        elif (self.position == 'R' and '005' in self.off_formation or
+                self.position == 'R' and '014t' in self.off_formation or
+                self.position == 'R' and '113t' in self.off_formation or
+                self.position == 'R' and '203' in self.off_formation or
+                self.position == 'S'
                 ):
-                if (position == 'R'):
+                if self.position == 'R':
                     return 'NB' 
                 else:
                     return 'DB'
-        elif ((position == 'Y' and '014t' in off_formation) or 
-            (position == 'T' and '023' in off_formation) or
-            (position == 'T' and '122' in off_formation) or
-            (position == 'T' and '131' in off_formation)
+        elif ((self.position == 'Y' and '014t' in self.off_formation) or 
+            (self.position == 'T' and '023' in self.off_formation) or
+            (self.position == 'T' and '122' in self.off_formation) or
+            (self.position == 'T' and '131' in self.off_formation)
             ):
-            # todo: this logic needs to be fixed
+            # todo: this logic needs to be fixed because in 43, WLB is not always on the field
             return 'WLB'
-        elif ((position == 'Y' and '014 ' in off_formation) or
-                (position == 'Y' and '113 ' in off_formation) or
-                (position == 'Y' and '122' in off_formation) or
-                (position == 'Y' and '221' in off_formation) or
-                (position == 'Y' and '113t' in off_formation) or
-                (position == 'Y' and '131' in off_formation) or
-                (position == 'Y' and '212' in off_formation) or
-                (position == 'Y' and '230' in off_formation) or
-                (position == 'Y' and '023' in off_formation)
+        elif ((self.position == 'Y' and '014 ' in self.off_formation) or
+                (self.position == 'Y' and '113 ' in self.off_formation) or
+                (self.position == 'Y' and '122' in self.off_formation) or
+                (self.position == 'Y' and '221' in self.off_formation) or
+                (self.position == 'Y' and '113t' in self.off_formation) or
+                (self.position == 'Y' and '131' in self.off_formation) or
+                (self.position == 'Y' and '212' in self.off_formation) or
+                (self.position == 'Y' and '230' in self.off_formation) or
+                (self.position == 'Y' and '023' in self.off_formation)
                 ):
                     if('Regular' in self.def_formation or 'Nickel' in self.def_formation):
-                        if ('43' in def_formation):
+                        if ('43' in self.def_formation):
                             return 'SLB'
-                        elif ('34' in def_formation):
+                        elif ('34' in self.def_formation):
                             return 'SILB'
                     else:
-                        if '43' in def_formation:
+                        if '43' in self.def_formation:
                             return 'SLB'
                         else:
                             return 'SLB'
-        elif position == 'RB':
+        elif self.position == 'RB':
             if '43' in self.def_formation:
                 return ''
             else:
@@ -150,7 +150,7 @@ class Tampa2CoverageAssignment(CoverageAssignments):
                     return 'WILB'
                 else:
                     return 'SILB'
-        elif position == 'FB':
+        elif self.position == 'FB':
             # todo: this needs to account for nickel and dime
             return 'SLB'
         
