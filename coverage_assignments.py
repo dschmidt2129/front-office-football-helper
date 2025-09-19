@@ -178,7 +178,12 @@ class Cover4Assignment(CoverageAssignments):
     def assign(self):
         pass
 
-class BumpAndRunAssignment(CoverageAssignments):
+class Press1Assignment(CoverageAssignments):
+    # sub class of coverage assignments for bump and run coverage
+    def assign(self):
+        pass
+
+class Press2Assignment(CoverageAssignments):
     # sub class of coverage assignments for bump and run coverage
     def assign(self):
         pass

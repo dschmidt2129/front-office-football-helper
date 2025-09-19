@@ -4,10 +4,10 @@ import os
 from player_service import player_service as ps
 from team_service import team_service as ts
 from PyQt5.QtWidgets import QApplication # this should allow the application to update real time
-from coverage_assignments import (
-    ManCoverageAssignment, Tampa2CoverageAssignment, Cover1Assignment,
-    Cover2Assignment, Cover3Assignment, Cover4Assignment, BumpAndRunAssignment
-)
+# from coverage_assignments import (
+#     ManCoverageAssignment, Tampa2CoverageAssignment, Cover1Assignment,
+#     Cover2Assignment, Cover3Assignment, Cover4Assignment, BumpAndRunAssignment
+# )
 
 class game_service:
 
