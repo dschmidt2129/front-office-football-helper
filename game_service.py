@@ -282,24 +282,24 @@ class game_service:
             QApplication.processEvents() # this should allow the application to update real time
         return receivers
     
-    def get_coverage_assignment(self, route, position, off_formation, def_formation):
-        # Dispatcher for coverage assignment classes
-        if any(x in def_formation for x in ['Man to Man', 'Cover-1', 'Press-1']):
-            return ManCoverageAssignment(route, position, off_formation, def_formation).assign()
-        elif 'Tampa-2' in def_formation:
-            return Tampa2CoverageAssignment(route, position, off_formation, def_formation).assign()
-        elif 'Cover-1' in def_formation:
-            return Cover1Assignment(route, position, off_formation, def_formation).assign()
-        elif 'Cover-2' in def_formation or 'Press-2' in def_formation:
-            return Cover2Assignment(route, position, off_formation, def_formation).assign()
-        elif 'Cover-3' in def_formation:
-            return Cover3Assignment(route, position, off_formation, def_formation).assign()
-        elif 'Cover-4' in def_formation:
-            return Cover4Assignment(route, position, off_formation, def_formation).assign()
-        elif 'Bump and Run' in def_formation:
-            return BumpAndRunAssignment(route, position, off_formation, def_formation).assign()
-        else:
-            return None
+    # def get_coverage_assignment(self, route, position, off_formation, def_formation):
+    #     # Dispatcher for coverage assignment classes
+    #     if any(x in def_formation for x in ['Man to Man', 'Cover-1', 'Press-1']):
+    #         return ManCoverageAssignment(route, position, off_formation, def_formation).assign()
+    #     elif 'Tampa-2' in def_formation:
+    #         return Tampa2CoverageAssignment(route, position, off_formation, def_formation).assign()
+    #     elif 'Cover-1' in def_formation:
+    #         return Cover1Assignment(route, position, off_formation, def_formation).assign()
+    #     elif 'Cover-2' in def_formation or 'Press-2' in def_formation:
+    #         return Cover2Assignment(route, position, off_formation, def_formation).assign()
+    #     elif 'Cover-3' in def_formation:
+    #         return Cover3Assignment(route, position, off_formation, def_formation).assign()
+    #     elif 'Cover-4' in def_formation:
+    #         return Cover4Assignment(route, position, off_formation, def_formation).assign()
+    #     elif 'Bump and Run' in def_formation:
+    #         return BumpAndRunAssignment(route, position, off_formation, def_formation).assign()
+    #     else:
+    #         return None
     
     def get_pass_defenders_from_play(self, formation, play_result, defensive_play_personnel, output_widget, offensive_play_personnel):     
         pass_def = []
