@@ -305,7 +305,204 @@ class Cover2Assignment(CoverageAssignments):
 class Cover3Assignment(CoverageAssignments):
     # sub class of coverage assignments for cover 3 coverage
     def assign(self):
-        pass
+        if (self.off_position == 'X(SE)' or
+            (self.off_position == 'Z(FL)' and '131' in self.off_formation) or
+            (self.off_position == 'T' and '221' in self.off_formation) or
+            (self.off_position == 'T' and '230' in self.off_formation)
+            ):
+            if('Cover-3 Cloud' in self.def_formation):
+                match self.route:
+                    case 'S Screen (S)':
+                        if 'Regular' in self.def_formation:
+                            return 'WLB'
+                        else:
+                            return 'LCB'
+                    case 'Flat (0-4)':
+                        if 'Regular' in self.def_formation:
+                            return 'WLB'
+                        else:
+                            return 'LCB'
+                    case '0 Dig (0-4)':
+                        if ('43' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'MLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'MLB'                                    
+                        elif ('34' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'WLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'WILB'
+                    case '1 Out (5-8)':
+                        if ('Regular' in self.def_formation):
+                            return 'WLB'
+                        else:
+                            return 'LCB'
+                    case '2 Slant (5-8)':
+                        if ('43' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'MLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'MLB'                                    
+                        elif ('34' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'WLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'WILB'
+                    case '3 Comeback (9-12)':
+                        if ('Regular' in self.def_formation):
+                              return 'WLB'
+                        else:
+                              return 'LCB'
+                    case '4 Curl (9-12)':
+                        if ('43' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                 return 'MLB'
+                            elif('Nickel' in self.def_formation):
+                                 return 'WLB'
+                            else:
+                                 return 'MLB'
+                        elif ('34' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                 return 'WLB'
+                            elif('Nickel' in self.def_formation):
+                                 return 'WLB'
+                            else:
+                                 return 'WILB'
+                    case '5 Deep Out (13-18)':
+                        if ('Regular' in self.def_formation):
+                              return 'LCB'
+                        else:
+                              return 'NB'
+                    case '6 Deep In (13-18)':
+                        return 'FS'
+                    case '7 Corner (19-26)':
+                        if ('Regular' in self.def_formation):
+                              return 'LCB'
+                        else:
+                              return 'NB'
+                    case '8 Post (19-26)':
+                        return 'FS'
+                    case '9 Fade (27-39)':
+                        if ('Regular' in self.def_formation):
+                              return 'LCB'
+                        else:
+                              return 'NB'
+                    case 'W Wheel (9-18)':
+                        if ('Regular' in self.def_formation):
+                              return 'LCB'
+                        else:
+                              return 'NB'
+                    case 'D Deep Fade (40+)':
+                        if ('Regular' in self.def_formation):
+                              return 'LCB'
+                        else:
+                              return 'NB'
+            elif ('Cover-3 Sky' in self.def_formation):
+                match self.route:
+                    case 'S Screen (S)':
+                        if ('Regular' in self.def_formation):
+                            return 'WLB'
+                        else:
+                            return 'LCB'
+                    case 'F Flat (0-4)':
+                        if ('Regular' in self.def_formation):
+                            return 'WLB'
+                        else:
+                            return 'LCB'
+                    case '0 Dig (0-4)':
+                        if ('43' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'MLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'MLB'                                    
+                        elif ('34' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'WLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'WILB'
+                    case '1 Out (5-8)':
+                        if ('Regular' in self.def_formation):
+                            return 'WLB'
+                        else:
+                            return 'LCB'
+                    case '2 Slant (5-8)':
+                        if ('43' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'MLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'MLB'                                    
+                        elif ('34' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'WLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'WILB'
+                    case '3 Comeback (9-12)':
+                        if ('Regular' in self.def_formation):
+                            return 'WLB'                                    
+                        else:
+                            return 'LCB'
+                    case '4 Curl (9-12)':
+                        if ('43' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'MLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'MLB'
+                        elif ('34' in self.def_formation):
+                            if ('Dime' in self.def_formation):
+                                return 'WLB'                                        
+                            elif('Nickel' in self.def_formation):
+                                return 'WLB'                                        
+                            else:
+                                return 'WILB'
+                    case '5 Deep Out (13-18)':
+                        if ('Regular' in self.def_formation):
+                            return 'LCB'
+                        else:
+                            return 'NB'
+                    case '6 Deep In (13-18)':
+                        return 'FS'
+                    case '7 Corner (19-26)':
+                        if ('Regular' in self.def_formation):
+                            return 'LCB'
+                        else:
+                            return 'NB'
+                    case '8 Post (19-26)':
+                        return 'FS'
+                    case '9 Fade (27-39)':
+                        if ('Regular' in self.def_formation):
+                            return 'LCB'
+                        else:
+                            return 'NB'
+                    case 'W Wheel (9-18)':
+                        if ('Regular' in self.def_formation):
+                            return 'LCB'
+                        else:
+                            return 'NB'
+                    case 'D Deep Fade (40+)':
+                        if ('Regular' in self.def_formation):
+                            return 'LCB'
+                        else:
+                            return 'NB'       
+                    
 
 class Cover4Assignment(CoverageAssignments):
     # sub class of coverage assignments for cover 4 coverage
