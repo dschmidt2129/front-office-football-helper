@@ -1,4 +1,4 @@
-class CoverageAssignments:
+﻿class CoverageAssignments:
     def __init__(self, route, off_position, off_formation, def_formation):
         self.route = route
         self.off_position = off_position
@@ -105,7 +105,7 @@ class Tampa2CoverageAssignment(CoverageAssignments):
                 self.off_position == 'V'
                 ):
             if self.off_position == 'V':
-                prim_assigned = 'None'
+                prim_assigned = None
             else:
                 prim_assigned = 'NB'
         elif (self.off_position == 'R' and '005' in self.off_formation or
@@ -245,7 +245,7 @@ class Cover2Assignment(CoverageAssignments):
                 self.off_position == 'V'
                 ):
             if self.off_position == 'V':
-                prim_assigned = 'None'
+                prim_assigned = None
             else:
                 prim_assigned = 'NB'
         elif (self.off_position == 'R' and '005' in self.off_formation or
@@ -1606,7 +1606,7 @@ class Press2Assignment(CoverageAssignments):
                 self.off_position == 'V'
                 ):
             if self.off_position == 'V':
-                prim_assigned = 'None'
+                prim_assigned = None
             else:
                 prim_assigned = 'NB'
         elif (self.off_position == 'R' and '005' in self.off_formation or

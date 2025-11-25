@@ -375,15 +375,23 @@ class game_service:
                     prim_def_name = ''
                     doub_def_name = ''
 
-                    if prim_assigned:
-                        defender_row = defensive_play_personnel[defensive_play_personnel['Position'] == prim_assigned]
-                        if not defender_row.empty:
-                            prim_def_name = defender_row['Player'].iloc[0]
+                    if prim_assigned is not None:
+                        try:
+                            defender_row = defensive_play_personnel[defensive_play_personnel['Position'] == prim_assigned]
+                            if not defender_row.empty:
+                                prim_def_name = str(defender_row['Player'].iloc[0])
+                        except (IndexError, ValueError, TypeError) as e:
+                            print("Error finding primary defender:", e)
+                            prim_def_name = ''
 
-                    if doub_assigned:
-                        defender_row = defensive_play_personnel[defensive_play_personnel['Position'] == doub_assigned]
-                        if not defender_row.empty:
-                            doub_def_name = defender_row['Player'].iloc[0]
+                    if doub_assigned is not None:
+                        try:
+                            defender_row = defensive_play_personnel[defensive_play_personnel['Position'] == doub_assigned]
+                            if not defender_row.empty:
+                                doub_def_name = str(defender_row['Player'].iloc[0])
+                        except (IndexError, ValueError, TypeError) as e:
+                            print("Error finding double team defender:", e)
+                            doub_def_name = ''
                     
                     pass_def.append(receiver_name)
                     pass_def.append(prim_def_name)

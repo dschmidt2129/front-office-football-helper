@@ -120,6 +120,7 @@ class Home(QWidget):
         game_service = game_service(path, self.output_box)
         front_office_football_service = front_office_football_service(path, self.output_box)
         front_office_football_service.iterate_through_gamelog(path, self.select_team, team_combo_index, team_combo_text, self.output_box)
+        print("Game files processed.")
     
     def clear_log_click(self):
         """Clears the output box."""
@@ -131,7 +132,7 @@ class Home(QWidget):
         print(f"Path from selector: {path}")
     
 # Main Run
-if __name__ in "__main__":
+if __name__ == "__main__":
     app = QApplication([])
     main = Home()
     main.show()
