@@ -154,7 +154,6 @@ class Tampa2CoverageAssignment(CoverageAssignments):
                 else:
                     prim_assigned = 'SILB'
         elif self.off_position == 'FB':
-            # todo: this needs to account for nickel and dime
             prim_assigned = 'SLB'
         return prim_assigned, None
 

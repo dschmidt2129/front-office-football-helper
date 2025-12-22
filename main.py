@@ -2,7 +2,6 @@
 import os
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QTextEdit, QComboBox, QPushButton, QHBoxLayout, QVBoxLayout, QLineEdit, QFileDialog, QSpacerItem, QSizePolicy
     
-# todo: refactor this into separate files for more modularity
 class FOF8FolderSelector(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
