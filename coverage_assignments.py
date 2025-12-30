@@ -79,83 +79,163 @@ class ManCoverageAssignment(CoverageAssignments):
             raise ValueError('coverage assignment not found for route')
         return prim_assigned, None
 
-class Tampa2CoverageAssignment(CoverageAssignments):
-    # sub class of coverage assignments for tampa 2 coverage
-    # todo: this logic needs to be updated to be route based instead of formation based
+class Tampa2Assignment(CoverageAssignments):
+    # sub class of coverage assignments for Tampa 2 coverage
     def assign(self):
         prim_assigned = None
+        doub_assigned = None
+
+        # =========================================================
+        # OUTSIDE RECEIVERS (X / Z wide)
+        # Corners play short zones (flat / cloud)
+        # =========================================================
         if (self.off_position == 'X(SE)' or
             (self.off_position == 'Z(FL)' and '131' in self.off_formation) or
             (self.off_position == 'T' and '221' in self.off_formation) or
             (self.off_position == 'T' and '230' in self.off_formation)
             ):
+
             prim_assigned = 'LCB'
-        elif (self.off_position == 'Z(FL)' or self.off_position == 'U'):
-            if ('Man to Man' in self.def_formation or
-                'Cover-2' in self.def_formation or
-                'Cover-1' in self.def_formation or                            
-                'Press-2' in self.def_formation or
-                'Press-1' in self.def_formation or
-                'Tampa-2' in self.def_formation
-                ):
-                prim_assigned = 'RCB'
-        elif (self.off_position == 'R' and '014 ' in self.off_formation or
-                self.off_position == 'R' and '023' in self.off_formation or
-                self.off_position == 'R' and '113 ' in self.off_formation or
-                self.off_position == 'V'
-                ):
-            if self.off_position == 'V':
-                prim_assigned = None
-            else:
-                prim_assigned = 'NB'
-        elif (self.off_position == 'R' and '005' in self.off_formation or
-                self.off_position == 'R' and '014t' in self.off_formation or
-                self.off_position == 'R' and '113t' in self.off_formation or
-                self.off_position == 'R' and '203' in self.off_formation or
-                self.off_position == 'S'
-                ):
-                if self.off_position == 'R':
-                    prim_assigned = 'NB' 
-                else:
-                    prim_assigned = 'DB'
-        elif ((self.off_position == 'Y' and '014t' in self.off_formation) or 
-            (self.off_position == 'T' and '023' in self.off_formation) or
-            (self.off_position == 'T' and '122' in self.off_formation) or
-            (self.off_position == 'T' and '131' in self.off_formation)
-            ):
-            # todo: this logic needs to be fixed because in 43, WLB is not always on the field
-            prim_assigned = 'WLB'
-        elif ((self.off_position == 'Y' and '014 ' in self.off_formation) or
-                (self.off_position == 'Y' and '113 ' in self.off_formation) or
-                (self.off_position == 'Y' and '122' in self.off_formation) or
-                (self.off_position == 'Y' and '221' in self.off_formation) or
-                (self.off_position == 'Y' and '113t' in self.off_formation) or
-                (self.off_position == 'Y' and '131' in self.off_formation) or
-                (self.off_position == 'Y' and '212' in self.off_formation) or
-                (self.off_position == 'Y' and '230' in self.off_formation) or
-                (self.off_position == 'Y' and '023' in self.off_formation)
-                ):
-                    if('Regular' in self.def_formation or 'Nickel' in self.def_formation):
-                        if ('43' in self.def_formation):
-                            prim_assigned = 'SLB'
-                        elif ('34' in self.def_formation):
-                            prim_assigned = 'SILB'
+
+            match self.route:
+                case 'S Screen (S)' | 'F Flat (0-4)':
+                    doub_assigned = 'WLB' if 'Regular' in self.def_formation else 'LCB'
+
+                case '0 Dig (0-4)' | '2 Slant (5-8)' | '4 Curl (9-12)':
+                    if '43' in self.def_formation:
+                        doub_assigned = 'MLB'
                     else:
-                        if '43' in self.def_formation:
-                            prim_assigned = 'SLB'
-                        else:
-                            prim_assigned = 'SLB'
-        elif self.off_position == 'RB':
-            if '43' in self.def_formation:
-                prim_assigned = ''
-            else:
-                if 'Weak' in self.off_formation:
-                    prim_assigned = 'WILB'
-                else:
-                    prim_assigned = 'SILB'
-        elif self.off_position == 'FB':
-            prim_assigned = 'SLB'
-        return prim_assigned, None
+                        doub_assigned = 'SILB'
+
+                case '1 Out (5-8)' | '3 Comeback (9-12)':
+                    doub_assigned = 'WLB' if 'Regular' in self.def_formation else 'LCB'
+
+                # Corner sinks only on deep outside
+                case '5 Deep Out (13-18)' | '7 Corner (19-26)' | '9 Fade (27-39)' | 'D Deep Fade (40+)':
+                    doub_assigned = 'LCB'
+
+                # Inside breaking verticals → Tampa MLB
+                case '6 Deep In (13-18)' | '8 Post (19-26)':
+                    prim_assigned = 'MLB' if '43' in self.def_formation else 'SILB'
+                    doub_assigned = 'FS'
+
+                case 'W Wheel (9-18)':
+                    doub_assigned = 'LCB'
+
+        # =========================================================
+        # Z / SLOT / U RECEIVER
+        # =========================================================
+        elif self.off_position == 'Z(FL)' or self.off_position == 'U':
+
+            match self.route:
+                case 'S Screen (S)' | 'F Flat (0-4)':
+                    if 'Regular' in self.def_formation:
+                        prim_assigned = 'SLB'
+                    else:
+                        prim_assigned = 'RCB'
+
+                case '0 Dig (0-4)' | '2 Slant (5-8)' | '4 Curl (9-12)':
+                    if '43' in self.def_formation:
+                        prim_assigned = 'MLB'
+                    else:
+                        prim_assigned = 'SILB'
+
+                case '1 Out (5-8)' | '3 Comeback (9-12)':
+                    if 'Regular' in self.def_formation:
+                        prim_assigned = 'SLB'
+                    else:
+                        prim_assigned = 'RCB'
+
+                case '5 Deep Out (13-18)' | '7 Corner (19-26)':
+                    prim_assigned = 'RCB'
+
+                # Slot seam = Tampa signature
+                case '6 Deep In (13-18)' | '8 Post (19-26)' | '9 Fade (27-39)':
+                    prim_assigned = 'MLB' if '43' in self.def_formation else 'SILB'
+                    doub_assigned = 'FS'
+
+                case 'W Wheel (9-18)':
+                    prim_assigned = 'RCB'
+
+        # =========================================================
+        # BACKFIELD RECEIVERS (R / V)
+        # =========================================================
+        elif (self.off_position == 'R' and '014 ' in self.off_formation or
+              self.off_position == 'R' and '023' in self.off_formation or
+              self.off_position == 'R' and '113 ' in self.off_formation or
+              self.off_position == 'V'):
+
+            match self.route:
+                case 'S Screen (S)' | 'F Flat (0-4)':
+                    prim_assigned = 'WLB' if 'Regular' in self.def_formation else 'NB'
+
+                case '0 Dig (0-4)' | '2 Slant (5-8)':
+                    prim_assigned = 'MLB' if '43' in self.def_formation else 'WILB'
+
+                case '1 Out (5-8)' | '3 Comeback (9-12)':
+                    prim_assigned = 'WLB' if 'Regular' in self.def_formation else 'NB'
+
+                case '4 Curl (9-12)':
+                    prim_assigned = 'MLB' if '43' in self.def_formation else 'WILB'
+
+                # RB wheel → MLB carry with safety overlap
+                case 'W Wheel (9-18)':
+                    prim_assigned = 'MLB'
+                    doub_assigned = 'FS'
+
+                case '5 Deep Out (13-18)' | '7 Corner (19-26)' | '9 Fade (27-39)':
+                    prim_assigned = 'FS'
+
+        # =========================================================
+        # STRONG BACK / S
+        # =========================================================
+        elif (self.off_position == 'R' and '005' in self.off_formation or
+              self.off_position == 'R' and '014t' in self.off_formation or
+              self.off_position == 'R' and '113t' in self.off_formation or
+              self.off_position == 'R' and '203' in self.off_formation or
+              self.off_position == 'S'):
+
+            match self.route:
+                case 'S Screen (S)' | 'F Flat (0-4)':
+                    prim_assigned = 'SLB' if 'Regular' in self.def_formation else 'RCB'
+
+                case '0 Dig (0-4)' | '2 Slant (5-8)' | '4 Curl (9-12)':
+                    prim_assigned = 'MLB' if '43' in self.def_formation else 'SILB'
+
+                case '1 Out (5-8)' | '3 Comeback (9-12)':
+                    prim_assigned = 'SLB' if 'Regular' in self.def_formation else 'RCB'
+
+                case '5 Deep Out (13-18)' | '7 Corner (19-26)':
+                    prim_assigned = 'RCB'
+
+                case '6 Deep In (13-18)' | '8 Post (19-26)':
+                    prim_assigned = 'MLB'
+                    doub_assigned = 'FS'
+
+        # =========================================================
+        # INLINE / FLEX TE (Y / T)
+        # =========================================================
+        elif (self.off_position == 'Y' or self.off_position == 'T'):
+            match self.route:
+                case 'S Screen (S)' | 'F Flat (0-4)':
+                    prim_assigned = 'SLB'
+
+                case '0 Dig (0-4)' | '2 Slant (5-8)' | '4 Curl (9-12)':
+                    prim_assigned = 'MLB' if '43' in self.def_formation else 'SILB'
+
+                case '1 Out (5-8)' | '3 Comeback (9-12)':
+                    prim_assigned = 'SLB'
+
+                # TE seam → Tampa MLB
+                case '6 Deep In (13-18)' | '8 Post (19-26)':
+                    prim_assigned = 'MLB'
+                    doub_assigned = 'FS'
+
+                case '5 Deep Out (13-18)' | '7 Corner (19-26)':
+                    prim_assigned = 'FS'
+
+        return prim_assigned, doub_assigned
+
 
 class Cover1Assignment(CoverageAssignments):
     # sub class of coverage assignments for cover 1 coverage
