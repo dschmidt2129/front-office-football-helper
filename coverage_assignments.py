@@ -79,7 +79,7 @@ class ManCoverageAssignment(CoverageAssignments):
             raise ValueError('coverage assignment not found for route')
         return prim_assigned, None
 
-class Tampa2Assignment(CoverageAssignments):
+class Tampa2CoverageAssignment(CoverageAssignments):
     # sub class of coverage assignments for Tampa 2 coverage
     def assign(self):
         prim_assigned = None
