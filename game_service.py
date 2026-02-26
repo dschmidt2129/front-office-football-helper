@@ -374,44 +374,111 @@ class game_service:
                         prim_assigned, doub_assigned = None, None                 
                     prim_def_name = ''
                     doub_def_name = ''
+                    prim_coverage_type = ''
+                    doub_coverage_type = ''
 
                     if prim_assigned is not None:
                         try:
                             defender_row = defensive_play_personnel[defensive_play_personnel['Position'] == prim_assigned]
                             if not defender_row.empty:
                                 prim_def_name = str(defender_row['Player'].iloc[0])
+                                print("Primary defender is", prim_def_name)
+                                pass_defenders.append(defender_row)
+                                QApplication.processEvents() # this should allow the application to update real time
+                            else:
+                                output_widget.append(f"No defender found for assigned position {prim_assigned}")
+                                QApplication.processEvents() # this should allow the application to update real time
                         except (IndexError, ValueError, TypeError) as e:
                             print("Error finding primary defender:", e)
                             prim_def_name = ''
 
-                    if doub_assigned is not None:
-                        try:
-                            defender_row = defensive_play_personnel[defensive_play_personnel['Position'] == doub_assigned]
-                            if not defender_row.empty:
-                                doub_def_name = str(defender_row['Player'].iloc[0])
-                        except (IndexError, ValueError, TypeError) as e:
-                            print("Error finding double team defender:", e)
-                            doub_def_name = ''
+                        if doub_assigned is not None:
+                            try:
+                                defender_row = defensive_play_personnel[defensive_play_personnel['Position'] == doub_assigned]
+                                if not defender_row.empty:
+                                    doub_def_name = str(defender_row['Player'].iloc[0])
+                                    doub_coverage_type = str(defender_row['Assignment'].iloc[0])
+                            except (IndexError, ValueError, TypeError) as e:
+                                print("Error finding double team defender:", e)
+                                doub_def_name = ''
                     
-                    pass_def.append(receiver_name)
-                    pass_def.append(prim_def_name)
-                    pass_def.append(doub_def_name)
-                    pass_defenders.append(pass_def)
+                        if prim_coverage_type == 'Blitz Passer':
+                                if doub_assigned != '':
+                                    prim_assigned = doub_assigned
+                                    prim_def_name = doub_def_name
+                                    prim_coverage_type = doub_coverage_type
+                                    doub_assigned = ''
+                                    doub_def_name = ''
+                                    doub_coverage_type = ''
+                                else:
+                                    prim_assigned = ''
+                                    prim_def_name = ''
+                        result = {
+                            "assigned_position": prim_assigned,
+                            "defender_name": prim_def_name,
+                            "coverage_type": prim_coverage_type,
+                            "receiver_position": position,
+                            "route": route,
+                            "def_formation": def_formation,
+                            "off_formation": off_formation
+                        }
 
-        csv_file = 'pass_def_in_game.csv'
-        file_exists = os.path.isfile(csv_file)
+                        pass_defenders.append(result)
+                        output_widget.append(
+                            f"Primary defender: {prim_def_name} ({prim_assigned}), Coverage: {prim_coverage_type}, "
+                            f"Receiver: {position}, Route: {route}, Def: {def_formation}, Off: {off_formation}"
+                        )
+                        QApplication.processEvents() # this should allow the application to update real time
+                    else:
+                        output_widget.append(f"No primary defender found for assigned position {prim_assigned}")
+                        QApplication.processEvents() # this should allow the application to update real time
 
-        try:
-            with open(csv_file, 'a', newline='') as csvfile:
-                writer = csv.writer(csvfile)
-                if not file_exists:
-                    writer.writerow(['Receiver', 'Primary Defender', 'Double Team'])
-                writer.writerows(pass_defenders)
-                output_text = f"Pass defense data for this play appended to '{csv_file}'."
-                output_widget.append(output_text)
-                QApplication.processEvents()
-        except Exception as e:
-            output_text = f"Error writing to CSV file '{csv_file}': {e}"
-            output_widget.append(output_text)
-            QApplication.processEvents()
-        return pass_defenders
+                    QApplication.processEvents() # this should allow the application to update real time
+                    print('Pass Defenders Array', pass_defenders)
+                    print("Receiver was", position)
+
+                    if 'completed' in play_result:
+                        caught = 1
+                        rec_yards = int(play_result_arr[12])
+                        yards_after_catch = 0
+                        if 'after the catch' in play_result:
+                            words = play_result.split()
+                            index_after = words.index("after")
+                            yards_after_catch = int(words[index_after - 2])
+                    else:
+                        caught = 0
+                        rec_yards = 0
+                        yards_after_catch = 0
+
+                    new_pass_def_row = []
+                    new_pass_def_row.append(prim_def_name)
+                    new_pass_def_row.append(prim_assigned)             
+                    new_pass_def_row.append(position)
+                    new_pass_def_row.append(route)
+                    new_pass_def_row.append(prim_coverage_type)
+                    new_pass_def_row.append(def_formation)
+                    new_pass_def_row.append(caught)
+                    new_pass_def_row.append(rec_yards)
+                    new_pass_def_row.append(yards_after_catch)
+                    new_pass_def_row.append(doub_assigned)
+                    new_pass_def_row.append(doub_def_name)
+                    new_pass_def_row.append(doub_coverage_type)
+                    pass_def.append(new_pass_def_row)
+
+                    csv_file = 'pass_def_in_game.csv'
+                    file_exists = os.path.isfile(csv_file)
+
+                    try:
+                        with open(csv_file, 'a', newline='') as csvfile:
+                            writer = csv.writer(csvfile)
+                            if not file_exists:
+                                writer.writerow(['Player Name','Position' ,'Receiver', 'Route', 'Coverage', 'Formation', 'Caught?', 'Yards', 'YAC', 'DC Position', 'DC Player Name', 'DC Coverage'])
+                            writer.writerows(pass_def)
+                            output_text = f"Pass defender data for this play appended to '{csv_file}'."
+                            output_widget.append(output_text)
+                            QApplication.processEvents() # this should allow the application to update real time
+                    except Exception as e:
+                        output_text = f"Error writing to CSV file '{csv_file}': {e}"
+                        output_widget.append(output_text)
+                        QApplication.processEvents() # this should allow the application to update real time
+                    return pass_defenders
