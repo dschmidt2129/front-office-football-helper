@@ -17,7 +17,16 @@ class game_service:
         # initializing player_service and team_service
         self.ps = ps(path)
         self.ts = ts(path)
-        self.cleaned_game_log = None  # Cache for the cleaned game log
+        self.cleaned_game_log = None      # cached cleaned log
+        self._all_tables = None           # cached tables from the html file
+
+    def _load_all_tables(self, path):
+        """read_html only once per invocation of the service."""
+        if self._all_tables is None:
+            fname = self.read_game_log(path)
+            with open(fname, 'rb') as f:          # make sure the handle is closed
+                self._all_tables = pd.read_html(f, keep_default_na=False)
+        return self._all_tables
 
     def get_game_log(self, file_name):
         # grabs the game log from the local game file system
@@ -71,34 +80,22 @@ class game_service:
         all_tables = pd.read_html(game_log, keep_default_na=False)
         return all_tables
     
-    def get_offensive_play_personnel(self,index, path):
+    def get_offensive_play_personnel(self, index, path):
         # Returns the offensive play personnel from the indexed play result from the game logs
-        file = self.get_game_log(self.read_game_log(path))
-        all_tables = pd.read_html(file, keep_default_na=False)
-
-        # Ensure the index matches the cleaned game log
+        tables = self._load_all_tables(path)
         try:
-            offensive_plays = all_tables[index + 1].iloc[:, 0:3]  # Adjust index to match personnel table
-            # print(f"Offensive plays at index {index + 1}:")
-            # print(offensive_plays)
-            return offensive_plays
+            return tables[index + 1].iloc[:, 0:3]
         except IndexError:
-            print(f"No offensive play personnel found for index {index + 1}")
+            print(f"No offensive play personnel found for index {index+1}")
             return None
     
-    def get_defensive_play_personnel(self,index, path):
+    def get_defensive_play_personnel(self, index, path):
         # Returns the defensive play personnel from the indexed play result from the game logs
-        file = self.get_game_log(self.read_game_log(path))
-        all_tables = pd.read_html(file, keep_default_na=False)
-
-        # Ensure the index matches the cleaned game log
+        tables = self._load_all_tables(path)
         try:
-            defensive_plays = all_tables[index + 1].iloc[:, 3:6]  # Adjust index to match personnel table
-            # print(f"Defensive plays at index {index + 1}:")
-            # print(defensive_plays)
-            return defensive_plays
+            return tables[index + 1].iloc[:, 3:6]
         except IndexError:
-            print(f"No defensive play personnel found for index {index + 1}")
+            print(f"No defensive play personnel found for index {index+1}")
             return None
 
     def get_player_name_from_play(self, play):

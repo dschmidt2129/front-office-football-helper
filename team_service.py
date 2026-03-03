@@ -1,20 +1,33 @@
 import pandas as pd
 from player_service import player_service as ps
 class team_service:
-
     def __init__(self, path):
-        # no variables need initialized
-        pass
+        self._team_info = None
+        self._player_info = None
+        self._player_record = None
 
-    # function to return the team id from the team_information.csv file 
+    def _load_team_info(self, path):
+        if self._team_info is None:
+            self._team_info = pd.read_csv(path+"/leaguedata/SFL00004/team_information.csv")
+        return self._team_info
+
+    def _load_player_info(self, path):
+        if self._player_info is None:
+            self._player_info = pd.read_csv(path+"/leaguedata/SFL00004/player_information.csv")
+        return self._player_info
+
+    def _load_player_record(self, path):
+        if self._player_record is None:
+            self._player_record = pd.read_csv(path+"/leaguedata/SFL00004/player_record.csv")
+        return self._player_record
+
     def get_team_id(self, team, path):
+        team_info = self._load_team_info(path)
         # cleveland is team id 30
         # las vegas is team id 20
         # miami is team id 14
         # indianapolis is team id 11
         # philadelphia is team id 21
-        team_info = pd.read_csv(path + "/leaguedata/SFL00004/team_information.csv")
-        # print(team_info)
         team_id = -1
         # switch statement to return team id
         match team:

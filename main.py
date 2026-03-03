@@ -2,6 +2,10 @@
 import os
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QTextEdit, QComboBox, QPushButton, QHBoxLayout, QVBoxLayout, QLineEdit, QFileDialog, QSpacerItem, QSizePolicy
     
+# main.py, at the very top
+import faulthandler
+faulthandler.enable()
+
 class FOF8FolderSelector(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -103,13 +107,13 @@ class Home(QWidget):
     # Process Game Button Click
     def process_game_click(self):
         path = self.folder_selector.get_selected_path()
-        print(f"Path from selector: {path}")
+        print(f"Path from selector: {path}", flush=True)
         if not os.path.exists(path):
-            print("Invalid path selected")
+            print("Invalid path selected", flush=True)
             self.output_box.setText("Invalid path selected. Please select a valid FOF8 installation folder.")
             self.output_box.update()
             return
-        print("Processing game files...")
+        print("Processing game files...", flush=True)
         team_combo_index = self.select_team.currentIndex()
         team_combo_text = self.select_team.currentText()
         
