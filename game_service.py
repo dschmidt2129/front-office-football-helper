@@ -9,6 +9,7 @@ from coverage_assignments import (
     Cover2Assignment, Cover3SkyAssignment, Cover3CloudAssignment, Cover4Assignment, 
     Press1Assignment, Press2Assignment
 )
+import re
 
 class game_service:
 
@@ -100,6 +101,17 @@ class game_service:
             print(f"No defensive play personnel found for index {index + 1}")
             return None
 
+    def get_player_name_from_play(self, play):
+        # look for “Firstname Lastname pass” / “Firstname Lastname ran” / …
+        m = re.search(r'([A-Z][a-z]+ [A-Z][a-z]+) (?:pass|run|sacked|scrambled|kneels)', play)
+        if m:
+            return m.group(1)
+        # fallback to the old split-based approach
+        parts = play.split()
+        if len(parts) >= 5:
+            return parts[3] + ' ' + parts[4]
+        return ''
+
     def get_play_result(self,index, path, output_widget):
         # returns the play result from the game logs
         # Retrieve the play result from the cached cleaned game log
@@ -124,12 +136,14 @@ class game_service:
             output_widget.append(output_text)
             QApplication.processEvents() # this should allow the application to update real time
             return None
-        play_result_arr = play_result.split(' ')
-        player_to_check_in_roster_first_name = (play_result_arr[3])
+        # play_result_arr = play_result.split(' ')
+        # player_to_check_in_roster_first_name = (play_result_arr[3])
 
-        player_to_check_in_roster_last_name = (play_result_arr[4])
+        # player_to_check_in_roster_last_name = (play_result_arr[4])
 
-        player_name = player_to_check_in_roster_first_name + ' ' + player_to_check_in_roster_last_name
+        # player_name = player_to_check_in_roster_first_name + ' ' + player_to_check_in_roster_last_name
+        player_name = self.get_player_name_from_play(play_result)
+        output_text = f"Player name extracted from play result: {player_name}"
 
         is_offense = self.ts.check_if_in_roster(player_name, team_name, path)
         output_text = str(play_result)
@@ -383,6 +397,8 @@ class game_service:
                             if not defender_row.empty:
                                 prim_def_name = str(defender_row['Player'].iloc[0])
                                 print("Primary defender is", prim_def_name)
+                                prim_coverage_type = str(defender_row['Assignment'].iloc[0])
+                                print("Primary coverage type is", prim_coverage_type)
                                 pass_defenders.append(defender_row)
                                 QApplication.processEvents() # this should allow the application to update real time
                             else:
