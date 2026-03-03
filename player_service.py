@@ -1,41 +1,63 @@
 import pandas as pd
 
 class player_service:
-    
+
     def __init__(self, path):
-        # no variables initialized
-        pass
+        # cache the dataframes once instead of re‑reading every time
+        self.path = path
+        self._player_info = None
+        self._player_record = None
 
-    def get_player_id(self, player_name, path):
-        # returns the player id
-        print('Getting player info for : ' + player_name)
-        player_info = pd.read_csv(path + "/leaguedata/SFL00004/player_information.csv")
-        player_first_name = player_name.split(' ')[0]
-        player_last_name = player_name.split(' ')[1]
-        player_info.set_index(['First_Name', 'Last_Name'], inplace=True)
-        player_info.sort_index(inplace=True) # was receiving  PerformanceWarning: indexing past lexsort depth may impact performance. this indicates that the index is not sorted.
-        player_id_series = player_info.loc[(player_first_name, player_last_name), player_info.columns[0]]
-        if isinstance(player_id_series, pd.Series):
-            # Multiple players with the same name, return the first one.
-            player_id = player_id_series.iloc[0]
-        else:
-            player_id = player_id_series # It's already a scalar
-        if player_id is None:
-            return
-        # print('player id: ' + str(player_id))
-        return player_id
+    def _load_player_info(self, path=None):
+        if path is None:
+            path = self.path
+        if self._player_info is None:
+            self._player_info = pd.read_csv(path + "/leaguedata/SFL00004/player_information.csv", dtype=str)
+        return self._player_info
 
-    def get_player_team_id(self, player_id, path):
-        # returns the player's team id
-        player_record = pd.read_csv(path + "/leaguedata/SFL00004/player_record.csv")
-        player_record.set_index('Player_ID', inplace=True)
-        player_record.sort_index(inplace=True) # was receiving  PerformanceWarning: indexing past lexsort depth may impact performance. this indicates that the index is not sorted.
-        player_team_id_series = player_record.loc[player_id, player_record.columns[4]]
-        if isinstance(player_team_id_series, pd.Series):
-            player_team_id = player_team_id_series.iloc[0]
-        else:
-            player_team_id = player_team_id_series
-        if player_team_id is None:
-            return
-        # print('player team id: ' + str(player_team_id))
-        return player_team_id
+    def _load_player_record(self, path=None):
+        if path is None:
+            path = self.path
+        if self._player_record is None:
+            self._player_record = pd.read_csv(path + "/leaguedata/SFL00004/player_record.csv", dtype=str)
+        return self._player_record
+
+    def get_player_id(self, player_name, path=None, team_id=None, team_name=None):
+        """
+        Return a matching Player_ID. If team_id (or team_name) supplied,
+        narrow candidates to that team. Returns None when no match.
+        """
+        if path is None:
+            path = self.path
+        first, last = (player_name.split(' ', 1) + [""])[:2]
+        info = self._load_player_info(path)
+        candidates = info[(info.First_Name == first) & (info.Last_Name == last)]
+        if candidates.empty:
+            return None
+
+        # prefer explicit team_id if provided
+        record = self._load_player_record(path)
+        if team_id is not None:
+            rec = record[record.Player_ID.isin(candidates.Player_ID) & (record.Team == str(team_id))]
+            if not rec.empty:
+                return rec.Player_ID.iloc[0]
+            else:
+                return None
+
+        # caller may pass team_name but resolving that to id is team_service's job;
+        # if team_name provided, caller (team_service) should pass team_id instead.
+
+        # fall back to first candidate
+        if isinstance(candidates.Player_ID, pd.Series):
+            return candidates.Player_ID.iloc[0]
+        return candidates.Player_ID
+
+    def get_player_team_id(self, player_id, path=None):
+        if path is None:
+            path = self.path
+        record = self._load_player_record(path)
+        matches = record[record.Player_ID == str(player_id)]
+        if matches.empty:
+            return None
+        # If multiple records, return the first Team_ID found
+        return matches.Team.iloc[0]

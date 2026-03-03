@@ -1,10 +1,14 @@
 import pandas as pd
 from player_service import player_service as ps
+
 class team_service:
     def __init__(self, path):
+        self.path = path
         self._team_info = None
         self._player_info = None
         self._player_record = None
+        # attach a player_service instance for name+team lookups
+        self.ps = ps(path)
 
     def _load_team_info(self, path):
         if self._team_info is None:
@@ -54,12 +58,15 @@ class team_service:
                 print("No team passed!!")
                 return team_id
             
-    def check_if_in_roster(self, player_name, team_name, path):   
-        # function to check if the player is on the team
-        # can use the player record csv column A for player id and column F for team id, 99 is a free agent
-        # marry that information with column A in player information csv to get the player name
-        player_id = ps.get_player_id(self, player_name, path)
-        player_team_id = ps.get_player_team_id(self, player_id, path)
+    def check_if_in_roster(self, player_name, team_name, path):
+        """
+        Return True only if player_name appears on the given team's roster.
+        Uses player_service.get_player_id with a resolved team_id to disambiguate duplicates.
+        """
+        if path is None:
+            path = self.path
         team_id = self.get_team_id(team_name, path)
-        # print("Player in roster? : " + str(player_team_id == team_id))
-        return player_team_id == team_id
+        if team_id is None:
+            return False
+        player_id = self.ps.get_player_id(player_name, path=path, team_id=team_id)
+        return player_id is not None
