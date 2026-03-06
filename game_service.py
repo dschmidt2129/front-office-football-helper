@@ -183,7 +183,9 @@ class game_service:
                 defensive_play_personnel.drop(index=0, inplace=True)
                 if ('fell incomplete' in play_result or
                     'completed' in play_result or
-                    'intercepted' in play_result
+                    'intercepted' in play_result or
+                    'was thrown incomplete' in play_result or
+                    'was blocked at the line' in play_result
                     ):
                     offensive_play_personnel = self.get_offensive_play_personnel(index, path)                    
                     pass_defenders_in_play = self.get_pass_defenders_from_play(formation, play_result, defensive_play_personnel, output_widget, offensive_play_personnel)
@@ -235,7 +237,7 @@ class game_service:
             rec_yards = 0
             yards_after_catch = 0
             intended_receiver_last_name = (play_result_arr[11])
-        for i in range(1,6):
+        for i in range(len(offensive_play_personnel)):
             if ('Primary' in str(offensive_play_personnel.iloc[i, 1]) or
                 'Secondary' in str(offensive_play_personnel.iloc[i, 1]) or
                 'Outlet' in str(offensive_play_personnel.iloc[i, 1])
@@ -343,8 +345,14 @@ class game_service:
             intended_receiver_last_name = (play_result_arr[10])
         elif 'intercepted' in play_result:
             intended_receiver_last_name = (play_result_arr[11])
-            
-        for i in range(1,6):
+        elif 'was thrown incomplete' in play_result:
+            intended_receiver_last_name = (play_result_arr[13])
+            intended_receiver_last_name = intended_receiver_last_name[:-1]
+        elif 'was blocked at the line' in play_result:
+            intended_receiver_last_name = (play_result_arr[15])
+            intended_receiver_last_name = intended_receiver_last_name[:-1]
+
+        for i in range(1, len(offensive_play_personnel)):
             if ('Primary' in str(offensive_play_personnel.iloc[i, 1]) or
                 'Secondary' in str(offensive_play_personnel.iloc[i, 1]) or
                 'Outlet' in str(offensive_play_personnel.iloc[i, 1])
