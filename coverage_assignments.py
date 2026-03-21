@@ -2606,8 +2606,8 @@ class Press1Assignment(CoverageAssignments):
         elif self.off_position == 'FB':
             prim_assigned = 'SLB'
         # Check for implicit zone double coverages (deep zones).
-        if (route == '6 Deep In (13-18)' or
-            route == '8 Post (19-26)'):     
+        if (self.route == '6 Deep In (13-18)' or
+            self.route == '8 Post (19-26)'):     
             doub_assigned = 'FS'
         return prim_assigned, doub_assigned
 
