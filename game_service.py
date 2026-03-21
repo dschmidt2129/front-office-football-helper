@@ -334,6 +334,8 @@ class game_service:
         defensive_play_personnel[['Position', 'Player']] = defensive_play_personnel['Position_Player'].str.split(' ', n=1, expand=True)
         defensive_play_personnel = defensive_play_personnel.drop(columns=['Position_Player'])
         defensive_play_personnel = defensive_play_personnel[['Position', 'Player', 'Assignment', 'Rating']]
+        defensive_play_personnel['Position'] = defensive_play_personnel['Position'].astype(str).str.strip()
+        defensive_play_personnel['Assignment'] = defensive_play_personnel['Assignment'].astype(str).str.strip()
         
         Num_TE = 0
         Num_Slot = 0
@@ -395,6 +397,26 @@ class game_service:
                     doub_def_name = ''
                     prim_coverage_type = ''
                     doub_coverage_type = ''
+                    explicit_double_found = False
+
+                    # Handle explicit traditional doubles from the play table, e.g. "Double X(SE)".
+                    explicit_double_label = f"Double {position}"
+                    explicit_double_row = defensive_play_personnel[
+                        defensive_play_personnel['Assignment'] == explicit_double_label
+                    ]
+                    if explicit_double_row.empty:
+                        explicit_double_row = defensive_play_personnel[
+                            defensive_play_personnel['Assignment'].str.contains(explicit_double_label, case=False, regex=False)
+                        ]
+                    if not explicit_double_row.empty:
+                        doub_assigned = str(explicit_double_row['Position'].iloc[0])
+                        doub_def_name = str(explicit_double_row['Player'].iloc[0])
+                        doub_coverage_type = str(explicit_double_row['Assignment'].iloc[0])
+                        explicit_double_found = True
+                        output_widget.append(
+                            f"Explicit double coverage found: {doub_coverage_type} by {doub_assigned} {doub_def_name}"
+                        )
+                        QApplication.processEvents() # this should allow the application to update real time
 
                     if prim_assigned is not None:
                         try:
@@ -413,7 +435,7 @@ class game_service:
                             print("Error finding primary defender:", e)
                             prim_def_name = ''
 
-                        if doub_assigned is not None:
+                        if doub_assigned is not None and not explicit_double_found:
                             try:
                                 defender_row = defensive_play_personnel[defensive_play_personnel['Position'] == doub_assigned]
                                 if not defender_row.empty:
