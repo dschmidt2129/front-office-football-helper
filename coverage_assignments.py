@@ -85,40 +85,119 @@ class Tampa2CoverageAssignment(CoverageAssignments):
     def assign(self):
         prim_assigned = None
         doub_assigned = None
+        short_flat_routes = ('S Screen (S)', 'F Flat (0-4)', '1 Out (5-8)', '3 Comeback (9-12)')
+        short_inside_routes = ('0 Dig (0-4)', '2 Slant (5-8)', '4 Curl (9-12)')
+        deep_inside_routes = ('6 Deep In (13-18)', '8 Post (19-26)')
+        deep_outside_routes = ('5 Deep Out (13-18)', '7 Corner (19-26)', '9 Fade (27-39)', 'D Deep Fade (40+)', 'W Wheel (9-18)')
+
         if (self.off_position == 'X(SE)' or
             (self.off_position == 'Z(FL)' and '131' in self.off_formation) or
             (self.off_position == 'T' and '221' in self.off_formation) or
             (self.off_position == 'T' and '230' in self.off_formation)
             ):
-            prim_assigned = 'LCB'
+            if self.route in deep_inside_routes:
+                prim_assigned = 'MLB'
+                doub_assigned = 'FS'
+            else:
+                prim_assigned = 'LCB'
+                if self.route in short_inside_routes:
+                    doub_assigned = 'WLB'
+                elif self.route in deep_outside_routes:
+                    doub_assigned = 'FS'
+
         elif (self.off_position == 'Z(FL)' or self.off_position == 'U'):
-            prim_assigned = 'RCB'
+            if self.route in deep_inside_routes:
+                prim_assigned = 'MLB'
+                doub_assigned = 'FS'
+            elif self.route in deep_outside_routes:
+                prim_assigned = 'RCB'
+                doub_assigned = 'SS'
+            elif self.route in short_inside_routes:
+                if '43' in self.def_formation:
+                    prim_assigned = 'MLB'
+                else:
+                    prim_assigned = 'SILB'
+            else:
+                if 'Regular' in self.def_formation:
+                    prim_assigned = 'SLB'
+                else:
+                    prim_assigned = 'RCB'
+
         elif (self.off_position == 'R' and '014 ' in self.off_formation or
               self.off_position == 'R' and '023' in self.off_formation or
               self.off_position == 'R' and '113 ' in self.off_formation or
               self.off_position == 'V'
               ):
-            if self.off_position == 'V':
-                prim_assigned = None
+            if self.route in deep_inside_routes:
+                prim_assigned = 'MLB'
+                doub_assigned = 'FS'
+            elif self.route in deep_outside_routes:
+                if self.off_position == 'V':
+                    prim_assigned = 'DB'
+                else:
+                    prim_assigned = 'NB'
+                doub_assigned = 'FS'
+            elif self.route in short_inside_routes:
+                if '43' in self.def_formation:
+                    prim_assigned = 'MLB'
+                else:
+                    prim_assigned = 'WILB'
             else:
-                prim_assigned = 'NB'
+                if self.off_position == 'V':
+                    prim_assigned = 'WLB'
+                elif 'Regular' in self.def_formation:
+                    prim_assigned = 'WLB'
+                else:
+                    prim_assigned = 'NB'
+
         elif (self.off_position == 'R' and '005' in self.off_formation or
               self.off_position == 'R' and '014t' in self.off_formation or
               self.off_position == 'R' and '113t' in self.off_formation or
               self.off_position == 'R' and '203' in self.off_formation or
               self.off_position == 'S'
               ):
-              # todo: this formation set may not have nb or db in the def formation...may need to add additional check
-            if self.off_position == 'R':
-                prim_assigned = 'NB'
+            if self.route in deep_inside_routes:
+                prim_assigned = 'MLB'
+                doub_assigned = 'FS'
+            elif self.route in deep_outside_routes:
+                if self.off_position == 'S':
+                    prim_assigned = 'RCB'
+                    doub_assigned = 'SS'
+                else:
+                    prim_assigned = 'NB'
+                    doub_assigned = 'SS'
+            elif self.route in short_inside_routes:
+                if '43' in self.def_formation:
+                    prim_assigned = 'MLB'
+                else:
+                    prim_assigned = 'SILB'
             else:
-                prim_assigned = 'DB'
+                if self.off_position == 'S':
+                    if 'Regular' in self.def_formation:
+                        prim_assigned = 'SLB'
+                    else:
+                        prim_assigned = 'RCB'
+                else:
+                    prim_assigned = 'NB'
+
         elif ((self.off_position == 'Y' and '014t' in self.off_formation) or
               (self.off_position == 'T' and '023' in self.off_formation) or
               (self.off_position == 'T' and '122' in self.off_formation) or
               (self.off_position == 'T' and '131' in self.off_formation)
               ):
-            prim_assigned = 'WLB'
+            if self.route in deep_inside_routes:
+                prim_assigned = 'MLB'
+                doub_assigned = 'FS'
+            elif self.route in deep_outside_routes:
+                prim_assigned = 'FS'
+            elif self.route in short_inside_routes:
+                if '43' in self.def_formation:
+                    prim_assigned = 'MLB'
+                else:
+                    prim_assigned = 'WLB'
+            else:
+                prim_assigned = 'WLB'
+
         elif ((self.off_position == 'Y' and '014 ' in self.off_formation) or
               (self.off_position == 'Y' and '113 ' in self.off_formation) or
               (self.off_position == 'Y' and '122' in self.off_formation) or
@@ -129,47 +208,66 @@ class Tampa2CoverageAssignment(CoverageAssignments):
               (self.off_position == 'Y' and '230' in self.off_formation) or
               (self.off_position == 'Y' and '023' in self.off_formation)
               ):
-            if '43' in self.def_formation:
-                prim_assigned = 'SLB'
-            elif '34' in self.def_formation:
-                if 'Dime' in self.def_formation:
+            # Keep Y on 131/weak Tampa-2 in the OLB short-zone family for underneath routes.
+            if self.route in deep_inside_routes:
+                if '43' in self.def_formation:
                     prim_assigned = 'SLB'
                 else:
                     prim_assigned = 'SILB'
+                doub_assigned = 'MLB'
+            elif self.route in deep_outside_routes:
+                prim_assigned = 'SS'
+            else:
+                if '43' in self.def_formation:
+                    prim_assigned = 'SLB'
+                elif '34' in self.def_formation:
+                    if 'Dime' in self.def_formation:
+                        prim_assigned = 'SLB'
+                    else:
+                        prim_assigned = 'SILB'
+
         elif self.off_position == 'RB':
-            if '43' in self.def_formation:
-                prim_assigned = None
+            if self.route in deep_inside_routes:
+                if 'Weak' in self.off_formation:
+                    prim_assigned = 'WLB'
+                else:
+                    prim_assigned = 'SLB'
+                doub_assigned = 'MLB'
+            elif self.route in deep_outside_routes:
+                if 'Weak' in self.off_formation:
+                    prim_assigned = 'FS'
+                else:
+                    prim_assigned = 'SS'
+            elif self.route in short_inside_routes:
+                if '43' in self.def_formation:
+                    if 'Weak' in self.off_formation:
+                        prim_assigned = 'WLB'
+                    else:
+                        prim_assigned = 'SLB'
+                else:
+                    if 'Weak' in self.off_formation:
+                        prim_assigned = 'WILB'
+                    else:
+                        prim_assigned = 'SILB'
+            elif self.route in short_flat_routes:
+                if 'Weak' in self.off_formation:
+                    prim_assigned = 'WLB'
+                else:
+                    prim_assigned = 'SLB'
             else:
                 if 'Weak' in self.off_formation:
                     prim_assigned = 'WILB'
                 else:
                     prim_assigned = 'SILB'
-        elif self.off_position == 'FB':
-            prim_assigned = 'SLB'
 
-        if (self.route == '6 Deep In (13-18)' or
-            self.route == '8 Post (19-26)'):
-            doub_assigned = 'MLB'
-        elif (self.route == '5 Deep Out (13-18)' or
-              self.route == '7 Corner (19-26)' or
-              self.route == '9 Fade (27-39)' or
-              self.route == 'D Deep Fade (40+)'):
-            if (self.off_position == 'X(SE)' or
-                (self.off_position == 'Z(FL)' and '131' in self.off_formation) or
-                (self.off_position == 'T' and '221' in self.off_formation) or
-                (self.off_position == 'T' and '230' in self.off_formation) or
-                (self.off_position == 'T' and '023' in self.off_formation) or
-                (self.off_position == 'T' and '122' in self.off_formation) or
-                (self.off_position == 'T' and '131' in self.off_formation) or
-                (self.off_position == 'V') or
-                (self.off_position == 'R' and '014 ' in self.off_formation) or
-                (self.off_position == 'R' and '113 ' in self.off_formation) or
-                (self.off_position == 'R' and '104' in self.off_formation) or
-                (self.off_position == 'Y' and '014t' in self.off_formation)
-                ):
-                doub_assigned = 'FS'
+        elif self.off_position == 'FB':
+            if self.route in short_inside_routes and '43' in self.def_formation:
+                prim_assigned = 'MLB'
             else:
-                doub_assigned = 'SS'
+                prim_assigned = 'SLB'
+
+        if prim_assigned is None:
+            raise ValueError('coverage assignment not found for route')
 
         return prim_assigned, doub_assigned
 

@@ -444,6 +444,11 @@ class game_service:
                             except (IndexError, ValueError, TypeError) as e:
                                 print("Error finding double team defender:", e)
                                 doub_def_name = ''
+
+                        if doub_coverage_type == 'Blitz Passer':
+                            doub_assigned = ''
+                            doub_def_name = ''
+                            doub_coverage_type = ''
                     
                         if prim_coverage_type == 'Blitz Passer':
                                 if doub_assigned != '':
