@@ -266,9 +266,6 @@ class Tampa2CoverageAssignment(CoverageAssignments):
             else:
                 prim_assigned = 'SLB'
 
-        if prim_assigned is None:
-            raise ValueError('coverage assignment not found for route')
-
         return prim_assigned, doub_assigned
 
 
