@@ -347,6 +347,11 @@ class Cover2Assignment(CoverageAssignments):
     def assign(self):
         prim_assigned = None
         doub_assigned = None
+        short_flat_routes = ('S Screen (S)', 'F Flat (0-4)', '1 Out (5-8)', '3 Comeback (9-12)')
+        short_inside_routes = ('0 Dig (0-4)', '2 Slant (5-8)', '4 Curl (9-12)')
+        deep_inside_routes = ('6 Deep In (13-18)', '8 Post (19-26)')
+        deep_outside_routes = ('5 Deep Out (13-18)', '7 Corner (19-26)', '9 Fade (27-39)', 'D Deep Fade (40+)', 'W Wheel (9-18)')
+        
         if (self.off_position == 'X(SE)' or
             (self.off_position == 'Z(FL)' and '131' in self.off_formation) or
             (self.off_position == 'T' and '221' in self.off_formation) or
@@ -379,13 +384,19 @@ class Cover2Assignment(CoverageAssignments):
             (self.off_position == 'T' and '122' in self.off_formation) or
             (self.off_position == 'T' and '131' in self.off_formation)
             ):
-            if('Regular' in self.def_formation or 'Nickel' in self.def_formation):
-                prim_assigned = 'WLB'
-            else:   
-                if ('43' in self.def_formation):
+            if self.route in short_inside_routes or self.route in short_flat_routes:
+                if '43' in self.def_formation:
                     prim_assigned = 'MLB'
                 else:
+                    prim_assigned = 'SILB'
+            else:
+                if('Regular' in self.def_formation or 'Nickel' in self.def_formation):
                     prim_assigned = 'WLB'
+                else:   
+                    if ('43' in self.def_formation):
+                        prim_assigned = 'MLB'
+                    else:
+                        prim_assigned = 'WLB'
         elif ((self.off_position == 'Y' and '014 ' in self.off_formation) or
                 (self.off_position == 'Y' and '113 ' in self.off_formation) or
                 (self.off_position == 'Y' and '122' in self.off_formation) or
@@ -396,24 +407,36 @@ class Cover2Assignment(CoverageAssignments):
                 (self.off_position == 'Y' and '230' in self.off_formation) or
                 (self.off_position == 'Y' and '023' in self.off_formation)
                 ):
-                    if('Regular' in self.def_formation or 'Nickel' in self.def_formation):
-                        if ('43' in self.def_formation):
-                            prim_assigned = 'MLB'
-                        elif ('34' in self.def_formation):
-                            prim_assigned = 'SILB'
-                    else:
+                    if self.route in short_inside_routes or self.route in short_flat_routes:
                         if '43' in self.def_formation:
                             prim_assigned = 'MLB'
                         else:
                             prim_assigned = 'SLB'
+                    else:
+                        if('Regular' in self.def_formation or 'Nickel' in self.def_formation):
+                            if ('43' in self.def_formation):
+                                prim_assigned = 'MLB'
+                            elif ('34' in self.def_formation):
+                                prim_assigned = 'SILB'
+                        else:
+                            if '43' in self.def_formation:
+                                prim_assigned = 'MLB'
+                            else:
+                                prim_assigned = 'SLB'
         elif self.off_position == 'RB':
-            if '43' in self.def_formation:
-                prim_assigned = 'MLB'
-            else:
-                if 'Weak' in self.off_formation:
-                    prim_assigned = 'WILB'
+            if self.route in short_inside_routes or self.route in short_flat_routes:
+                if '43' in self.def_formation:
+                    prim_assigned = 'MLB'
                 else:
-                    prim_assigned = 'SILB'
+                    prim_assigned = 'SLB'
+            else:
+                if '43' in self.def_formation:
+                    prim_assigned = 'MLB'
+                else:
+                    if 'Weak' in self.off_formation:
+                        prim_assigned = 'WILB'
+                    else:
+                        prim_assigned = 'SILB'
         elif self.off_position == 'FB':
             prim_assigned = 'SLB'
         if (self.route == '5 Deep Out (13-18)' or
