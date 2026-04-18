@@ -60,10 +60,12 @@ class game_service:
                'Extra point' in play or
                'Played in' in play or
                'won the toss' in play or
+               'won the coin toss' in play or
                'Final Score' in play or
                'False Start' in play or
                'Informal' in play or
                'dropped to one knee' in play or
+               'spiked the ball' in play or
                'two-point conversion' in play or # todo: need to figure out what to do with two-point conversion
                play_arr[3] == 'PENALTY:'):
                 game_result.drop(index=play_counter, inplace=True)
