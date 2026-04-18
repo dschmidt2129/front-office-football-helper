@@ -60,7 +60,15 @@ class Home(QWidget):
         self.process_game = QPushButton("Process Game Files")
         self.clear_log = QPushButton("Clear Game Log")
         self.select_team = QComboBox()
-        teams = ["Cleveland", "Indianapolis", "Las Vegas", "Miami", "Philadelphia"]
+        teams = [
+            "Arizona", "Atlanta", "Baltimore", "Buffalo", "Carolina", "Chicago",
+            "Cincinnati", "Cleveland", "Dallas", "Denver", "Detroit", "Green Bay",
+            "Houston", "Indianapolis", "Jacksonville", "Kansas City", "Las Vegas",
+            "Los Angeles (Chargers)", "Los Angeles (Rams)", "Miami", "Minnesota",
+            "New England", "New Orleans", "New York (Giants)", "New York (Jets)",
+            "Philadelphia", "Pittsburgh", "San Francisco", "Seattle", "Tampa Bay",
+            "Tennessee", "Washington"
+        ]
         self.select_team.addItems(teams)
         self.label = QLabel("Please select the team to be processed:")
         self.folder_path_edit = QLineEdit()

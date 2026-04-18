@@ -26,37 +26,15 @@ class team_service:
         return self._player_record
 
     def get_team_id(self, team, path):
+        # Team ID reference:
+        # Cleveland: 30, Las Vegas: 20, Miami: 14
+        # Indianapolis: 11, Philadelphia: 21
         team_info = self._load_team_info(path)
-        # cleveland is team id 30
-        # las vegas is team id 20
-        # miami is team id 14
-        # indianapolis is team id 11
-        # philadelphia is team id 21
-        team_id = -1
-        # switch statement to return team id
-        match team:
-            case 'Cleveland':
-                team_id = team_info.iat[30,0]
-                # print('Cleveland team id: ' + str(team_id))
-                return team_id
-            case 'Las Vegas':
-                team_id = team_info.iat[20,0]
-                # print('Las Vegas team id: ' + str(team_id))
-                return team_id
-            case 'Miami':
-                team_id = team_info.iat[14,0]
-                # print('Miami team id: ' + str(team_id))
-                return team_id
-            case 'Indianapolis':
-                team_id = team_info.iat[11,0]
-                # print('Indianapolis team id: ' + str(team_id))
-                return team_id
-            case 'Philadelphia':
-                team_id = team_info.iat[21,0]
-                return team_id
-            case _:
-                print("No team passed!!")
-                return team_id
+        matches = team_info[team_info['Home_City'] == team]
+        if matches.empty:
+            print(f"No team found for: {team}")
+            return None
+        return int(matches['Team'].iloc[0])
             
     def check_if_in_roster(self, player_name, team_name, path):
         """
