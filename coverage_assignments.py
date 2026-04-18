@@ -476,13 +476,13 @@ class Cover3CloudAssignment(CoverageAssignments):
                 case 'S Screen (S)':
                     if ('Regular' in self.def_formation):
                         doub_assigned = 'WLB'
-                    else:
-                        doub_assigned = 'LCB'
+                    # else:
+                    #     doub_assigned = 'LCB' # LCB is primary in this coverage so not sure if this should be none or if there is a better assignment here
                 case 'F Flat (0-4)':
                     if ('Regular' in self.def_formation):
                         doub_assigned = 'WLB'
-                    else:
-                        doub_assigned = 'LCB'
+                    # else:
+                    #     doub_assigned = 'LCB' # LCB is primary in this coverage so not sure if this should be none or if there is a better assignment here
                 case '0 Dig (0-4)':
                     if ('43' in self.def_formation):
                         if ('Dime' in self.def_formation or 'Regular' in self.def_formation):
