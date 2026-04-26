@@ -413,7 +413,8 @@ class game_service:
                     if not explicit_double_row.empty:
                         doub_assigned = str(explicit_double_row['Position'].iloc[0])
                         doub_def_name = str(explicit_double_row['Player'].iloc[0])
-                        doub_coverage_type = str(explicit_double_row['Assignment'].iloc[0])
+                        # doub_coverage_type = str(explicit_double_row['Assignment'].iloc[0])
+                        doub_coverage_type = 'Double Coverage Receiver' # changing to double coverage receiver due to not caring if it is x or y or slot, just that it is a double team on the receiver
                         explicit_double_found = True
                         output_widget.append(
                             f"Explicit double coverage found: {doub_coverage_type} by {doub_assigned} {doub_def_name}"
