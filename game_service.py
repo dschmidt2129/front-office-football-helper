@@ -135,12 +135,7 @@ class game_service:
             output_widget.append(output_text)
             QApplication.processEvents() # this should allow the application to update real time
             return None
-        # play_result_arr = play_result.split(' ')
-        # player_to_check_in_roster_first_name = (play_result_arr[3])
-
-        # player_to_check_in_roster_last_name = (play_result_arr[4])
-
-        # player_name = player_to_check_in_roster_first_name + ' ' + player_to_check_in_roster_last_name
+            
         player_name = self.get_player_name_from_play(play_result)
         output_text = f"Player name extracted from play result: {player_name}"
 
@@ -194,6 +189,7 @@ class game_service:
                     output_text = str(pass_defenders_in_play)
                     output_widget.append(output_text)
                     QApplication.processEvents() # this should allow the application to update real time
+                    # todo: update for pass rush defenders here
                 return defensive_play_personnel
             else:
                 output_text = f"No defensive play personnel found at index {index}"
