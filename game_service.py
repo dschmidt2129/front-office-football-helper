@@ -46,37 +46,43 @@ class game_service:
 
         game_result = self.get_game_result(path, output_widget)
         game_result = game_result[0]
-        play_counter = 0
-        for game_index in game_result.loc[:,0]:
-            play_result = game_result.loc[play_counter,0]
+        keep_indices = []
+        for play_counter in range(len(game_result)):
+            play_result = str(game_result.iat[play_counter, 0])
             play = play_result.split('OFFENSE')[0] # taking only the play result from the converted panda substring
             play_arr = play.split(' ')
-            if('kicked' in play or
-               'punted' in play or
-               'attempted' in play or
-               'Start of' in play or
-               'End of' in play or
-               'two-minute' in play or
-               'time out' in play or
-               'Extra point' in play or
-               'Played in' in play or
-               'won the toss' in play or
-               'won the coin toss' in play or
-               'Final Score' in play or
-               'False Start' in play or
-               'Informal' in play or
-               'dropped to one knee' in play or
-               'spiked the ball' in play or
-               'two-point conversion' in play or # todo: need to figure out what to do with two-point conversion
-               play_arr[3] == 'PENALTY:'):
-                game_result.drop(index=play_counter, inplace=True)
+
+            remove_play = (
+                'kicked' in play or
+                'punted' in play or
+                'attempted' in play or
+                'Start of' in play or
+                'End of' in play or
+                'two-minute' in play or
+                'time out' in play or
+                'Extra point' in play or
+                'Played in' in play or
+                'won the toss' in play or
+                'won the coin toss' in play or
+                'Final Score' in play or
+                'False Start' in play or
+                'Informal' in play or
+                'dropped to one knee' in play or
+                'spiked the ball' in play or
+                'two-point conversion' in play or # todo: need to figure out what to do with two-point conversion
+                (len(play_arr) > 3 and play_arr[3] == 'PENALTY:')
+            )
+
+            if remove_play:
                 output_text = 'removing unwanted play : {}'.format(play)
                 output_widget.append(output_text)
                 QApplication.processEvents() # this should allow the application to update real time
-            play_counter += 1
-        game_result.reset_index(drop=True, inplace=True) # reset the index after dropping the unwanted plays
-        self.cleaned_game_log = game_result  # Cache the cleaned game log
-        return game_result
+            else:
+                keep_indices.append(play_counter)
+
+        cleaned_game_result = game_result.iloc[keep_indices].reset_index(drop=True)
+        self.cleaned_game_log = cleaned_game_result  # Cache the cleaned game log
+        return cleaned_game_result
     
     def get_game_result(self, path, output_widget):
         game_log = self.get_game_log(self.read_game_log(path))
