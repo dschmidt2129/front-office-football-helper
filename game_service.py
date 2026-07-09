@@ -19,6 +19,7 @@ class game_service:
         self.ts = ts(path)
         self.cleaned_game_log = None      # cached cleaned log
         self._all_tables = None           # cached tables from the html file
+        self.receivers_csv_file = 'receivers_in_game.csv'
 
     def _load_all_tables(self, path):
         """read_html only once per invocation of the service."""
@@ -280,7 +281,7 @@ class game_service:
                 new_rec_row.append(passer)
                 receivers.append(new_rec_row)
         
-        csv_file = 'receivers_in_game.csv'
+        csv_file = self.receivers_csv_file
         file_exists = os.path.isfile(csv_file)
 
         try:
@@ -292,12 +293,16 @@ class game_service:
                 output_text = f"Receiver data for this play appended to '{csv_file}'."
                 output_widget.append(output_text)
                 QApplication.processEvents() # this should allow the application to update real time
-                self.write_receiver_pivot_summary(csv_file, output_widget)
         except Exception as e:
             output_text = f"Error writing to CSV file '{csv_file}': {e}"
             output_widget.append(output_text)
             QApplication.processEvents() # this should allow the application to update real time
         return receivers
+
+    def finalize_receiver_outputs(self, output_widget):
+        """Build receiver summary once after all plays are processed."""
+        if os.path.isfile(self.receivers_csv_file):
+            self.write_receiver_pivot_summary(self.receivers_csv_file, output_widget)
 
     def write_receiver_pivot_summary(self, receivers_csv_file, output_widget):
         """Writes a second spreadsheet with pivot-style receiver efficiency summaries."""

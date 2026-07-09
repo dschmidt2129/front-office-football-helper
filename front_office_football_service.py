@@ -33,6 +33,7 @@ class front_office_football_service:
                 output_widget.append(output_text)
                 QApplication.processEvents() # this should allow the application to update real time
                 play_counter += 1  # Skip the problematic play and continue
+            self.gs.finalize_receiver_outputs(output_widget)
         output_text = "Finished processing all plays."
         output_widget.append(output_text)
         return
