@@ -178,6 +178,17 @@ class game_service:
                 output_widget.append(output_text)
                 QApplication.processEvents() # this should allow the application to update real time
                 defensive_play_personnel.drop(index=0, inplace=True)
+                if ('pass' in play_result or
+                    'fell incomplete' in play_result or
+                    'completed' in play_result or
+                    'intercepted' in play_result or
+                    'was thrown incomplete' in play_result or
+                    'was blocked at the line' in play_result or
+                    'sacked' in play_result or
+                    'hurried' in play_result
+                    ):
+                    normalized_defensive_personnel = self.normalize_defensive_play_personnel(defensive_play_personnel.copy())
+                    self.write_pass_rush_success_rate(normalized_defensive_personnel, formation, play_result, output_widget)
                 if ('fell incomplete' in play_result or
                     'completed' in play_result or
                     'intercepted' in play_result or
@@ -385,6 +396,51 @@ class game_service:
             return Press2Assignment(route, position, off_formation, def_formation)
         else:
             return None
+
+    def normalize_defensive_play_personnel(self, defensive_play_personnel):
+        defensive_play_personnel.columns = ['Position_Player', 'Assignment', 'Rating']
+        defensive_play_personnel[['Position', 'Player']] = defensive_play_personnel['Position_Player'].str.split(' ', n=1, expand=True)
+        defensive_play_personnel = defensive_play_personnel.drop(columns=['Position_Player'])
+        defensive_play_personnel = defensive_play_personnel[['Position', 'Player', 'Assignment', 'Rating']]
+        defensive_play_personnel['Position'] = defensive_play_personnel['Position'].astype(str).str.strip()
+        defensive_play_personnel['Player'] = defensive_play_personnel['Player'].astype(str).str.strip()
+        defensive_play_personnel['Assignment'] = defensive_play_personnel['Assignment'].astype(str).str.strip()
+        return defensive_play_personnel
+
+    def write_pass_rush_success_rate(self, defensive_play_personnel, def_formation, play_result, output_widget):
+        pass_rush_success = int('sacked' in play_result or 'hurried' in play_result)
+        pass_rush_rows = []
+
+        for _, defender_row in defensive_play_personnel.iterrows():
+            assignment = str(defender_row['Assignment']).strip()
+            if assignment not in ('Rush Passer', 'Blitz Passer'):
+                continue
+            pass_rush_rows.append([
+                str(defender_row['Player']).strip(),
+                str(defender_row['Position']).strip(),
+                assignment,
+                str(def_formation).strip(),
+                int(assignment == 'Blitz Passer'),
+                pass_rush_success
+            ])
+
+        if not pass_rush_rows:
+            return
+
+        csv_file = 'pass_rush_success_rate.csv'
+        file_exists = os.path.isfile(csv_file)
+
+        try:
+            with open(csv_file, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                if not file_exists:
+                    writer.writerow(['Defender Name', 'Defender Position', 'Defense Coverage', 'Formation/Coverage', 'Blitz', 'Pass Rush Success'])
+                writer.writerows(pass_rush_rows)
+                output_widget.append(f"Pass rush success data for this play appended to '{csv_file}'.")
+                QApplication.processEvents() # this should allow the application to update real time
+        except Exception as e:
+            output_widget.append(f"Error writing to CSV file '{csv_file}': {e}")
+            QApplication.processEvents() # this should allow the application to update real time
     
     def get_pass_defenders_from_play(self, formation, play_result, defensive_play_personnel, output_widget, offensive_play_personnel):     
         pass_def = []
@@ -396,13 +452,8 @@ class game_service:
         off_formation = offensive_play_personnel.iloc[0,1]
         off_formation = str(off_formation)
         def_formation = formation
-        
-        defensive_play_personnel.columns = ['Position_Player', 'Assignment', 'Rating']
-        defensive_play_personnel[['Position', 'Player']] = defensive_play_personnel['Position_Player'].str.split(' ', n=1, expand=True)
-        defensive_play_personnel = defensive_play_personnel.drop(columns=['Position_Player'])
-        defensive_play_personnel = defensive_play_personnel[['Position', 'Player', 'Assignment', 'Rating']]
-        defensive_play_personnel['Position'] = defensive_play_personnel['Position'].astype(str).str.strip()
-        defensive_play_personnel['Assignment'] = defensive_play_personnel['Assignment'].astype(str).str.strip()
+
+        defensive_play_personnel = self.normalize_defensive_play_personnel(defensive_play_personnel)
         
         Num_TE = 0
         Num_Slot = 0
