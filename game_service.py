@@ -86,7 +86,7 @@ class game_service:
         # Returns the offensive play personnel from the indexed play result from the game logs
         tables = self._load_all_tables(path)
         try:
-            return tables[index + 1].iloc[:, 0:3]
+            return tables[index + 1].iloc[:, 0:3].copy()
         except IndexError:
             print(f"No offensive play personnel found for index {index+1}")
             return None
@@ -95,7 +95,7 @@ class game_service:
         # Returns the defensive play personnel from the indexed play result from the game logs
         tables = self._load_all_tables(path)
         try:
-            return tables[index + 1].iloc[:, 3:6]
+            return tables[index + 1].iloc[:, 3:6].copy()
         except IndexError:
             print(f"No defensive play personnel found for index {index+1}")
             return None
@@ -154,7 +154,7 @@ class game_service:
                 output_text = 'Formation : ' + formation
                 output_widget.append(output_text)
                 QApplication.processEvents() # this should allow the application to update real time
-                offensive_play_personnel.drop(index=0, inplace=True)
+                offensive_play_personnel = offensive_play_personnel.drop(index=0)
                 if 'pass' in play_result:
                     receivers_in_play = self.get_receivers_from_play(play_result, offensive_play_personnel, output_widget)
                     output_text = str(receivers_in_play)
@@ -177,7 +177,7 @@ class game_service:
                 output_text = 'Formation : ' + formation
                 output_widget.append(output_text)
                 QApplication.processEvents() # this should allow the application to update real time
-                defensive_play_personnel.drop(index=0, inplace=True)
+                defensive_play_personnel = defensive_play_personnel.drop(index=0)
                 if ('pass' in play_result or
                     'fell incomplete' in play_result or
                     'completed' in play_result or
@@ -398,6 +398,7 @@ class game_service:
             return None
 
     def normalize_defensive_play_personnel(self, defensive_play_personnel):
+        defensive_play_personnel = defensive_play_personnel.copy()
         defensive_play_personnel.columns = ['Position_Player', 'Assignment', 'Rating']
         defensive_play_personnel[['Position', 'Player']] = defensive_play_personnel['Position_Player'].str.split(' ', n=1, expand=True)
         defensive_play_personnel = defensive_play_personnel.drop(columns=['Position_Player'])
@@ -407,20 +408,66 @@ class game_service:
         defensive_play_personnel['Assignment'] = defensive_play_personnel['Assignment'].astype(str).str.strip()
         return defensive_play_personnel
 
+    def get_pass_rusher_from_play(self, play_result):
+        # Pressure defender name can appear in different sentence patterns in the game log.
+        name_token = r"[A-Z][A-Za-z'.\-]*"
+        full_name = rf"({name_token}\s+{name_token})"
+        patterns = [
+            # Example: "... sacked by OLB Martin Prescott ..."
+            rf"\bsacked\s+by\s+(?:[A-Z]{{1,5}}\s+)?{full_name}\b",
+            # Example: "DE Freddie Weaver hurried the quarterback ..."
+            rf"\b(?:[A-Z]{{1,5}}\s+)?{full_name}\s+hurried\b",
+            # Fallback for formats without position token.
+            rf"\b{full_name}\s+(?:sacked|hurried)\b",
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, play_result)
+            if match:
+                return match.group(1).strip()
+        return ''
+
+    def defender_name_matches_pass_rusher(self, defender_name, pass_rusher_name):
+        if not defender_name or not pass_rusher_name:
+            return False
+
+        def normalize_for_match(name):
+            # Keep only letters and spaces so A.J. Rubble, A Rubble, and A.Rubble align.
+            cleaned = re.sub(r"[^A-Za-z\s]", " ", str(name))
+            tokens = [token for token in cleaned.split() if token]
+            if not tokens:
+                return '', ''
+            first_initial = tokens[0][0].upper()
+            last_name = tokens[-1].upper()
+            return first_initial, last_name
+
+        defender_initial, defender_last = normalize_for_match(defender_name)
+        rusher_initial, rusher_last = normalize_for_match(pass_rusher_name)
+
+        return (
+            defender_last != '' and
+            defender_last == rusher_last and
+            defender_initial != '' and
+            defender_initial == rusher_initial
+        )
+
     def write_pass_rush_success_rate(self, defensive_play_personnel, def_formation, play_result, output_widget):
-        pass_rush_success = int('sacked' in play_result or 'hurried' in play_result)
+        pass_rusher_name = self.get_pass_rusher_from_play(play_result)
+        blitz_occurred = int((defensive_play_personnel['Assignment'] == 'Blitz Passer').any())
         pass_rush_rows = []
 
         for _, defender_row in defensive_play_personnel.iterrows():
             assignment = str(defender_row['Assignment']).strip()
             if assignment not in ('Rush Passer', 'Blitz Passer'):
                 continue
+            defender_name = str(defender_row['Player']).strip()
+            pass_rush_success = int(self.defender_name_matches_pass_rusher(defender_name, pass_rusher_name))
             pass_rush_rows.append([
-                str(defender_row['Player']).strip(),
+                defender_name,
                 str(defender_row['Position']).strip(),
                 assignment,
                 str(def_formation).strip(),
                 int(assignment == 'Blitz Passer'),
+                blitz_occurred,
                 pass_rush_success
             ])
 
@@ -434,7 +481,7 @@ class game_service:
             with open(csv_file, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 if not file_exists:
-                    writer.writerow(['Defender Name', 'Defender Position', 'Defense Coverage', 'Formation/Coverage', 'Blitz', 'Pass Rush Success'])
+                    writer.writerow(['Defender Name', 'Defender Position', 'Defense Coverage', 'Formation/Coverage', 'Blitz', 'Blitz Occurred', 'Pass Rush Success'])
                 writer.writerows(pass_rush_rows)
                 output_widget.append(f"Pass rush success data for this play appended to '{csv_file}'.")
                 QApplication.processEvents() # this should allow the application to update real time
