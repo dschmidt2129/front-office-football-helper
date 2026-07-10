@@ -1,0 +1,25 @@
+Pivot Table - Yards Per Reception
+Player Name,Total Receiving Yards,Total Receptions,Yards Per Reception
+A.Parmely,41,3,13.67
+B.Riley,9,1,9.0
+C.Wynn,0,0,0.0
+D.Cobb,0,0,0.0
+E.Stewart,23,3,7.67
+E.Styles,31,3,10.33
+J.Isaacs,0,0,0.0
+K.Diaz,3,2,1.5
+S.Greene,27,3,9.0
+T.Angulo,26,1,26.0
+
+Pivot Table - Yards Per Route Run
+Player Name,Total Receiving Yards,Total Routes Run,Yards Per Route Run
+A.Parmely,41,18,2.28
+B.Riley,9,9,1.0
+C.Wynn,0,4,0.0
+D.Cobb,0,10,0.0
+E.Stewart,23,18,1.28
+E.Styles,31,24,1.29
+J.Isaacs,0,3,0.0
+K.Diaz,3,4,0.75
+S.Greene,27,25,1.08
+T.Angulo,26,12,2.17
