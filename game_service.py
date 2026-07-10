@@ -288,11 +288,80 @@ class game_service:
                 output_text = f"Receiver data for this play appended to '{csv_file}'."
                 output_widget.append(output_text)
                 QApplication.processEvents() # this should allow the application to update real time
+                self.write_receiver_pivot_summary(csv_file, output_widget)
         except Exception as e:
             output_text = f"Error writing to CSV file '{csv_file}': {e}"
             output_widget.append(output_text)
             QApplication.processEvents() # this should allow the application to update real time
         return receivers
+
+    def write_receiver_pivot_summary(self, receivers_csv_file, output_widget):
+        """Writes a second spreadsheet with pivot-style receiver efficiency summaries."""
+        summary_csv_file = 'receivers_pivot_summary.csv'
+        try:
+            if not os.path.isfile(receivers_csv_file):
+                output_widget.append(f"Cannot create pivot summary. Missing '{receivers_csv_file}'.")
+                QApplication.processEvents()
+                return
+
+            receivers_df = pd.read_csv(receivers_csv_file)
+            if receivers_df.empty:
+                output_widget.append("Cannot create pivot summary. Receiver CSV is empty.")
+                QApplication.processEvents()
+                return
+
+            # Ensure expected numeric columns are numeric before aggregations.
+            receivers_df['Yards'] = pd.to_numeric(receivers_df['Yards'], errors='coerce').fillna(0)
+            receivers_df['Caught?'] = pd.to_numeric(receivers_df['Caught?'], errors='coerce').fillna(0)
+
+            # Pivot 1: yards per reception by receiver.
+            ypr_pivot = pd.pivot_table(
+                receivers_df,
+                index=['Player Name'],
+                values=['Yards', 'Caught?'],
+                aggfunc='sum',
+                fill_value=0
+            ).reset_index()
+            ypr_pivot['Yards/Reception'] = ypr_pivot.apply(
+                lambda row: round(row['Yards'] / row['Caught?'], 2) if row['Caught?'] > 0 else 0,
+                axis=1
+            )
+            ypr_pivot = ypr_pivot[['Player Name', 'Yards', 'Caught?', 'Yards/Reception']]
+            ypr_pivot = ypr_pivot.rename(columns={
+                'Yards': 'Total Receiving Yards',
+                'Caught?': 'Total Receptions',
+                'Yards/Reception': 'Yards Per Reception'
+            })
+
+            # Pivot 2: yards per route run by receiver.
+            yprr_pivot = pd.pivot_table(
+                receivers_df,
+                index=['Player Name'],
+                values=['Yards', 'Route'],
+                aggfunc={'Yards': 'sum', 'Route': 'count'},
+                fill_value=0
+            ).reset_index()
+            yprr_pivot = yprr_pivot.rename(columns={'Route': 'Total Routes Run', 'Yards': 'Total Receiving Yards'})
+            yprr_pivot['Yards Per Route Run'] = yprr_pivot.apply(
+                lambda row: round(row['Total Receiving Yards'] / row['Total Routes Run'], 2) if row['Total Routes Run'] > 0 else 0,
+                axis=1
+            )
+            yprr_pivot = yprr_pivot[['Player Name', 'Total Receiving Yards', 'Total Routes Run', 'Yards Per Route Run']]
+
+            with open(summary_csv_file, 'w', newline='') as csvfile:
+                csvfile.write('Pivot Table - Yards Per Reception\n')
+                ypr_pivot.to_csv(csvfile, index=False, header=True)
+                csvfile.write('\n')
+                csvfile.write('Pivot Table - Yards Per Route Run\n')
+                yprr_pivot.to_csv(csvfile, index=False, header=True)
+
+            output_widget.append(
+                f"Receiver pivot summary updated in '{summary_csv_file}' (Yards Per Reception and Yards Per Route Run)."
+            )
+            QApplication.processEvents()
+        except Exception as e:
+            output_widget.append(f"Error creating receiver pivot summary '{summary_csv_file}': {e}")
+            QApplication.processEvents()
     
     def get_coverage_assignment(self, route, position, off_formation, def_formation):
         # Dispatcher for coverage assignment classes
