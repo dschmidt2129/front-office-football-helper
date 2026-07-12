@@ -168,6 +168,10 @@ class game_service:
                 return None
         else:          
             defensive_play_personnel = self.get_defensive_play_personnel(index, path)
+            offensive_play_personnel = self.get_offensive_play_personnel(index, path)
+            offensive_formation = ''
+            if offensive_play_personnel is not None and offensive_play_personnel.shape[0] > 0:
+                offensive_formation = str(offensive_play_personnel.iloc[0, 1]).strip()
             output_text = f"Defensive play personnel at index {index}:"
             output_widget.append(output_text)
             QApplication.processEvents() # this should allow the application to update real time
@@ -188,14 +192,19 @@ class game_service:
                     'hurried' in play_result
                     ):
                     normalized_defensive_personnel = self.normalize_defensive_play_personnel(defensive_play_personnel.copy())
-                    self.write_pass_rush_success_rate(normalized_defensive_personnel, formation, play_result, output_widget)
+                    self.write_pass_rush_success_rate(
+                        normalized_defensive_personnel,
+                        formation,
+                        offensive_formation,
+                        play_result,
+                        output_widget
+                    )
                 if ('fell incomplete' in play_result or
                     'completed' in play_result or
                     'intercepted' in play_result or
                     'was thrown incomplete' in play_result or
                     'was blocked at the line' in play_result
                     ):
-                    offensive_play_personnel = self.get_offensive_play_personnel(index, path)                    
                     pass_defenders_in_play = self.get_pass_defenders_from_play(formation, play_result, defensive_play_personnel, output_widget, offensive_play_personnel)
                     output_text = str(pass_defenders_in_play)
                     output_widget.append(output_text)
@@ -450,7 +459,7 @@ class game_service:
             defender_initial == rusher_initial
         )
 
-    def write_pass_rush_success_rate(self, defensive_play_personnel, def_formation, play_result, output_widget):
+    def write_pass_rush_success_rate(self, defensive_play_personnel, def_formation, off_formation, play_result, output_widget):
         pass_rusher_name = self.get_pass_rusher_from_play(play_result)
         blitz_occurred = int((defensive_play_personnel['Assignment'] == 'Blitz Passer').any())
         pass_rush_rows = []
@@ -466,6 +475,7 @@ class game_service:
                 str(defender_row['Position']).strip(),
                 assignment,
                 str(def_formation).strip(),
+                str(off_formation).strip(),
                 int(assignment == 'Blitz Passer'),
                 blitz_occurred,
                 pass_rush_success
@@ -481,7 +491,7 @@ class game_service:
             with open(csv_file, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 if not file_exists:
-                    writer.writerow(['Defender Name', 'Defender Position', 'Defense Coverage', 'Formation/Coverage', 'Blitz', 'Blitz Occurred', 'Pass Rush Success'])
+                    writer.writerow(['Defender Name', 'Defender Position', 'Defense Coverage', 'Formation/Coverage', 'Offensive Formation', 'Blitz', 'Blitz Occurred', 'Pass Rush Success'])
                 writer.writerows(pass_rush_rows)
                 output_widget.append(f"Pass rush success data for this play appended to '{csv_file}'.")
                 QApplication.processEvents() # this should allow the application to update real time

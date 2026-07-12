@@ -240,8 +240,11 @@ def test_write_pass_rush_success_rate(in_temp_cwd, temp_data_root, output_widget
             {"Position": "FS", "Player": "Safe Guy", "Assignment": "Zone", "Rating": 77},
         ]
     )
-    service.write_pass_rush_success_rate(defenders, "Man to Man", "QB sacked", output_widget)
+    service.write_pass_rush_success_rate(defenders, "Man to Man", "131", "QB sacked", output_widget)
     assert Path("pass_rush_success_rate.csv").exists()
+    written = pd.read_csv("pass_rush_success_rate.csv")
+    assert "Offensive Formation" in written.columns
+    assert str(written.iloc[0]["Offensive Formation"]) == "131"
 
 
 def test_write_pass_rush_success_rate_no_rows(in_temp_cwd, temp_data_root, output_widget):
@@ -249,7 +252,7 @@ def test_write_pass_rush_success_rate_no_rows(in_temp_cwd, temp_data_root, outpu
     defenders = pd.DataFrame(
         [{"Position": "FS", "Player": "Safe Guy", "Assignment": "Zone", "Rating": 77}]
     )
-    service.write_pass_rush_success_rate(defenders, "Cover-2", "QB pass completed", output_widget)
+    service.write_pass_rush_success_rate(defenders, "Cover-2", "Shotgun", "QB pass completed", output_widget)
     assert not Path("pass_rush_success_rate.csv").exists()
 
 
