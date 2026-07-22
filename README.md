@@ -149,6 +149,47 @@ Generated file containing receiver-level statistics:
 - Yards After Catch (YAC)
 - Passer Name
 
+### CSV Report: `receivers_pivot_summary.csv`
+Generated summary file containing two pivot-style receiver efficiency tables:
+
+1. Pivot Table - Yards Per Reception
+- Grouped by Player Name
+- Columns: Total Receiving Yards, Total Receptions, Yards Per Reception
+
+2. Pivot Table - Yards Per Route Run
+- Grouped by Player Name
+- Columns: Total Receiving Yards, Total Routes Run, Yards Per Route Run
+
+### CSV Report: `pass_rush_success_rate.csv`
+Generated file containing pass-rush attempt level defensive data (one row per defender rushing on a qualifying pass play):
+- Play Index
+- Defender Name
+- Defender Position
+- Defense Coverage (assignment label, for example `Rush Passer` or `Blitz Passer`)
+- Formation/Coverage (defensive shell used on the play)
+- Offensive Formation
+- Blitz (1 if this defender blitzed, else 0)
+- Blitz Occurred (1 if any defender blitzed on the play, else 0)
+- Pass Rush Success (1 if this defender is identified as the pressure defender, else 0)
+
+Pass-rush rows are written only for non-penalty plays or plays with explicitly declined penalties.
+If a play includes `PENALTY` and does not include `declined`, it is treated as an accepted penalty and excluded from `pass_rush_success_rate.csv`.
+
+### CSV Report: `defensive_pass_rush_pivot_summary.csv`
+Generated summary file containing three pivot-style defensive efficiency tables:
+
+1. Pivot Table - Pass Rush Success Rate Per Coverage
+- Grouped by Formation/Coverage
+- Columns: Total Pass Rush Successes, Number of Times Called, Pass Rush Success Rate
+
+2. Pivot Table - Pass Rush Success Rate Per Play With Blitz
+- Grouped by Blitz Occurred (`Yes`/`No`)
+- Columns: Total Successful Pass Rush Plays, Total Plays, Pass Rush Success Rate
+
+3. Pivot Table - Player Pass Rush Success Rate Per Rush
+- Grouped by Defender Name
+- Columns: Total Pass Rush Successes, Number of Pass Plays Rushing, Pass Rush Success Rate
+
 ## Installation & Setup
 
 ### Requirements
@@ -178,6 +219,9 @@ Update the league identifier in service files if needed:
 5. Monitor progress in the output log
 
 6. Review `receivers_in_game.csv` for detailed receiver statistics
+7. Review `receivers_pivot_summary.csv` for receiver efficiency pivot tables
+8. Review `pass_rush_success_rate.csv` for defender-level pass-rush attempts
+9. Review `defensive_pass_rush_pivot_summary.csv` for defensive pass-rush success-rate pivot tables
 
 ## Technical Implementation Details
 
@@ -213,12 +257,14 @@ front-office-football-helper/
 ├── front_office_football_service.py  # High-level orchestration
 ├── coverage_assignments.py           # Defensive coverage scheme logic
 ├── receivers_in_game.csv             # Generated report (output)
+├── receivers_pivot_summary.csv       # Generated report (output)
+├── pass_rush_success_rate.csv        # Generated report (output)
+├── defensive_pass_rush_pivot_summary.csv # Generated report (output)
 └── build/                            # Build output directory
 ```
 
 ## Future Enhancement Opportunities
 
-- Pass rush assignment tracking
 - Run defense personnel analysis
 - Defensive coordinator scheme identification
 - Statistical comparison across coverage types

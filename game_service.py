@@ -20,6 +20,7 @@ class game_service:
         self.cleaned_game_log = None      # cached cleaned log
         self._all_tables = None           # cached tables from the html file
         self.receivers_csv_file = 'receivers_in_game.csv'
+        self.pass_rush_csv_file = 'pass_rush_success_rate.csv'
 
     def _load_all_tables(self, path):
         """read_html only once per invocation of the service."""
@@ -134,6 +135,12 @@ class game_service:
             print(f"Index {index} is out of bounds for the cleaned game log.")
             return None
 
+    def is_accepted_penalty_play(self, play_result):
+        play_text = str(play_result)
+        if 'PENALTY' not in play_text.upper():
+            return False
+        return 'declined' not in play_text.lower()
+
     def get_player_performance_from_play(self, index, team_name, path, output_widget):
         # gets the player's performance and actions from the play +, -, etc...
         play_result = self.get_play_result(index, path, output_widget) 
@@ -199,13 +206,18 @@ class game_service:
                     'hurried' in play_result
                     ):
                     normalized_defensive_personnel = self.normalize_defensive_play_personnel(defensive_play_personnel.copy())
-                    self.write_pass_rush_success_rate(
-                        normalized_defensive_personnel,
-                        formation,
-                        offensive_formation,
-                        play_result,
-                        output_widget
-                    )
+                    if self.is_accepted_penalty_play(play_result):
+                        output_widget.append("Skipping pass rush success tracking due to accepted penalty on the play.")
+                        QApplication.processEvents() # this should allow the application to update real time
+                    else:
+                        self.write_pass_rush_success_rate(
+                            normalized_defensive_personnel,
+                            formation,
+                            offensive_formation,
+                            play_result,
+                            output_widget,
+                            play_index=index
+                        )
                 if ('fell incomplete' in play_result or
                     'completed' in play_result or
                     'intercepted' in play_result or
@@ -326,6 +338,11 @@ class game_service:
         if os.path.isfile(self.receivers_csv_file):
             self.write_receiver_pivot_summary(self.receivers_csv_file, output_widget)
 
+    def finalize_defensive_outputs(self, output_widget):
+        """Build defensive pass-rush summaries once after all plays are processed."""
+        if os.path.isfile(self.pass_rush_csv_file):
+            self.write_defensive_pivot_summary(self.pass_rush_csv_file, output_widget)
+
     def write_receiver_pivot_summary(self, receivers_csv_file, output_widget):
         """Writes a second spreadsheet with pivot-style receiver efficiency summaries."""
         summary_csv_file = 'receivers_pivot_summary.csv'
@@ -392,6 +409,131 @@ class game_service:
             QApplication.processEvents()
         except Exception as e:
             output_widget.append(f"Error creating receiver pivot summary '{summary_csv_file}': {e}")
+            QApplication.processEvents()
+
+    def write_defensive_pivot_summary(self, pass_rush_csv_file, output_widget):
+        """Writes defensive pivot-style pass-rush success summaries."""
+        summary_csv_file = 'defensive_pass_rush_pivot_summary.csv'
+        try:
+            if not os.path.isfile(pass_rush_csv_file):
+                output_widget.append(f"Cannot create defensive pivot summary. Missing '{pass_rush_csv_file}'.")
+                QApplication.processEvents()
+                return
+
+            pass_rush_df = pd.read_csv(pass_rush_csv_file)
+            if pass_rush_df.empty:
+                output_widget.append("Cannot create defensive pivot summary. Pass rush CSV is empty.")
+                QApplication.processEvents()
+                return
+
+            pass_rush_df['Pass Rush Success'] = pd.to_numeric(
+                pass_rush_df['Pass Rush Success'], errors='coerce'
+            ).fillna(0)
+            pass_rush_df['Blitz Occurred'] = pd.to_numeric(
+                pass_rush_df['Blitz Occurred'], errors='coerce'
+            ).fillna(0)
+            if 'Play Index' in pass_rush_df.columns:
+                pass_rush_df['Play Index'] = pd.to_numeric(pass_rush_df['Play Index'], errors='coerce')
+
+            # Build a stable per-play key. Older files may not include Play Index.
+            if 'Play Index' in pass_rush_df.columns and pass_rush_df['Play Index'].notna().any():
+                pass_rush_df['_PlayKey'] = pass_rush_df['Play Index'].fillna(
+                    pd.Series(pass_rush_df.index, index=pass_rush_df.index)
+                )
+            else:
+                pass_rush_df['_PlayKey'] = pass_rush_df.index
+
+            # Pivot 1: pass rush success rate by coverage shell/formation.
+            # This is play-level to reflect how many times each coverage was called.
+            coverage_plays_df = pass_rush_df.groupby(
+                ['_PlayKey', 'Formation/Coverage'], as_index=False
+            ).agg({'Pass Rush Success': 'max'})
+            coverage_pivot = pd.pivot_table(
+                coverage_plays_df,
+                index=['Formation/Coverage'],
+                values=['Pass Rush Success'],
+                aggfunc=['sum', 'count'],
+                fill_value=0
+            ).reset_index()
+            coverage_pivot.columns = [
+                'Formation/Coverage',
+                'Total Pass Rush Successes',
+                'Number of Times Called'
+            ]
+            coverage_pivot['Pass Rush Success Rate'] = coverage_pivot.apply(
+                lambda row: round(
+                    row['Total Pass Rush Successes'] / row['Number of Times Called'], 3
+                ) if row['Number of Times Called'] > 0 else 0,
+                axis=1
+            )
+
+            # Pivot 2: pass rush success rate by whether a blitz occurred on the play.
+            # This is play-level, not defender-attempt-level.
+            pass_rush_plays_df = pass_rush_df.groupby('_PlayKey', as_index=False).agg({
+                'Blitz Occurred': 'max',
+                'Pass Rush Success': 'max'
+            })
+            blitz_pivot = pd.pivot_table(
+                pass_rush_plays_df,
+                index=['Blitz Occurred'],
+                values=['Pass Rush Success'],
+                aggfunc=['sum', 'count'],
+                fill_value=0
+            ).reset_index()
+            blitz_pivot.columns = [
+                'Blitz Occurred',
+                'Total Successful Pass Rush Plays',
+                'Total Plays'
+            ]
+            blitz_pivot['Blitz Occurred'] = blitz_pivot['Blitz Occurred'].apply(
+                lambda value: 'Yes' if int(value) == 1 else 'No'
+            )
+            blitz_pivot['Pass Rush Success Rate'] = blitz_pivot.apply(
+                lambda row: round(
+                    row['Total Successful Pass Rush Plays'] / row['Total Plays'], 3
+                ) if row['Total Plays'] > 0 else 0,
+                axis=1
+            )
+
+            # Pivot 3: each rusher's pass rush success rate per rushing pass play.
+            player_plays_df = pass_rush_df.groupby(
+                ['_PlayKey', 'Defender Name'], as_index=False
+            ).agg({'Pass Rush Success': 'max'})
+            player_pivot = pd.pivot_table(
+                player_plays_df,
+                index=['Defender Name'],
+                values=['Pass Rush Success'],
+                aggfunc=['sum', 'count'],
+                fill_value=0
+            ).reset_index()
+            player_pivot.columns = [
+                'Defender Name',
+                'Total Pass Rush Successes',
+                'Number of Pass Plays Rushing'
+            ]
+            player_pivot['Pass Rush Success Rate'] = player_pivot.apply(
+                lambda row: round(
+                    row['Total Pass Rush Successes'] / row['Number of Pass Plays Rushing'], 3
+                ) if row['Number of Pass Plays Rushing'] > 0 else 0,
+                axis=1
+            )
+
+            with open(summary_csv_file, 'w', newline='') as csvfile:
+                csvfile.write('Pivot Table - Pass Rush Success Rate Per Coverage\n')
+                coverage_pivot.to_csv(csvfile, index=False, header=True)
+                csvfile.write('\n')
+                csvfile.write('Pivot Table - Pass Rush Success Rate Per Play With Blitz\n')
+                blitz_pivot.to_csv(csvfile, index=False, header=True)
+                csvfile.write('\n')
+                csvfile.write('Pivot Table - Player Pass Rush Success Rate Per Rush\n')
+                player_pivot.to_csv(csvfile, index=False, header=True)
+
+            output_widget.append(
+                f"Defensive pivot summary updated in '{summary_csv_file}' (coverage, blitz, and player pass-rush rates)."
+            )
+            QApplication.processEvents()
+        except Exception as e:
+            output_widget.append(f"Error creating defensive pivot summary '{summary_csv_file}': {e}")
             QApplication.processEvents()
     
     def get_coverage_assignment(self, route, position, off_formation, def_formation):
@@ -470,7 +612,12 @@ class game_service:
             defender_initial == rusher_initial
         )
 
-    def write_pass_rush_success_rate(self, defensive_play_personnel, def_formation, off_formation, play_result, output_widget):
+    def write_pass_rush_success_rate(self, defensive_play_personnel, def_formation, off_formation, play_result, output_widget, play_index=None):
+        if self.is_accepted_penalty_play(play_result):
+            output_widget.append(f"Pass rush success data not written for play {play_index}: accepted penalty.")
+            QApplication.processEvents() # this should allow the application to update real time
+            return
+
         pass_rusher_name = self.get_pass_rusher_from_play(play_result)
         blitz_occurred = int((defensive_play_personnel['Assignment'] == 'Blitz Passer').any())
         pass_rush_rows = []
@@ -482,6 +629,7 @@ class game_service:
             defender_name = str(defender_row['Player']).strip()
             pass_rush_success = int(self.defender_name_matches_pass_rusher(defender_name, pass_rusher_name))
             pass_rush_rows.append([
+                play_index,
                 defender_name,
                 str(defender_row['Position']).strip(),
                 assignment,
@@ -495,17 +643,18 @@ class game_service:
         if not pass_rush_rows:
             return
 
-        csv_file = 'pass_rush_success_rate.csv'
+        csv_file = self.pass_rush_csv_file
         file_exists = os.path.isfile(csv_file)
 
         try:
             with open(csv_file, 'a', newline='') as csvfile:
                 writer = csv.writer(csvfile)
                 if not file_exists:
-                    writer.writerow(['Defender Name', 'Defender Position', 'Defense Coverage', 'Formation/Coverage', 'Offensive Formation', 'Blitz', 'Blitz Occurred', 'Pass Rush Success'])
+                    writer.writerow(['Play Index', 'Defender Name', 'Defender Position', 'Defense Coverage', 'Formation/Coverage', 'Offensive Formation', 'Blitz', 'Blitz Occurred', 'Pass Rush Success'])
                 writer.writerows(pass_rush_rows)
                 output_widget.append(f"Pass rush success data for this play appended to '{csv_file}'.")
                 QApplication.processEvents() # this should allow the application to update real time
+            self.write_defensive_pivot_summary(csv_file, output_widget)
         except Exception as e:
             output_widget.append(f"Error writing to CSV file '{csv_file}': {e}")
             QApplication.processEvents() # this should allow the application to update real time

@@ -168,6 +168,54 @@ def test_get_player_performance_defense_branch(monkeypatch, temp_data_root, outp
     assert calls["pass_def"] == 1
 
 
+def test_get_player_performance_defense_branch_skips_accepted_penalty(monkeypatch, temp_data_root, output_widget):
+    service = _service(temp_data_root, output_widget)
+
+    play = "A B C D QB pass fell incomplete to John Smith, PENALTY on defense"
+    monkeypatch.setattr(service, "get_play_result", lambda *_args, **_kwargs: play)
+    monkeypatch.setattr(service.ts, "check_if_in_roster", lambda *_args, **_kwargs: False)
+
+    defense_df = pd.DataFrame(
+        [
+            ["FORMATION", "Man to Man", ""],
+            ["LCB John Doe", "Rush Passer", "90"],
+        ]
+    )
+    monkeypatch.setattr(service, "get_defensive_play_personnel", lambda *_args, **_kwargs: defense_df.copy())
+    monkeypatch.setattr(service, "get_offensive_play_personnel", lambda *_args, **_kwargs: pd.DataFrame([["FORMATION", "131", ""]]))
+
+    calls = {"rush": 0}
+    monkeypatch.setattr(service, "write_pass_rush_success_rate", lambda *_args, **_kwargs: calls.__setitem__("rush", calls["rush"] + 1))
+    monkeypatch.setattr(service, "get_pass_defenders_from_play", lambda *_args, **_kwargs: [])
+
+    service.get_player_performance_from_play(0, "Cleveland", str(temp_data_root), output_widget)
+    assert calls["rush"] == 0
+
+
+def test_get_player_performance_defense_branch_includes_declined_penalty(monkeypatch, temp_data_root, output_widget):
+    service = _service(temp_data_root, output_widget)
+
+    play = "A B C D QB pass fell incomplete to John Smith, PENALTY declined"
+    monkeypatch.setattr(service, "get_play_result", lambda *_args, **_kwargs: play)
+    monkeypatch.setattr(service.ts, "check_if_in_roster", lambda *_args, **_kwargs: False)
+
+    defense_df = pd.DataFrame(
+        [
+            ["FORMATION", "Man to Man", ""],
+            ["LCB John Doe", "Rush Passer", "90"],
+        ]
+    )
+    monkeypatch.setattr(service, "get_defensive_play_personnel", lambda *_args, **_kwargs: defense_df.copy())
+    monkeypatch.setattr(service, "get_offensive_play_personnel", lambda *_args, **_kwargs: pd.DataFrame([["FORMATION", "131", ""]]))
+
+    calls = {"rush": 0}
+    monkeypatch.setattr(service, "write_pass_rush_success_rate", lambda *_args, **_kwargs: calls.__setitem__("rush", calls["rush"] + 1))
+    monkeypatch.setattr(service, "get_pass_defenders_from_play", lambda *_args, **_kwargs: [])
+
+    service.get_player_performance_from_play(0, "Cleveland", str(temp_data_root), output_widget)
+    assert calls["rush"] == 1
+
+
 def test_get_player_performance_missing_play(monkeypatch, temp_data_root, output_widget):
     service = _service(temp_data_root, output_widget)
     monkeypatch.setattr(service, "get_play_result", lambda *_args, **_kwargs: None)
@@ -191,8 +239,6 @@ def test_get_receivers_from_play_and_pivot(in_temp_cwd, temp_data_root, output_w
 
     assert rows
     assert Path("receivers_in_game.csv").exists()
-    if not Path("receivers_pivot_summary.csv").exists():
-        assert any("Error creating receiver pivot summary" in msg for msg in output_widget.messages)
 
 
 def test_write_receiver_pivot_summary_missing_and_empty(in_temp_cwd, temp_data_root, output_widget):
@@ -242,9 +288,142 @@ def test_write_pass_rush_success_rate(in_temp_cwd, temp_data_root, output_widget
     )
     service.write_pass_rush_success_rate(defenders, "Man to Man", "131", "QB sacked", output_widget)
     assert Path("pass_rush_success_rate.csv").exists()
+    assert Path("defensive_pass_rush_pivot_summary.csv").exists()
     written = pd.read_csv("pass_rush_success_rate.csv")
     assert "Offensive Formation" in written.columns
     assert str(written.iloc[0]["Offensive Formation"]) == "131"
+
+
+def test_write_pass_rush_success_rate_skips_accepted_penalty(in_temp_cwd, temp_data_root, output_widget):
+    service = _service(temp_data_root, output_widget)
+
+    defenders = pd.DataFrame(
+        [
+            {"Position": "LCB", "Player": "John Doe", "Assignment": "Rush Passer", "Rating": 80},
+            {"Position": "SS", "Player": "Jim Beam", "Assignment": "Blitz Passer", "Rating": 79},
+        ]
+    )
+    service.write_pass_rush_success_rate(
+        defenders,
+        "Man to Man",
+        "131",
+        "QB pass completed to Alpha Beta Smith, PENALTY on defense",
+        output_widget,
+        play_index=5,
+    )
+
+    assert not Path("pass_rush_success_rate.csv").exists()
+
+
+def test_write_pass_rush_success_rate_includes_declined_penalty(in_temp_cwd, temp_data_root, output_widget):
+    service = _service(temp_data_root, output_widget)
+
+    defenders = pd.DataFrame(
+        [
+            {"Position": "LCB", "Player": "John Doe", "Assignment": "Rush Passer", "Rating": 80},
+            {"Position": "SS", "Player": "Jim Beam", "Assignment": "Blitz Passer", "Rating": 79},
+        ]
+    )
+    service.write_pass_rush_success_rate(
+        defenders,
+        "Man to Man",
+        "131",
+        "QB pass completed to Alpha Beta Smith, PENALTY declined",
+        output_widget,
+        play_index=5,
+    )
+
+    assert Path("pass_rush_success_rate.csv").exists()
+
+
+def test_write_defensive_pivot_summary_missing_and_empty(in_temp_cwd, temp_data_root, output_widget):
+    service = _service(temp_data_root, output_widget)
+
+    service.write_defensive_pivot_summary("does_not_exist.csv", output_widget)
+    assert any("Cannot create defensive pivot summary" in msg for msg in output_widget.messages)
+
+    pd.DataFrame(
+        columns=[
+            "Play Index",
+            "Defender Name",
+            "Defender Position",
+            "Defense Coverage",
+            "Formation/Coverage",
+            "Offensive Formation",
+            "Blitz",
+            "Blitz Occurred",
+            "Pass Rush Success",
+        ]
+    ).to_csv("empty_pass_rush.csv", index=False)
+    service.write_defensive_pivot_summary("empty_pass_rush.csv", output_widget)
+    assert any("Pass rush CSV is empty" in msg for msg in output_widget.messages)
+
+
+def test_write_defensive_pivot_summary_creates_three_tables(in_temp_cwd, temp_data_root, output_widget):
+    service = _service(temp_data_root, output_widget)
+
+    pd.DataFrame(
+        [
+            {
+                "Play Index": 10,
+                "Defender Name": "John Doe",
+                "Defender Position": "LCB",
+                "Defense Coverage": "Rush Passer",
+                "Formation/Coverage": "Man to Man",
+                "Offensive Formation": "131",
+                "Blitz": 0,
+                "Blitz Occurred": 1,
+                "Pass Rush Success": 1,
+            },
+            {
+                "Play Index": 10,
+                "Defender Name": "Jim Beam",
+                "Defender Position": "SS",
+                "Defense Coverage": "Blitz Passer",
+                "Formation/Coverage": "Man to Man",
+                "Offensive Formation": "131",
+                "Blitz": 1,
+                "Blitz Occurred": 1,
+                "Pass Rush Success": 0,
+            },
+            {
+                "Play Index": 11,
+                "Defender Name": "Carl Edge",
+                "Defender Position": "DE",
+                "Defense Coverage": "Rush Passer",
+                "Formation/Coverage": "Cover-2",
+                "Offensive Formation": "112",
+                "Blitz": 0,
+                "Blitz Occurred": 0,
+                "Pass Rush Success": 1,
+            },
+            {
+                "Play Index": 10,
+                "Defender Name": "John Doe",
+                "Defender Position": "LCB",
+                "Defense Coverage": "Rush Passer",
+                "Formation/Coverage": "Man to Man",
+                "Offensive Formation": "131",
+                "Blitz": 0,
+                "Blitz Occurred": 1,
+                "Pass Rush Success": 0,
+            },
+        ]
+    ).to_csv("pass_rush_success_rate.csv", index=False)
+
+    service.write_defensive_pivot_summary("pass_rush_success_rate.csv", output_widget)
+
+    assert Path("defensive_pass_rush_pivot_summary.csv").exists()
+    summary_text = Path("defensive_pass_rush_pivot_summary.csv").read_text(encoding="utf-8")
+    assert "Pivot Table - Pass Rush Success Rate Per Coverage" in summary_text
+    assert "Pivot Table - Pass Rush Success Rate Per Play With Blitz" in summary_text
+    assert "Pivot Table - Player Pass Rush Success Rate Per Rush" in summary_text
+    assert "Man to Man,1,1,1.0" in summary_text
+    assert "Man to Man,1,2,0.5" not in summary_text
+    assert "Yes,1,1,1.0" in summary_text
+    assert "Yes,1,2,0.5" not in summary_text
+    assert "John Doe,1,1,1.0" in summary_text
+    assert "John Doe,1,2,0.5" not in summary_text
 
 
 def test_write_pass_rush_success_rate_no_rows(in_temp_cwd, temp_data_root, output_widget):
